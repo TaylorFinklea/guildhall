@@ -4,30 +4,33 @@
 
 ## Active Branch
 
-`main` (every member repo; all local, nothing pushed)
+`main` (every member repo; all local, nothing pushed).
 
 ## Last Session Summary
 
-**Date**: 2026-07-02 (Fable handoff-hardening audit — 9-repo fan-out)
+**Date**: 2026-07-02 (Opus execution session #1 — first real dispatch cycle)
 
-- Full audit: 48 open beads across 9 repos, ALL with tier_floor/complexity/verify_cmd in bd metadata; zero dangling refs; builds green (conductor 84 tests, warden 39, hindsight 59, bursar 4, provenance clean). Closed count corrected: **22** (not 23).
-- Gates encoded in bd: warden-m3←warden-rev; conductor-guildhall-dogfood←conductor-m3b; hindsight-m5←hindsight-m3; foreman ×6 deferred (build-order); conductor-warden deferred (v1.5).
-- `conductor-review` → P1, **gates v1** (user decision; ADR in decisions.md; integration spec amended).
-- Landmine/staleness comments filed on 6 beads; hindsight module-layout + M5-scope ADRs added; orchestration-runbook.md COMPLETED (was truncated); conductor/warden/hindsight plan docs refreshed.
-- Budget caps user-approved ("Moderate"): ≤10 closes/session, ≤3 concurrent Anthropic, pi until 429→hold, checkpoint every ~8 (runbook § Budget caps).
+- **9 beads closed, verified-by-artifact, 0 failed verifies** (fleet total 22 → **31 closed**):
+  warden-rev (LEAD, Opus), warden-m3, provenance-seam (LEAD, Sonnet), gauntlet-m0, gauntlet-m1,
+  conductor-m4a, conductor-m3a, bursar-m2-codex, bursar-m3-agy.
+- Routing: Opus only for warden-rev (security core); Sonnet for provenance-seam; **7 gpt-5.5** senior impl. No 429s.
+- warden-rev: policy core faithful, all 8 invariants hold; pinned invariant-3 session-op/headless adapter contract (test); filed **warden-6xk** (classifier heuristic hardening: dd of=/dev, symlink WriteInRepo).
+- Broken clippy gates found (per-bead `cargo test X` verify_cmds don't run clippy → drift): warden config.rs **FIXED** (15130d3); conductor filed **conductor-nse** (4 lints in bd/config/triage).
+- Dispatch logs appended to `~/.claude/model-bench.jsonl` + scorecard Experience Log (append-only ledgers; chezmoi drift is human-reconciled, not config writes).
 
 ## Build Status
 
-- All repos build clean at HEAD; all closed beads verified by artifact.
-- Stashes: `provenance` (m2 store.rs partial — pop + build on), `hindsight` (m2-pi partial — orphan-file landmine, fold into pi.rs; see bead comment + hindsight ADR).
+- warden 43 tests + clippy green; gauntlet 18; conductor `cargo test` green (repo clippy red → conductor-nse); bursar tests + clippy green; provenance fixture jq-valid.
+- **Stashes STILL PENDING** (held, not rushed at close-cap): provenance stash (m2 store.rs partial — pop + build);
+  hindsight stash (m2-pi partial — **ORPHAN-FILE landmine**: fold into committed `src/sources/pi.rs`, NOT a naive pop).
 
 ## Blockers
 
-- Provider-limit notes from 2026-07-01/02 are STALE — check live at session start (runbook § Provider-limit reality). Standing: agy quota-dead until ~2026-07-06.
+- Provider limits: check LIVE at session start. agy quota-dead until ~2026-07-06 (parked).
 
-## Resume plan (Opus executes)
+## Resume plan (next session)
 
-1. Read `opus-handoff-prompt.md` → `orchestration-runbook.md` → integration spec; `bd prime` in any member.
-2. `bd -C <repo> ready` per member — gates are now in bd. Ready today: warden-rev (LEAD, do first — m3 waits on it), hindsight-m2-pi-parser, provenance-seam (LEAD) + provenance-m2, bursar-m1/m2/m3, envoy-e2e-dryrun, conductor m4a/m3a/m1c/m0c/agy/cov1, gauntlet-m0.
-3. Honor the runbook caps; verify by artifact; log dispatches; checkpoint to harness-deck.
-4. Pending-human (never fleet-applied): rotate plaintext claude.ai session-key in `~/.claude/fetch-claude-usage.swift`; envoy/warden/gauntlet chezmoi installs + tiers.md patch.
+1. **Stash-redo beads FIRST, carefully**: provenance-m2 (pop + build), hindsight-m2-pi-parser (orphan-fold into pi.rs — Opus/lead should drive the fold, not a blind worker).
+2. Then `bd ready` per member: bursar-m1-anthropic; conductor m1c/m0c/agy/cov1 + conductor-nse; warden m5/m6 + warden-6xk; gauntlet-m2 (human-verify tail); envoy-e2e-dryrun (dogfood — poor headless fit, drive by hand).
+3. `conductor-review` still gates v1 (unblocks after m4b/m4c). foreman ×6 still deferred; conductor-warden v1.5.
+4. Honor caps; verify-by-artifact; log every non-default dispatch; harness-deck checkpoint ~every 8.
