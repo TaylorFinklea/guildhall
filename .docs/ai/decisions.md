@@ -51,3 +51,16 @@
 **Context**: Conductor's budgets are static caps in conductor.toml today. Bursar's `bursar/status@1` JSON contract reports per-provider window state (or an honest "unknown").
 **Decision**: Add a NEW Conductor bead (`conductor-bursar`) to consume `bursar status --json` before dispatching to a metered external backend (pi/agy). Near-exhausted or "unknown" provider windows down-weight or defer external dispatch (fail-closed: "unknown" is treated as spend-cautiously, still counted, never as "plenty"). Blocked on Conductor m4c (dispatch exists) + Bursar shipping its status command; cross-repo dependency noted in bead prose (bd has no cross-repo dep primitive).
 **Rationale**: Retires the static-cap limitation and gives orchestra's dormant `ThrottleState`/`routeBoundary` its first real data source through Bursar — one member's output becoming another's input over a file/CLI contract, per the substrate principle.
+
+## [2026-07-02] Warden live-enforcement covers Claude Code only; pi/agy = compensating controls (Fable gap review)
+
+**Context**: Warden v1 = policy library + one Claude Code PreToolUse adapter. But the fleet dispatches most work via pi (glm/minimax/qwen) and agy, which run their own inner tool loops. The agy-interception recon proved external live interception of those loops isn't available.
+**Decision**: Accept that Warden's LIVE enforcement covers the Claude Code surface only in v1. The pi/agy dispatch surfaces rely on **compensating controls**: worktree/branch isolation, verify-by-artifact, post-hoc `orchestra audit`, quota caps, and prompt-level rules baked into worker prompts. This is exactly the posture this session's dispatch used and it held (zero bad commits across ~23 dispatches). `warden-m6-dispatch-surface-coverage` documents the full matrix + sketches an optional pi-dispatch-wrapper (pre-screen + post-audit, since inner calls can't be gated).
+**Alternatives considered**: block pi/agy until live gating exists (rejected — kills the cheap fleet; live gating is proven-unavailable, not merely unbuilt); pretend the Claude adapter covers everything (rejected — charter invariant 8, no papering over gaps).
+**Rationale**: Honest floor over pretended coverage. The compensating controls are real and were validated in production this session.
+
+## [2026-07-02] Ingestion source coverage: harness-deck + beads are completeness, below recap priority
+
+**Context**: The ingestion-event-model lists 8 sources; Hindsight's recap milestones only budgeted claude-code/codex/pi/agy/guardian. `harness_deck.rs` and `beads.rs` were stubs with no bead.
+**Decision**: Add them as `hindsight-m5-hd-beads-sources` at p3 — they complete source coverage but are SUMMARY/AUDIT sources (curated reports; field-change logs), strictly lower value than the primary-transcript recap (m3). Recap ships first with 5 sources; these two round it out.
+**Rationale**: A gap worth tracking, not worth blocking recap on.
