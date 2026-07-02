@@ -12,13 +12,12 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 
 ### Now
 - [ ] Opus executes per `current-state.md` § Resume plan (check provider limits LIVE at session start — printed reset times are stale by design).
-- [ ] `warden-rev` — LEAD adversarial review of the policy core (mutation-check the invariants, like Conductor's rev1). `warden-m3` is bd-blocked on it; do it early.
-- [ ] Redo the two limit-killed beads (stashes available): `hindsight-m2-pi-parser` (orphan-file landmine — see bead comment), `provenance-m2` (pop + build on).
-- [ ] Gap beads (Fable 2026-07-02), now properly gated in bd:
-  - `hindsight-m5-hd-beads-sources` (p3; blocked on hindsight-m3)
-  - `warden-m6-dispatch-surface-coverage` (LEAD; ready)
-  - `conductor-guildhall-dogfood` (LEAD; blocked on conductor-m3b)
-  - `conductor-warden` (deferred — v1.5)
+- [x] `warden-rev` — LEAD review done (exec #1); `warden-m3` unblocked + closed.
+- [x] Redo the two limit-killed beads — done (exec #1). NOTE: the 2 now-superseded stashes (`hindsight-m2-pi-parser`, `provenance-m2`) await a HUMAN `git stash drop` — agent stash-drop is blocked by the safety classifier.
+- [x] `warden-m6-dispatch-surface-coverage` — done (exec #2, a5689fc): honest verdict ZERO surfaces live-gated today + pi-dispatch-wrapper sketch.
+- [x] `hindsight-m3` (exec #2) → unblocks `hindsight-m5-hd-beads-sources`; `conductor-m3b` (exec #2) → unblocks `conductor-guildhall-dogfood`.
+- [ ] Newly UNBLOCKED by exec #2 (impls landed + verified): `conductor-m4c` → `conductor-review` (P1, **gates v1**) → `conductor-guildhall-dogfood`; `provenance-m4`; `gauntlet-m3-harvest`; `hindsight-m4`/`m5`; `bursar-m4-cli`. `conductor-warden` still deferred (v1.5).
+- [ ] `envoy-e2e-dryrun` — HELD: needs the envoy SKILL run in a Claude harness against a real repo (dogfood) + `validate-envelope.sh`; do with Sonnet/human, not a pi worker.
 
 ### Next
 - [ ] Finish each member to its spec's final milestone (build order); Conductor M3→M4→(m5/m6/review) in parallel. `conductor-review` is P1 and **gates v1** (decisions.md 2026-07-02).
