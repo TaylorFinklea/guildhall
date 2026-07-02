@@ -8,29 +8,26 @@
 
 ## Last Session Summary
 
-**Date**: 2026-07-02 (Fable architect handoff)
+**Date**: 2026-07-02 (Fable handoff-hardening audit — 9-repo fan-out)
 
-- Guildhall chartered + all 8 repos specced/backlogged; ~23 beads dispatched, verified-by-artifact, and closed across Conductor + members.
-- **Done + verified**: Conductor cycle 1 COMPLETE (8/8 + Opus adversarial review that found a real untested safety guard). envoy (validator/consult-prompt/skill/handoff — only e2e left). warden m0/m1/m2 (classify+policy+state, the policy core). hindsight m0/m1/m2-codex. bursar m0. provenance m0/m1.
-- **Fable gap review** (this session): found + filed 4 gap beads (see roadmap Now) and wrote `phases/guildhall-integration-v1-spec.md` (the vertical slice + cross-repo dep graph + v1-done definition) + 2 ADRs.
+- Full audit: 48 open beads across 9 repos, ALL with tier_floor/complexity/verify_cmd in bd metadata; zero dangling refs; builds green (conductor 84 tests, warden 39, hindsight 59, bursar 4, provenance clean). Closed count corrected: **22** (not 23).
+- Gates encoded in bd: warden-m3←warden-rev; conductor-guildhall-dogfood←conductor-m3b; hindsight-m5←hindsight-m3; foreman ×6 deferred (build-order); conductor-warden deferred (v1.5).
+- `conductor-review` → P1, **gates v1** (user decision; ADR in decisions.md; integration spec amended).
+- Landmine/staleness comments filed on 6 beads; hindsight module-layout + M5-scope ADRs added; orchestration-runbook.md COMPLETED (was truncated); conductor/warden/hindsight plan docs refreshed.
+- Budget caps user-approved ("Moderate"): ≤10 closes/session, ≤3 concurrent Anthropic, pi until 429→hold, checkpoint every ~8 (runbook § Budget caps).
 
 ## Build Status
 
-- All closed beads verified (orchestrator re-ran each verify_cmd). All repos build clean at their last closed bead.
-- **warden caveat**: warden-m0's commit (6bf2100) had a partial classify.rs amended in by a killed worker; warden-m1 (b617a24) completed the port properly on top. Fine now.
-- **Stashed partial work** (killed by Anthropic limit, recoverable): `provenance` (`git stash list` → provenance-m2 partial), `hindsight` (→ hindsight-m2-pi partial). Redo may `git stash pop` or start fresh.
+- All repos build clean at HEAD; all closed beads verified by artifact.
+- Stashes: `provenance` (m2 store.rs partial — pop + build on), `hindsight` (m2-pi partial — orphan-file landmine, fold into pi.rs; see bead comment + hindsight ADR).
 
-## Blockers — backend rate limits (as of 2026-07-02 ~00:00 CT)
+## Blockers
 
-- **Anthropic** (Sonnet/Opus/Fable): session limit, resets **2:10am CT**.
-- **opencode-go** (glm/minimax/qwen via pi): 5h limit, resets ~00:00–00:30 CT.
-- **openai-codex** (gpt-5.5): usage limit hit; reset unknown.
-- **agy** (gemini-3.5-flash): quota-exhausted until ~2026-07-06.
+- Provider-limit notes from 2026-07-01/02 are STALE — check live at session start (runbook § Provider-limit reality). Standing: agy quota-dead until ~2026-07-06.
 
-## Resume plan (Opus takes over execution)
+## Resume plan (Opus executes)
 
-1. Read `phases/guildhall-integration-v1-spec.md` (the seams + v1-done) and this file.
-2. `bd -C <repo> ready` per member; honor `tier_floor` gates. Released/ready now: `warden-rev` (LEAD review of the policy core — Opus or Sonnet, NOT senior), `hindsight-m2-pi-parser` (stash available), `provenance-m2` (stash available), `bursar-m1-anthropic`, plus the 4 new gap beads.
-3. Route by capacity: senior/junior → pi (glm/minimax/qwen/gpt-5.5) once un-limited; lead-floor reviews → Claude lead. Every close gated on re-running the bead's verify_cmd. Log each dispatch to `~/.claude/model-bench.jsonl` + scorecard.
-4. Cross-repo deps are prose-only — honor the graph in the integration spec.
-5. Pending-human (never fleet-applied): rotate the plaintext claude.ai session-key in `~/.claude/fetch-claude-usage.swift`; envoy/warden/gauntlet chezmoi installs + tiers.md patch.
+1. Read `opus-handoff-prompt.md` → `orchestration-runbook.md` → integration spec; `bd prime` in any member.
+2. `bd -C <repo> ready` per member — gates are now in bd. Ready today: warden-rev (LEAD, do first — m3 waits on it), hindsight-m2-pi-parser, provenance-seam (LEAD) + provenance-m2, bursar-m1/m2/m3, envoy-e2e-dryrun, conductor m4a/m3a/m1c/m0c/agy/cov1, gauntlet-m0.
+3. Honor the runbook caps; verify by artifact; log dispatches; checkpoint to harness-deck.
+4. Pending-human (never fleet-applied): rotate plaintext claude.ai session-key in `~/.claude/fetch-claude-usage.swift`; envoy/warden/gauntlet chezmoi installs + tiers.md patch.

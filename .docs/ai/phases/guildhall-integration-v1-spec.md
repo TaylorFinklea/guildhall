@@ -18,7 +18,7 @@ Guildhall v1 is proven when this single flow runs end to end, mostly dry-run/rea
 6. **Gauntlet** replays golden tasks to produce evidence-backed `efficiency` ratings — a proposed patch to `tiers.md`, handed to the human.
 7. **Foreman** (built last) crystallizes the by-hand spec→backlog compilation this whole effort demonstrated.
 
-**v1 "done" = steps 1–2 provably work end to end (the dry-run cycle + bursar budget), and every member has reached its own spec's final milestone with verify passing.** Steps 3–7 are each member's own v1; the *integration* is proven by the Conductor dry-run over the real fleet (`conductor-guildhall-dogfood`).
+**v1 "done" = steps 1–2 provably work end to end (the dry-run cycle + bursar budget), Conductor's tiered qualitative-review stage ships and gates closes (`conductor-review` — user decision 2026-07-02, see decisions.md), and every member has reached its own spec's final milestone with verify passing.** Steps 3–7 are each member's own v1; the *integration* is proven by the Conductor dry-run over the real fleet (`conductor-guildhall-dogfood`).
 
 ## Cross-repo dependency graph (bd has no cross-repo deps — this is the map)
 

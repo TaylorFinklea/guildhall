@@ -59,6 +59,12 @@
 **Alternatives considered**: block pi/agy until live gating exists (rejected — kills the cheap fleet; live gating is proven-unavailable, not merely unbuilt); pretend the Claude adapter covers everything (rejected — charter invariant 8, no papering over gaps).
 **Rationale**: Honest floor over pretended coverage. The compensating controls are real and were validated in production this session.
 
+## [2026-07-02] conductor-review gates Conductor v1 (user decision — supersedes "optional")
+
+**Context**: The 2026-07-01 reconciliation ADR added `conductor-review` (tiered qualitative review after mechanical verify) as an OPTIONAL, config-gated stage, and the integration spec's v1-done clause covered only steps 1–2 + member milestones. Asked directly during the 2026-07-02 handoff-hardening session, the user chose to gate v1 on it.
+**Decision**: Conductor v1 is NOT done until `conductor-review` ships and gates closes. Bead bumped P2→P1 (still bd-blocked on m4b/m4c); integration spec v1-done clause amended same day. The `review.enabled` config gate remains — what's superseded is only the "optional for v1" framing.
+**Rationale**: Cycle 1's Lead-by-hand reviews caught what no verify_cmd could (the .gitignore landmine, the agy no-op, evidence quality). The user wants that mechanized before calling the orchestrator production-ready — mechanical verify alone was the exposed autonomy gap.
+
 ## [2026-07-02] Ingestion source coverage: harness-deck + beads are completeness, below recap priority
 
 **Context**: The ingestion-event-model lists 8 sources; Hindsight's recap milestones only budgeted claude-code/codex/pi/agy/guardian. `harness_deck.rs` and `beads.rs` were stubs with no bead.
