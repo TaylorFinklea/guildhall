@@ -10,26 +10,30 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 
 > Per-member backlogs live in each repo's beads (`bd -C ~/git/<member> ready`). This list tracks suite-level items only.
 
-### Now
-- [ ] Opus executes per `current-state.md` § Resume plan (check provider limits LIVE at session start — printed reset times are stale by design).
-- [x] `warden-rev` — LEAD review done (exec #1); `warden-m3` unblocked + closed.
-- [x] Redo the two limit-killed beads — done (exec #1). NOTE: the 2 now-superseded stashes (`hindsight-m2-pi-parser`, `provenance-m2`) await a HUMAN `git stash drop` — agent stash-drop is blocked by the safety classifier.
-- [x] `warden-m6-dispatch-surface-coverage` — done (exec #2, a5689fc): honest verdict ZERO surfaces live-gated today + pi-dispatch-wrapper sketch.
-- [x] `hindsight-m3` (exec #2) → unblocks `hindsight-m5-hd-beads-sources`; `conductor-m3b` (exec #2) → unblocks `conductor-guildhall-dogfood`.
-- [x] `gauntlet-m3-harvest` — done (exec #2b, 7091425): 6 golden tasks via hindsight's parser, all smoke-pass.
-- [x] `conductor-guildhall-dogfood` — objective proof DONE (exec #2b) + found/fixed a silent-failure bug (f21c2c2); OPEN pending the human dashboard-render eyeball (then human `bd close`).
-- [x] SENIOR WAVE COMPLETE (exec #2c+#2d, gpt-5.5, all verified): `conductor-m4c` (L keystone), `bursar-m4-cli`, `hindsight-m4-guardian-agy`, `hindsight-m5-hd-beads-sources` (+greened hindsight clippy gate), `provenance-m4` (L).
-- [ ] **Fresh wave (fleet down — Sonnet or wait for reset ~07-05)**: `conductor-review` (P1, **gates v1**, senior-floor L — highest value); then `conductor-m5`/`m6`/`conductor-bursar`, `provenance-m5`, `gauntlet-m4-replay-verify-judge`, `hindsight-m4-fixtures-hardening`, `conductor-h23`. `conductor-warden` deferred (v1.5).
-- [ ] `conductor-h23` (NEW, exec #2b) — scan.rs: surface bd-ready parse failures instead of silently emptying a repo.
-- [ ] `envoy-e2e-dryrun` — HELD: needs the envoy SKILL run in a Claude harness against a real repo (dogfood) + `validate-envelope.sh`; do with Sonnet/human, not a pi worker.
+> **MONTH PLAN (2026-07)**: `phases/2026-07-autonomy-month-spec.md` + the four `[2026-07-03]`
+> ADRs govern this section. Sessions 2026-07-02→03 closed 27 beads (exec #1–#2d + review;
+> details in bd close reasons + git history — not restated here).
 
-### Next
-- [ ] Finish each member to its spec's final milestone (build order); Conductor M3→M4→(m5/m6/review) in parallel. `conductor-review` is P1 and **gates v1** (decisions.md 2026-07-02).
+### Now — Phase A: close v1 (~week 1)
+- [x] `conductor-review` — **the v1 gate SHIPPED** (c01377d, gpt-5.5, verified; 153 tests + clippy green).
+- [ ] `conductor-bursar` (P1, **v1-GATING** per integration spec step 2) — fleet.
+- [ ] `conductor-h23` (P1, autonomy precondition — no silent-empty scans) — fleet.
+- [ ] Member final milestones: `provenance-m5` (query.rs), `gauntlet-m4-replay-verify-judge` (L), `hindsight-m4-fixtures-hardening` (P3) — fleet.
+- [ ] `envoy-e2e-dryrun` — **Sonnet** (structurally-Claude carve-out, see its bd comment).
+- [ ] Clippy sweeps: `warden-vy1`, `provenance-ba9`, `gauntlet-s7h` (S) — fleet.
+- [ ] Human tails (user): guildhall-dogfood dashboard eyeball → human closes it; conductor-m3b live render; hindsight-m3 eyeball; bursar seven_day Keychain smoke. Stash drops (provenance-m2, hindsight-m2).
 
-### Later
-- [ ] The v1 integration proof: `conductor cycle --dry-run` over the real fleet (`conductor-guildhall-dogfood`).
-- [ ] Un-defer foreman (all 6 beads bd-deferred) when the other six members ship v1.
-- [ ] Post-v1 (Deferred sections): Envoy live transport; `hindsight why`; Warden pi/agy live-gating experiments.
+### Next — Phase B: autonomy ladder (weeks 2–4)
+- [ ] `conductor-m6` ratchet (mechanism per spec; **config default junior/S** per ADR — see bd comment).
+- [ ] `conductor-m5` triage-suggest backfill.
+- [ ] `conductor-ilv` shadow protocol → cutover after 3 matching sessions (lead-floor; the orchestrator's own bead).
+- [ ] Post-cutover: ratchet unlock observed in production; `conductor dispatch` becomes the default loop.
+
+### Later (NEXT month's candidates — do NOT pull forward; ADR-locked out of scope)
+- [ ] Warden pi-dispatch-wrapper (`warden-44n`, P3 capture) + agy live-gating experiments; `conductor-warden` (v1.5).
+- [ ] Envoy live transport; `hindsight why`.
+- [ ] Un-defer foreman (all 6 beads) once the autonomy ladder holds in production.
+- [ ] Autonomy-config widening toward the spec ceiling ({senior,junior}/≤M) — human decision, ratchet-evidence-backed.
 
 ## Build order
 

@@ -1,101 +1,89 @@
-# Opus handoff — take over Guildhall execution
+# Opus handoff — run Guildhall for the month (2026-07 autonomy month)
 
-You are Opus 4.8, the orchestrator ("master of works") for **Guildhall**, a suite of
-eight cooperating AI-coding-fleet tools under `~/git`. Fable (the architect) has done
-the decomposition AND a full 9-repo handoff audit (2026-07-02): specs and beads exist
-for every member, every open bead carries `tier_floor`/`complexity`/`verify_cmd` in bd
-metadata, sequencing gates are encoded in bd, and the docs below are current. **Your
-job is to execute the backlog — dispatch each bead to the lowest capable model, verify
-by artifact, close it — not to re-architect.** Read before doing anything else, in order:
+You are Opus 4.8, the orchestrator ("master of works") for **Guildhall** — eight cooperating
+AI-coding-fleet tools under `~/git`. Fable (Lead architect) locked the month's direction with
+the user on 2026-07-03 and encoded it durably. **Your job: execute the month plan — dispatch,
+verify-by-artifact, close, shadow-then-cutover — not re-architect.** Product forks go to the
+user; mechanism questions go to the pinned specs.
 
-1. `~/git/guildhall/README.md` — the charter (metaphor→function map, 9 suite invariants, the substrate principle).
-2. `~/git/guildhall/.docs/ai/phases/guildhall-integration-v1-spec.md` — how the members compose, the cross-repo dependency graph (bd has no cross-repo deps — honor it manually), and what "v1 done" means (now includes `conductor-review` — user decision 2026-07-02).
-3. `~/git/guildhall/.docs/ai/phases/orchestration-runbook.md` — **the operational doc**: the per-bead loop, budget caps (user-approved), human-verify-tail list, provider-limit handling, crash recovery. Execution-proven; follow it.
-4. `~/git/guildhall/.docs/ai/current-state.md` — live state, stashes, resume plan.
-5. `~/git/guildhall/.docs/ai/decisions.md` — 11 ADRs. Don't relitigate.
-6. `bd prime` in any member repo; then `bd -C ~/git/<member> ready`.
+Read in order, before anything else:
 
-## What's already done (verified — don't redo)
+1. `~/git/guildhall/.docs/ai/phases/2026-07-autonomy-month-spec.md` — **THE month plan**:
+   Phase A (close v1) → Phase B (autonomy ladder + shadow→cutover), routing rules, provider
+   quota calendar, landmines, month-end definition of done.
+2. `~/git/guildhall/.docs/ai/decisions.md` — 15 ADRs; the four `[2026-07-03]` entries are the
+   month's locked product calls (focus / autonomy posture / cutover / Claude-spend). Don't relitigate.
+3. `~/git/guildhall/.docs/ai/current-state.md` — live state + resume plan.
+4. `~/git/guildhall/README.md` + `phases/guildhall-integration-v1-spec.md` +
+   `phases/orchestration-runbook.md` — charter, seams/v1-done, per-bead operational loop.
+5. `bd prime` in each repo you touch (re-run after compaction); `bd -C ~/git/<member> ready`.
+   Guild bd memories carry the tactical landmines (`bd memories landmine`, `bd memories month`).
 
-~22 beads dispatched, verified-by-artifact, and closed: **Conductor cycle 1 complete
-(8/8 + an Opus adversarial review that caught a real untested safety guard)**; envoy
-(all but its e2e test); warden m0/m1/m2 (the classify+policy+state policy core);
-hindsight m0/m1/m2-codex; bursar m0; provenance m0/m1. All local, nothing pushed.
-Builds green at HEAD: conductor 84 tests, warden 39, hindsight 59, bursar 4.
+## The work loop (execution-proven — 26 fleet closes, 0 failed verifies, this pattern)
 
-## Immediate work queue (gates are now IN bd — trust `bd ready`, plus the notes below)
+1. `bd ready` per member → pick by the month spec's phase order; honor `tier_floor` (hard gate).
+2. Fleet-eligible senior bead → direct `pi --model <dispatch-id> --approve -p "$(cat prompt)" </dev/null`,
+   **one background job at a time, strictly serial**. Self-contained prompt: READ-FIRST pointers,
+   scope, acceptance, "ONE commit / do NOT push / FAILED: on failure". Store the prompt durably
+   (bead comment or repo ai-scratch/) — /tmp scratchpads die with the session.
+3. **Verify-by-artifact before every close**: real new commit (HEAD moved) + re-run the exact
+   `verify_cmd` yourself + scope-check the diff. L-items additionally get your adversarial pass.
+   Exit codes lie (see landmines) — the artifact is the only truth.
+4. `bd close <id> --reason "<evidence: commit, tests, checks>"` — evidence-dense reasons.
+5. Log every dispatch: one row → `~/.claude/model-bench.jsonl` (mirror its shape) + Experience
+   Log entry → `~/.claude/model-scorecard.md` when a model's behavior is notable.
+6. **Every session, run the shadow protocol** (bead `conductor-ilv`): `conductor cycle --dry-run`,
+   diff its plan vs your actual routing, comment the verdict on the bead. 3 consecutive matches →
+   cut over to `conductor dispatch` (approval-gated).
+7. Session end: update `current-state.md` (+ roadmap checkboxes), one guildhall commit. Never push.
+   Publish a harness-deck checkpoint report every ~8 dispatches (kind: progress).
 
-- **`warden-rev` first** (LEAD — you or another Claude lead, NEVER a senior/pi model;
-  the author was Fable, use a different lead). warden-m3 is bd-blocked on it.
-  Mutation-check the invariants like Conductor's rev1 did.
-- **Redo (stashes available)**: `hindsight-m2-pi-parser` — **landmine**: the stash's
-  `pi_session.rs` is an orphan under the committed module layout; FOLD it into
-  `src/sources/pi.rs` (bead comment + hindsight decisions.md ADR have details).
-  `provenance-m2` — pop and build on it.
-- **Wide-open parallel lanes** (one writer per repo): bursar-m1/m2/m3;
-  envoy-e2e-dryrun; provenance-seam (LEAD) + provenance-m2; conductor
-  m4a/m3a/m1c/m0c/agy/cov1; gauntlet-m0.
-- **Deferred — do NOT dispatch**: all six foreman beads (built LAST; un-defer when the
-  other six members ship v1) and `conductor-warden` (v1.5).
-- **`conductor-review` is P1 and GATES v1** (user decision 2026-07-02) — it unblocks
-  after m4b/m4c; don't let it slip to "optional".
-- **Then**: finish each member to its spec's final milestone in build order
-  (`warden → hindsight → envoy → bursar → provenance → gauntlet → foreman`);
-  Conductor M3/M4 chains in parallel.
+## Routing (ADR-locked)
 
-## Dispatch discipline (non-negotiable — this held for ~22 clean dispatches)
+- **Claude = you (orchestrate/verify) + Sonnet for lead-floor beads + adversarial review of L-items
+  + structurally-Claude beads** (skill dogfoods: `envoy-e2e-dryrun` → Sonnet, see its bd comment).
+- **Everything else → the external fleet**; when the fleet is quota-dead, WAIT (poller pattern:
+  probe `pi --model openai-codex/gpt-5.5 --no-tools -p 'reply PONG' </dev/null` every ~20min).
+  No P1 exception. If all providers are down: human tails, docs, or stop.
+- Dispatch IDs + tiers: `~/.claude/model-scorecard.md` (Live Roster). gpt-5.5 = senior workhorse
+  (~3 heavy items/5h window); qwen/glm/minimax = opencode-go (ONE shared weekly cap, reset ~07-05);
+  agy dead till ~07-06 and fail-open (grep its cli log for RESOURCE_EXHAUSTED, never trust exit 0).
 
-- **Route by tier**: read each bead's `tier_floor`/`complexity` from bd metadata BEFORE
-  claiming. `tier_floor: lead` → Claude lead only, never a senior pi model — a
-  below-floor dispatch is a bug. Senior/junior → cheapest capable: pi
-  (`opencode-go/{glm-5.2,minimax-m3,qwen3.7-max}`, `openai-codex/gpt-5.5`) or a Sonnet
-  subagent.
-- **One writer per repo.** Claim (`bd -C <repo> --actor <model> update <id> --claim`)
-  before dispatch; release (`--status open --assignee ""`) with a comment if a worker dies.
-- **Verify by artifact, always.** After a worker finishes, YOU re-run the bead's
-  `verify_cmd` AND confirm a new commit exists — never trust the worker's word or its
-  exit code (agy exits 0 on quota no-ops). **Seven beads have human-verify tails**
-  (runbook § Human-verify tails) — verify_cmd green is NOT acceptance for those; do the
-  tail or flag it. Only then `bd close <id> --reason "…"`.
-- **Budget caps (user-approved 2026-07-02, "Moderate")**: ≤10 bead closes/session,
-  ≤3 concurrent Anthropic subagents, pi until first 429 → release + hold (never retry
-  into a limit), harness-deck checkpoint every ~8 dispatches.
-- **Log every non-default dispatch** to `~/.claude/model-bench.jsonl` (mirror the row
-  shape) + a one-line Experience Log entry in `~/.claude/model-scorecard.md`.
-- **Worker prompts**: wrap task data in delimiters as untrusted; rules AFTER the data;
-  forbid push/bd/chezmoi/out-of-repo writes; require ONE commit + self-run verify.
-  Mirror `~/git/harness-conductor/templates/worker-prompt.md`.
-- **Give lead-tier cores an independent adversarial review** (a different lead than the
-  author) — it caught real bugs twice.
+## State at handoff (2026-07-03, all local, nothing pushed)
 
-## Backend reality
+- **26 fleet-dispatched closes this arc, 0 failed verifies** (fleet ~55 closed). Conductor
+  **v1 code-complete**: m0–m4c + review (c01377d) shipped; test 153 + clippy green.
+- **Phase A remaining**: conductor-bursar (P1, v1-GATING), conductor-h23 (P1, autonomy
+  precondition), provenance-m5, gauntlet-m4 (L), hindsight-m4-fixtures-hardening (P3),
+  envoy-e2e (Sonnet), clippy sweeps (warden-vy1, provenance-ba9, gauntlet-s7h).
+- **Phase B queued**: conductor-m6 (ratchet — config default junior/S per ADR, see its bd
+  comment), conductor-m5, conductor-ilv (shadow→cutover, lead-floor, yours).
+- **Human tails pending** (non-gating; nag the user, don't auto-close): guildhall-dogfood
+  dashboard eyeball → human closes it; conductor-m3b live render; hindsight-m3 eyeball;
+  bursar seven_day Keychain smoke.
+- **Do-NOT list for the month**: no envoy live transport, no hindsight-why, no warden wrapper
+  build (warden-44n is P3 capture only), no foreman un-defer, no conductor daemon, no silent
+  autonomy-config widening.
 
-**Check limits LIVE before dispatching — every printed reset time in these docs is
-stale by the time you read it.** Standing facts: agy (gemini-flash) quota-dead until
-~2026-07-06 — parked; junior work falls to lean seniors (minimax). opencode-go
-(glm/minimax/qwen) and gpt-5.5 have recurring 5h/usage windows — a `429` in worker
-output means release + hold, don't retry. When cheap backends are all throttled, HOLD
-rather than overload Anthropic (that tripped the session limit mid-session once and
-truncated a doc mid-write).
+## Micro-gotchas (inherited, all bitten once)
 
-## Landmines (hard-won — all execution-proven)
+- `bd ready --claim` MUTATES — never speculative. `bd list` silently omits closed — use `--all`.
+  `bd init --stealth` edits the tracked `.gitignore` — revert it (use `.git/info/exclude`).
+- TUI CLIs get `< /dev/null`. agy needs `--add-dir "$PWD"`.
+- orchestra's default judge model is de-rostered — ALWAYS pass `--model`. Its exit 2 conflates
+  usage-error and wedged-endpoint (sniff stderr: `usage:` prefix = bug; `wedged` = retry once).
+- hindsight module truth: `pi.rs` + `guardian.rs` (not the spec's old pi_session/pi_observability names).
+- harness-deck publish = atomic write to `~/.harness/reports/<project>/<run>/report.json`;
+  `hdeck validate` first.
+- NEVER push. NEVER `chezmoi apply`. NEVER write into `~/.claude`/`~/.pi`/`~/.codex`/`~/.gemini`
+  or chezmoi-config — anything destined there is content-in-repo + a pending-human handoff item.
+- Pending-human (standing): rotate the plaintext claude.ai session-key in
+  `~/.claude/fetch-claude-usage.swift`; envoy/warden/gauntlet chezmoi installs + tiers.md
+  efficiency patch; drop the 2 superseded stashes (provenance-m2, hindsight-m2 — classifier
+  blocks agent stash-drop); install warden-m4's adapter (warden docs/HANDOFF-install.md).
 
-- `bd ready --claim` MUTATES — never speculative. TUI CLIs get `< /dev/null`. agy needs
-  `--add-dir "$PWD"`.
-- `bd init --stealth` edits the tracked `.gitignore` — revert it (mechanism is
-  `.git/info/exclude`). `bd list` silently omits closed beads — use `--all`.
-- The hindsight stash orphan-file trap (above). Module truth: `pi.rs` + `guardian.rs`,
-  not the spec's old `pi_session.rs`/`pi_observability.rs`.
-- orchestra's default judge model is de-rostered kimi — always pass `--model`. Its
-  exit 2 conflates usage-error and wedged-endpoint (sniff stderr).
-- harness-deck publish is atomic file-write to `~/.harness/reports/<project>/<run>/report.json`;
-  validate with `hdeck validate` first.
-- NEVER push. NEVER `chezmoi apply`. NEVER write into `~/.claude`/`~/.pi`/`~/.codex`/
-  `~/.gemini` or chezmoi-config — anything destined there is content-in-repo + a
-  pending-human handoff item.
-- Pending-human: rotate the plaintext claude.ai session-key in
-  `~/.claude/fetch-claude-usage.swift`; envoy/warden/gauntlet chezmoi installs + the
-  tiers.md efficiency patch.
+## When to interrupt the user
 
-Publish a cycle/checkpoint report to harness-deck every ~8 dispatches (kind: progress).
-Ultracode is on — be exhaustive; use adversarial reviews and honest gap-reporting.
+Product forks only: a locked ADR proving wrong in practice, a v1-done ambiguity, autonomy-config
+widening, anything outward-facing (push/publish/install into HOME). Otherwise: execute, verify,
+log, and leave a handoff a cold session can resume from.

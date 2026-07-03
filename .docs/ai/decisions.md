@@ -70,3 +70,28 @@
 **Context**: The ingestion-event-model lists 8 sources; Hindsight's recap milestones only budgeted claude-code/codex/pi/agy/guardian. `harness_deck.rs` and `beads.rs` were stubs with no bead.
 **Decision**: Add them as `hindsight-m5-hd-beads-sources` at p3 — they complete source coverage but are SUMMARY/AUDIT sources (curated reports; field-change logs), strictly lower value than the primary-transcript recap (m3). Recap ships first with 5 sources; these two round it out.
 **Rationale**: A gap worth tracking, not worth blocking recap on.
+
+## [2026-07-03] Month focus: the autonomy ladder leads (user decision, Fable handoff)
+
+**Context**: v1 is nearly closed (conductor-review in flight; conductor-bursar + member final milestones remain). Four thrusts competed for the next month: autonomy (conductor m5/m6/bursar), measurement (gauntlet/provenance/hindsight-why), enforcement depth (warden wrapper + agy experiments), breadth (foreman + envoy transport).
+**Decision**: Autonomy ladder leads. Phase A closes v1 (~week 1), Phase B ships ratchet (m6) → triage-suggest (m5) → shadow protocol → conductor-driven cutover. Measurement/enforcement/breadth are explicitly out of scope for the month (warden pi-wrapper captured as P3 backlog; foreman stays deferred).
+**Rationale**: Conductor running the guild's own backlog is the product's core promise; everything else plugs into it. Full plan: `phases/2026-07-autonomy-month-spec.md`.
+
+## [2026-07-03] Autonomy posture: earned junior/S auto-dispatch (config default), spec ceiling unchanged
+
+**Context**: m6's pinned ratchet policy (spec § Ratchet) supports auto-dispatch up to {senior,junior}-floor and ≤M complexity after 3 clean cycles. Asked directly, the user chose a narrower month-1 posture.
+**Decision**: The ratchet MECHANISM ships per the pinned spec (ceiling {senior,junior}/≤M, invariant 9 relock, lead never auto). The month-1 CONFIG DEFAULT is junior-floor + S-complexity only. Widening toward the spec ceiling is a human config change justified by ratchet evidence — never a silent default bump.
+**Rationale**: Mechanism/policy split — build the general machine once, let trust widen the policy. Matches "mis-triaging down is the expensive error": start narrow.
+
+## [2026-07-03] Cutover to conductor-driven dispatch: shadow-first, evidence-gated
+
+**Context**: The whole point of Conductor is to replace hand-orchestration; the question was when to switch.
+**Decision**: Shadow protocol — every Opus session runs `conductor cycle --dry-run` alongside hand-orchestration and diffs conductor's plan vs actual routing (recorded on bead `conductor-shadow-cutover`). Cutover after 3 consecutive matching sessions (divergences count as matches only if Opus judges conductor's routing equal-or-better). Post-cutover, `conductor dispatch` (approval-gated) becomes the default loop.
+**Alternatives considered**: immediate cutover at v1 (rejected — rough edges would hit real work with no baseline); hand-orchestrate all month (rejected — product ships unproven).
+**Rationale**: Evidence-based cutover produces a mismatch trail that is itself the bug backlog.
+
+## [2026-07-03] Claude-spend policy for the month: strict reserve + structurally-Claude carve-out
+
+**Context**: Opus becomes the month's orchestrator while the user's Claude limits are constrained; the external fleet has hard quota rhythms (gpt-5.5 ~3 heavy items/5h; opencode-go weekly; agy per-model).
+**Decision**: Claude is spent ONLY on: orchestration + verify-by-artifact (Opus), lead-floor beads (Sonnet), adversarial review of L-items, and **structurally-Claude beads** — work that by nature requires a Claude harness (skill dogfoods, e.g. envoy-e2e-dryrun). Fleet-eligible senior work WAITS for fleet resets (poller pattern). No P1 exception; if the whole fleet is down, work the human tails, docs, or stop.
+**Rationale**: The user chose the strictest option explicitly. The fleet's quota rhythms are known and short; waiting is cheap, Claude isn't.
