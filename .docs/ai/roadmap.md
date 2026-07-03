@@ -18,8 +18,8 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 - [x] `hindsight-m3` (exec #2) → unblocks `hindsight-m5-hd-beads-sources`; `conductor-m3b` (exec #2) → unblocks `conductor-guildhall-dogfood`.
 - [x] `gauntlet-m3-harvest` — done (exec #2b, 7091425): 6 golden tasks via hindsight's parser, all smoke-pass.
 - [x] `conductor-guildhall-dogfood` — objective proof DONE (exec #2b) + found/fixed a silent-failure bug (f21c2c2); OPEN pending the human dashboard-render eyeball (then human `bd close`).
-- [x] exec #2c (gpt-5.5): `conductor-m4c` (L keystone), `bursar-m4-cli`, `hindsight-m4-guardian-agy` — closed & verified.
-- [ ] **STILL PAUSED (fleet re-down 2026-07-03)** — resume on gpt-5.5 next 5h reset (poller) or opencode-go weekly ~07-05: `hindsight-m5-hd-beads-sources` (M, +green repo clippy gate) and `provenance-m4` (L). Then `conductor-review` (P1, **gates v1**, now unblocked by m4c). `conductor-warden` deferred (v1.5).
+- [x] SENIOR WAVE COMPLETE (exec #2c+#2d, gpt-5.5, all verified): `conductor-m4c` (L keystone), `bursar-m4-cli`, `hindsight-m4-guardian-agy`, `hindsight-m5-hd-beads-sources` (+greened hindsight clippy gate), `provenance-m4` (L).
+- [ ] **Fresh wave (fleet down — Sonnet or wait for reset ~07-05)**: `conductor-review` (P1, **gates v1**, senior-floor L — highest value); then `conductor-m5`/`m6`/`conductor-bursar`, `provenance-m5`, `gauntlet-m4-replay-verify-judge`, `hindsight-m4-fixtures-hardening`, `conductor-h23`. `conductor-warden` deferred (v1.5).
 - [ ] `conductor-h23` (NEW, exec #2b) — scan.rs: surface bd-ready parse failures instead of silently emptying a repo.
 - [ ] `envoy-e2e-dryrun` — HELD: needs the envoy SKILL run in a Claude harness against a real repo (dogfood) + `validate-envelope.sh`; do with Sonnet/human, not a pi worker.
 
