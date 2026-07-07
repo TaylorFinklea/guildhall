@@ -95,3 +95,15 @@
 **Context**: Opus becomes the month's orchestrator while the user's Claude limits are constrained; the external fleet has hard quota rhythms (gpt-5.5 ~3 heavy items/5h; opencode-go weekly; agy per-model).
 **Decision**: Claude is spent ONLY on: orchestration + verify-by-artifact (Opus), lead-floor beads (Sonnet), adversarial review of L-items, and **structurally-Claude beads** — work that by nature requires a Claude harness (skill dogfoods, e.g. envoy-e2e-dryrun). Fleet-eligible senior work WAITS for fleet resets (poller pattern). No P1 exception; if the whole fleet is down, work the human tails, docs, or stop.
 **Rationale**: The user chose the strictest option explicitly. The fleet's quota rhythms are known and short; waiting is cheap, Claude isn't.
+
+## [2026-07-07] The ready queue must encode the plan (queue hygiene as cutover precondition)
+
+**Context**: Shadow session 1 (bead `conductor-ilv`) diffed Conductor's dry-run plan against Fable's actual routing. A whole mismatch class came from Conductor proposing beads the month plan excludes (Phase B items, do-not-list captures, human tails) — Conductor routes the entire ready queue and cannot know prose plans.
+**Decision**: Out-of-phase work is encoded INTO the queue, not held in orchestrator memory: defer with a date (`bd defer --until`) for time-based scope (conductor-m5 → 07-10, warden-44n → 08-01, roster-router P1 beads → 07-10), dependency-block for ordering (conductor-m6 blocked-by conductor-24e + conductor-h23), and leave human-tail beads ready (they are nagged, not hidden). Shadow-diff verdicts only count routing mismatches on beads both sides agree are in play.
+**Rationale**: Makes the shadow comparison honest (measures routing quality, not plan awareness), and is a hard precondition for cutover — a post-cutover Conductor dispatching from an un-hygienic queue would faithfully execute the wrong plan.
+
+## [2026-07-07] Secrets-sensitive routing: credential-adjacent content never goes to free/trains-input lanes
+
+**Context**: hindsight-m4 (fixture secrets-audit, junior/S) was proposed by Conductor for the free `glm-5.1` lane — per-algorithm correct (lowest qualifying tier, cheapest lane). But the task's *content* is potentially credential-bearing, and free lanes may be trains-input.
+**Decision**: Tasks whose content is secrets-adjacent (audits of possibly-credential-bearing data, key-handling code, tokens in fixtures) route only to paid lanes regardless of tier_floor/complexity. This is a content-sensitivity axis orthogonal to capability; until the roster-router spec's `provider_risk`/`data_policy` metadata can express it (Phase 1+), it is an orchestrator judgment rule.
+**Rationale**: The cost delta is pennies; the downside (secrets in a training corpus) is unbounded. Mirrors the existing `data_policy: trains-ok` fail-closed posture.

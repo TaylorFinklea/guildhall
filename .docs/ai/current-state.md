@@ -8,28 +8,23 @@
 
 ## Last Session Summary
 
-**Date**: 2026-07-02 → 07-03 (Fable/Opus exec #1–#2d + **month handoff hardening**)
+**Date**: 2026-07-07 (Fable day #2 — orchestrated exec)
 
-- **20 beads closed 07-02→03 arc, 0 failed verifies** (fleet → **55**). Latest: **`conductor-review` — the v1 gate SHIPPED** (c01377d, gpt-5.5; 4/4 review tests, 153 regression + clippy green). Conductor **v1 code-complete**; v1-done now needs only conductor-bursar + member milestones + human tails.
-- **MONTH DIRECTION LOCKED with the user (2026-07-03)** — 4 product calls, encoded durably:
-  autonomy ladder leads · earned junior/S auto (config default; spec ceiling unchanged) ·
-  shadow-first cutover (3 matching sessions) · strict Claude reserve (+structurally-Claude carve-out).
-  → `phases/2026-07-autonomy-month-spec.md` (THE plan) · decisions.md ADRs `[2026-07-03]` ×4 ·
-  `opus-handoff-prompt.md` (rewritten for month operation) · roadmap restructured Phase A/B.
-- Bead layer updated: conductor-bursar + h23 → P1 (+why comments); m6 carries the config-default ADR comment; NEW: `conductor-ilv` (shadow→cutover, lead), clippy sweeps `warden-vy1`/`provenance-ba9`/`gauntlet-s7h`, `warden-44n` (pi-wrapper, P3 capture); envoy-e2e carries its Sonnet routing comment. bd remembers: fleet-dispatch-landmines, autonomy-month-direction (conductor); opus-month-handoff (guildhall).
+- **9 verified closes** (fleet → 64): conductor-fxo/bursar(V1-GATING)/h23 · warden-vy1 · provenance-ba9(no-op)/m5 · gauntlet-s7h · hindsight-m4 · envoy-e2e(Sonnet). `gauntlet-m4` code shipped a94008a + adversarially reviewed; **[?] real-E2E verify in flight** → close on green.
+- **Phase A: done except gauntlet-m4 E2E + human tails.** Shadow session 1 recorded on `conductor-ilv` (NO-MATCH 0/3; 4 mismatch classes; remediations landed). Roster-router spec split → 5 dep-chained beads (deferred 07-10).
+- **11 beads filed** (review findings 24e/1s8/p9k, bursar-g0n, envoy-hii, frv ceiling, 5×roster-router). 2 ADRs `[2026-07-07]` (queue-encodes-plan; secrets-routing). Landmines memory +4 (unattended clause, whole-tree verify, opencode-go drops, pi-log recovery).
+- **Lane news**: ollama-cloud/minimax 2/2 verified closes (scorecard bumped); opencode-go dropped 2 sessions mid-work (exit 0, no error); gpt-5.5 2 heavy closes + 1 scope-stray (reverted, preserved as d5j reference patch).
 
 ## Build Status
 
-- conductor **c01377d**: 153 tests + clippy green (v1 code-complete). hindsight d155419 (103+34 + clippy green). bursar db7fbfd (green). provenance 36c0d16, gauntlet 7091425, warden d3028c9 (tests green; clippy sweeps queued as beads).
-- Logs: `~/.claude/model-bench.jsonl` (187 rows) + scorecard Experience Log through exec #2d + review.
+- conductor a94008a-era: 199/0 + 17 clippy warnings (sweep = p9k). gauntlet a94008a 41/0 clippy 0. provenance b049f07 58/0. hindsight e4cbdce 148/0. warden 6660e28 47/0 clippy 0. Ledger 232+ rows; scorecard Experience Log through 07-07.
 
 ## Blockers
 
-- **opencode-go** weekly cap → resets ~2026-07-05. **agy** → ~07-06. **gpt-5.5** cycling (~3 heavy items/5h) — just did conductor-review, assume ~5h to next window.
+- gauntlet-m4 E2E result (bg job, budget-capped 12 dispatches on qwen3.7-max). User: `conductor-frv` ceiling decision + human tails (roadmap Now).
 
-## Resume plan (next session — Opus, month posture)
+## Resume plan
 
-1. Read `opus-handoff-prompt.md` → month spec → ADRs. `bd prime` per repo.
-2. Work roadmap **Phase A** via `bd ready` (fleet-first, strict reserve; envoy-e2e on Sonnet).
-3. Run the **shadow protocol** every session (bead `conductor-ilv`).
-4. Nag the user on the human tails + pending-human items (list in opus-handoff-prompt.md).
+1. `bd prime` per repo. If gauntlet-m4 E2E green → close bead, tick roadmap.
+2. Shadow session 2 (`conductor-ilv`) every session; queue is now hygienic.
+3. Fleet: conductor-24e (m6 blocker) → 1s8/p9k → roster-router P1 (post-07-10, if user confirms slot).

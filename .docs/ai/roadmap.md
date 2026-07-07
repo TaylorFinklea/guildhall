@@ -16,17 +16,19 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 
 ### Now — Phase A: close v1 (~week 1)
 - [x] `conductor-review` — **the v1 gate SHIPPED** (c01377d, gpt-5.5, verified; 153 tests + clippy green).
-- [ ] `conductor-bursar` (P1, **v1-GATING** per integration spec step 2) — fleet.
-- [ ] `conductor-h23` (P1, autonomy precondition — no silent-empty scans) — fleet.
-- [ ] Member final milestones: `provenance-m5` (query.rs), `gauntlet-m4-replay-verify-judge` (L), `hindsight-m4-fixtures-hardening` (P3) — fleet.
-- [ ] `envoy-e2e-dryrun` — **Sonnet** (structurally-Claude carve-out, see its bd comment).
-- [ ] Clippy sweeps: `warden-vy1`, `provenance-ba9`, `gauntlet-s7h` (S) — fleet.
-- [ ] Human tails (user): guildhall-dogfood dashboard eyeball → human closes it; conductor-m3b live render; hindsight-m3 eyeball; bursar seven_day Keychain smoke. Stash drops (provenance-m2, hindsight-m2).
+- [x] `conductor-bursar` — SHIPPED (000fe3a, gpt-5.5; BursarClient trait+fake, 4/4 acceptance tests, 196/0).
+- [x] `conductor-h23` — SHIPPED (ef2e812, gpt-5.5; ScanGap plumbing, 3 acceptance tests, 199/0).
+- [x] Member milestones: `provenance-m5` (b049f07, ollama-minimax) · `hindsight-m4` (e4cbdce, ollama-minimax; audit clean, independent sweep concurred). `gauntlet-m4` (L) code SHIPPED (a94008a, gpt-5.5, adversarially reviewed) — **[?] awaiting real-E2E verify** (run in flight 07-07; close bead on green).
+- [x] `envoy-e2e-dryrun` — PASS (Sonnet dogfood; envelope validated; 4 skill findings → `envoy-hii`).
+- [x] Clippy sweeps: `warden-vy1` (6660e28) · `provenance-ba9` (verified no-op, premise stale) · `gauntlet-s7h` (3595949).
+- [ ] NEW bugs from 07-07 adversarial review of the 07-04→06 arc — fleet: `conductor-24e` (failover bypasses tier/cost gates — autonomy precondition, now dep-blocks m6), `conductor-1s8` (roster_drift cost/fallback coupling), `conductor-p9k` (conductor clippy re-sweep, 17 warnings), `bursar-g0n` (surface opencode-go weekly window), `envoy-hii` (skill hardening).
+- [ ] Human tails (user): guildhall-dogfood dashboard eyeball → human closes it; conductor-m3b live render; hindsight-m3 eyeball; bursar seven_day Keychain smoke. Stash drops (provenance-m2, hindsight-m2). **NEW: confirm/deny `conductor-frv` (gpt-5.5 ceiling M→L — evidence: 2 verified L closes; unblocks L-work leaving the Sonnet lane).**
 
 ### Next — Phase B: autonomy ladder (weeks 2–4)
-- [ ] `conductor-m6` ratchet (mechanism per spec; **config default junior/S** per ADR — see bd comment).
-- [ ] `conductor-m5` triage-suggest backfill.
-- [ ] `conductor-ilv` shadow protocol → cutover after 3 matching sessions (lead-floor; the orchestrator's own bead).
+- [ ] `conductor-m6` ratchet (mechanism per spec; **config default junior/S** per ADR — see bd comment). Now bd-blocked-by `conductor-24e` + ~~`conductor-h23`~~(done) — the autonomy preconditions.
+- [ ] `conductor-m5` triage-suggest backfill (deferred → 07-10, queue-hygiene ADR).
+- [ ] `conductor-ilv` shadow protocol → cutover after 3 matching sessions (lead-floor). **Session 1 recorded 07-07: NO-MATCH 0/3** — verdict + 4 mismatch classes on the bead; remediations applied (queue hygiene, ceiling bead, routing_intent gap → roster-router P1).
+- [ ] **Roster-router refactor Phase 1** (user-approved spec 07-06, split 07-07): `conductor-d5j`→`r6p`→`xm9`→`3u3`/`o5k`, dep-chained, deferred → 07-10. Fixes shadow-mismatch classes (b) structurally-Claude carve-out + (d) routing opacity. Phases 2–4 stay next-month.
 - [ ] Post-cutover: ratchet unlock observed in production; `conductor dispatch` becomes the default loop.
 
 ### Later (NEXT month's candidates — do NOT pull forward; ADR-locked out of scope)
