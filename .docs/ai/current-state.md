@@ -8,25 +8,23 @@
 
 ## Last Session Summary
 
-**Date**: 2026-07-07 (Fable day #2 — orchestrated exec)
+**Date**: 2026-07-07→08 (Fable day #2 — orchestrated exec, full arc)
 
-- **14 verified closes** (fleet → 69): conductor-fxo/bursar(V1-GATING)/h23/frv · warden-vy1 · provenance-ba9(no-op)/m5 · gauntlet-s7h/**sr7**(P1 sandbox)/**xqj**(120s-timeout root cause)/**43t**(read-ref allowlist) · hindsight-m4 · envoy-e2e(Sonnet). E2E runs 1–3 each caught a real defect (sandbox → refusal policy → timeout); `gauntlet-m4` unblocked, awaiting run-4 evidence. `gauntlet-7mi` still open.
-- **User decisions (harness-deck) ACTED ON**: gpt-5.5 ceiling M→L (6ba5f91, drift none) · roster-router P1 this month, dep-blocked on 24e · lane policy: opencode-go+ollama-cloud primary, **NeuralWatt fallback-only** (bd memory `provider-lane-policy`).
-- **OVERNIGHT E2E run 4 detached** (pid 33939, ≤240m wall, 12-dispatch cap, gpt-5.5 workers/qwen judges): `~/git/gauntlet/ai-scratch/e2e-run4.log`. Green pass-path → close gauntlet-m4.
-- **Phase A: done except gauntlet-m4 E2E + human tails.** Shadow session 1 recorded on `conductor-ilv` (NO-MATCH 0/3; 4 mismatch classes; remediations landed). Roster-router spec split → 5 dep-chained beads (deferred 07-10).
-- **11 beads filed** (review findings 24e/1s8/p9k, bursar-g0n, envoy-hii, frv ceiling, 5×roster-router). 2 ADRs `[2026-07-07]` (queue-encodes-plan; secrets-routing). Landmines memory +4 (unattended clause, whole-tree verify, opencode-go drops, pi-log recovery).
-- **Lane news**: ollama-cloud/minimax 2/2 verified closes (scorecard bumped); opencode-go dropped 2 sessions mid-work (exit 0, no error); gpt-5.5 2 heavy closes + 1 scope-stray (reverted, preserved as d5j reference patch).
+- **21 verified closes** (fleet → 76): fxo/bursar(V1-GATING)/h23/frv/**24e**(failover gates)/1s8/p9k · warden-vy1 · provenance-ba9/m5 · gauntlet-s7h/sr7/xqj/43t/**qgo**(sandbox v2)/**7mi**(lint+reasons) · hindsight-m4 · envoy-e2e/**hii** · **bursar-g0n**(weekly-window, honest-unknown). **Conductor clippy-green again; workspace 202/0.**
+- **E2E bug-hunt arc**: runs 1–4 each caught a real product bug, all fixed same-day by the cheap fleet (prompt sandbox → read-refs → 120s timeout → fragment false-positives). Run-4 diagnosis: dispatch fails were transient provider-empty windows (probes falsified the timeout hypothesis); qwen judge lane swapped → ollama-minimax (3992bf7). **Run 5 detached (pid 99812, e2e-run5.log)** with all fixes aboard — any pass verdict closes `gauntlet-m4`.
+- User decisions acted on: ceiling M→L (6ba5f91) · roster-router P1 this month (**now unblocked** via 24e) · lanes: opencode-go+ollama-cloud primary, NeuralWatt fallback-only. Conductor freeze (concurrent writer, user's OpenWiki commit 33903ea) lifted by user 22:26. **Shadow session 2: MATCH 1/3** (5/5 dispatchables identical; 2 structural exclusions → r6p scope).
+- Incidents survived: ENOSPC (tesela target, 39.4G reclaimed), session restart (1 dispatch lost+recovered), 3 job kills (all root-caused). Shadow/queue ADRs + landmines from day arc stand.
 
 ## Build Status
 
-- conductor a94008a-era: 199/0 + 17 clippy warnings (sweep = p9k). gauntlet a94008a 41/0 clippy 0. provenance b049f07 58/0. hindsight e4cbdce 148/0. warden 6660e28 47/0 clippy 0. Ledger 232+ rows; scorecard Experience Log through 07-07.
+- conductor 6fa9158: 202/0 + clippy `-D warnings` exit 0. gauntlet b27b009: 110/0, clippy 0. bursar bc213a3: 59/0, clippy 0. provenance b049f07: 58/0. hindsight e4cbdce: 148/0. warden 6660e28: 47/0. envoy 3de2908: validator green. Ledger ~245 rows; scorecard through 07-08 (ollama-minimax 7/7, ollama-kimi 1/1).
 
 ## Blockers
 
-- gauntlet-m4 close awaits overnight run-4 results (read e2e-run4.log first thing). Human tails (roadmap Now).
+- gauntlet-m4 close awaits run-5 results (e2e-run5.log; if 7mi's lint refuses non-discriminating golden tasks, that's an M3-harvest-quality bead, not an m4 blocker). Human tails: harness-deck report `20260707-pending-decisions` Q2 still open.
 
 ## Resume plan
 
-1. `bd prime` per repo. **Read ~/git/gauntlet/ai-scratch/e2e-run4.log** — pass-path green → close gauntlet-m4 + tick roadmap; failures → each gets a bead (runs 1–3 pattern: every failure was a real product bug).
-2. Fleet (lanes: opencode-go+ollama-cloud primary, NeuralWatt fallback-only): conductor-24e (unblocks m6 AND roster-router P1) → 1s8/p9k/7mi → roster-router d5j→r6p→xm9→3u3/o5k.
-3. Shadow session 2 (`conductor-ilv`) every session; first dry-run with an L item ready also verifies frv's routing effect live.
+1. `bd prime` per repo. **Read ~/git/gauntlet/ai-scratch/e2e-run5.log** — any pass verdict → close gauntlet-m4 + tick roadmap; all refusals/fails now carry reason strings.
+2. Fleet (primaries opencode-go+ollama-cloud, NeuralWatt fallback-only): roster-router chain d5j→r6p→xm9→3u3/o5k (defer expires 07-10, deps clear) → conductor-m6 (unblocked; config default junior/S per ADR).
+3. Shadow session 3 (`conductor-ilv`) — 2 more consecutive MATCHes to cutover; queue is hygienic.
