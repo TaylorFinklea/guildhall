@@ -5,19 +5,19 @@
 ## Active Branch
 `main` (every member repo; all local, nothing pushed).
 
-## In flight — 2026-07-08 Fable day #3 (MID-SESSION, background work running)
-- **qxi dispatching** (bg `btc2xcw0k` → ollama-cloud/minimax-m3): path-granular integrity watch. E2E runs 5+6 BOTH false-positive integrity aborts (dispatch=pass verify=pass, aborted): run5 = orchestrator `.docs/ai` commit to guildhall; run6 = **USER OpenWiki concurrent write** to guildhall. `gauntlet-m4` now dep-blocked-by `gauntlet-qxi`.
-- Next: qxi verify (confirm sr7 escape-detection preserved) → rebuild gauntlet → **E2E run 7** (guildhall drops OUT of watch for conductor-m2b → immune to OpenWiki) → close m4 + qxi.
-- Then dispatch **conductor-m6** → minimax-m3 (senior/M ratchet; user-approved; must NOT overlap run 7 — m6 worker commits harness-conductor). Verify `cargo test ratchet`.
+## In flight — 2026-07-08 Fable day #3 (MID-SESSION, m6 worker running)
+- **conductor-m6 dispatching** (bg `byr5etpcu` → ollama-cloud/minimax-m3): autonomy ratchet (ratchet.rs + junior/S config default per ADR). Verify `cargo test ratchet` + full suite + clippy. On pass → close m6, log scorecard.
+- **gauntlet-m4 + gauntlet-qxi CLOSED** ✅. E2E run 8 (post-qxi) completed the full harvest set — NO integrity abort (qxi confirmed live where the user's OpenWiki aborted runs 5+6). E2E bug-hunt arc DONE: runs 1-8 caught+fixed 5 product bugs (sr7→43t→xqj→qgo→qxi). **gauntlet-m5 now unblocked.** qxi hardened by orchestrator (committed-escape sr7 gap; 0ad6667).
 
 ## Blockers / caveats
-- guildhall has USER's live OpenWiki work UNCOMMITTED (`M AGENTS.md`, `?? openwiki/`) — **DO NOT touch/commit**. one-writer-per-repo: hold guildhall doc writes until quiet.
-- `conductor-xa5` (NEW cutover blocker): `conductor dispatch` blanket-approval fires ALL 103 proposals (whole ~/git scan) — no per-item scoping. `conductor-ilv` dep-blocked-by xa5. Shadow session 3 = **NO-MATCH (reset 0/3)**.
+- guildhall has USER's live OpenWiki work UNCOMMITTED (`M AGENTS.md`, `?? openwiki/`) — **DO NOT touch/commit**. one-writer-per-repo: keep guildhall doc commits surgical (explicit paths only).
+- `conductor-xa5` (NEW cutover blocker): `conductor dispatch` blanket-approval fires ALL 103 proposals (whole ~/git scan) — no per-item scoping. `conductor-ilv` dep-blocked-by xa5. Shadow session 3 = **NO-MATCH (0/3)**.
+- E2E runs got killed once mid-dispatch (run 7, environmental — matches prior job-kill pattern); recovered by re-run (run 8). qxi/m6 pi dispatches unaffected.
 
 ## Build Status
-- gauntlet b27b009: 110/0 (pre-qxi). conductor 6fa9158: 202/0 clippy-green. Others unchanged from 07-08 prior session.
+- gauntlet 0ad6667: 113/0 clippy-green (qxi + committed-escape hardening). conductor 6fa9158: 202/0 clippy-green (m6 worker building on it).
 
 ## Resume plan
-1. Check bg `btc2xcw0k` (qxi log ai-scratch/dispatch-qxi.log) → verify → rebuild → run 7 → close m4+qxi.
-2. Dispatch+verify+close `conductor-m6` (minimax-m3, prompt in scratchpad dispatch-conductor-m6.md).
-3. Guildhall handoff docs (roadmap ticks) + harness-deck report once guildhall quiet.
+1. Check bg `byr5etpcu` (m6 log ai-scratch/dispatch-m6.log) → verify → close m6 → scorecard.
+2. gauntlet-m5-ab-report now ready (P2) — next gauntlet milestone.
+3. Roadmap ticks (m4 done) + harness-deck report once guildhall quiet.
