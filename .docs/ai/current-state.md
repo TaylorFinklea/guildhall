@@ -5,19 +5,20 @@
 ## Active Branch
 `main` (every member repo; all local, nothing pushed).
 
-## In flight — 2026-07-08 Fable day #3 (MID-SESSION, m6 worker running)
-- **conductor-m6 dispatching** (bg `byr5etpcu` → ollama-cloud/minimax-m3): autonomy ratchet (ratchet.rs + junior/S config default per ADR). Verify `cargo test ratchet` + full suite + clippy. On pass → close m6, log scorecard.
-- **gauntlet-m4 + gauntlet-qxi CLOSED** ✅. E2E run 8 (post-qxi) completed the full harvest set — NO integrity abort (qxi confirmed live where the user's OpenWiki aborted runs 5+6). E2E bug-hunt arc DONE: runs 1-8 caught+fixed 5 product bugs (sr7→43t→xqj→qgo→qxi). **gauntlet-m5 now unblocked.** qxi hardened by orchestrator (committed-escape sr7 gap; 0ad6667).
+## Last Session Summary
+**Date**: 2026-07-08 (Fable day #3 — orchestrated exec, full arc)
+- **3 milestones CLOSED**: `gauntlet-m4` (E2E arc capstone — run 8 completed the full harvest set post-qxi: 3 dispatched conjunctive-fail + 3 explicit skips, ledger appended, NO integrity abort) + `gauntlet-qxi` (path-granular integrity watch + orchestrator committed-escape hardening) + `conductor-m6` (autonomy ratchet, all 9 invariants tested, junior/S default). **E2E bug-hunt arc DONE**: runs 1–8 → 5 product bugs (sr7→43t→xqj→qgo→qxi). **`gauntlet-m5` unblocked.**
+- **Dispatches** (both ollama-cloud/minimax-m3, direct pi, orchestrator-verified + logged to scorecard/model-bench): qxi 4/5 (missed a committed-escape edge → Opus hardened 0ad6667), m6 5/5 (no gap; strong invariant tests).
+- **`conductor-xa5`** filed (cutover blocker: `conductor dispatch` blanket-approval fires all 103 fleet proposals — no scoping). **Shadow session 3 = NO-MATCH (reset 0/3)** — routing matched on suite, reset on the scan-scope/approval structural gap; `conductor-ilv` now dep-blocked-by xa5. Dogfood evidence banked (human-verify tail).
 
 ## Blockers / caveats
-- guildhall has USER's live OpenWiki work UNCOMMITTED (`M AGENTS.md`, `?? openwiki/`) — **DO NOT touch/commit**. one-writer-per-repo: keep guildhall doc commits surgical (explicit paths only).
-- `conductor-xa5` (NEW cutover blocker): `conductor dispatch` blanket-approval fires ALL 103 proposals (whole ~/git scan) — no per-item scoping. `conductor-ilv` dep-blocked-by xa5. Shadow session 3 = **NO-MATCH (0/3)**.
-- E2E runs got killed once mid-dispatch (run 7, environmental — matches prior job-kill pattern); recovered by re-run (run 8). qxi/m6 pi dispatches unaffected.
+- guildhall has USER's live OpenWiki work UNCOMMITTED (`M AGENTS.md`, `?? openwiki/`) — **DO NOT touch**; guildhall doc commits stay surgical (explicit paths). This tripped E2E runs 5+6 (integrity false-positive, now fixed by qxi).
+- Roster-router chain (`d5j→r6p→xm9→3u3/o5k`) still DEFERRED → 07-10. Cutover blocked by BOTH 3 routing-matches AND xa5.
 
 ## Build Status
-- gauntlet 0ad6667: 113/0 clippy-green (qxi + committed-escape hardening). conductor 6fa9158: 202/0 clippy-green (m6 worker building on it).
+- gauntlet 0ad6667: 113/0 clippy-green. conductor 6698534: 228/0 clippy-green. Others unchanged from 07-08 prior session.
 
 ## Resume plan
-1. Check bg `byr5etpcu` (m6 log ai-scratch/dispatch-m6.log) → verify → close m6 → scorecard.
-2. gauntlet-m5-ab-report now ready (P2) — next gauntlet milestone.
-3. Roadmap ticks (m4 done) + harness-deck report once guildhall quiet.
+1. `bd prime` per repo. Ready: `gauntlet-m5-ab-report` (P2, next gauntlet milestone) · `conductor-xa5`/`1qh`/`guildhall-dogfood` (P2).
+2. Roster-router chain un-defers 07-10 (deps clear).
+3. Shadow session 4 next orchestrator session (need 3 consecutive matches AND xa5 for cutover).
