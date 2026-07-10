@@ -47,10 +47,10 @@ Read in order, before anything else:
   canonical Conductor roster. Luna is Sonnet-equivalent: `low`/`medium` = Junior,
   `high`/`xhigh`/`max` = Senior. `ultra` is valid only for Sol/Terra, not Luna.
 - **Everything else → the external fleet**; when the fleet is quota-dead, WAIT (poller pattern:
-  probe `pi --model openai-codex/gpt-5.5 --no-tools -p 'reply PONG' </dev/null` every ~20min).
+  probe an active roster lane every ~20min; never use a retired model alias).
   No P1 exception. If all providers are down: human tails, docs, or stop.
-- Dispatch IDs + tiers: `~/.claude/model-scorecard.md` (Live Roster). gpt-5.5 = senior workhorse
-  (~3 heavy items/5h window); qwen/glm/minimax = opencode-go (ONE shared weekly cap, reset ~07-05);
+- Dispatch IDs + tiers: `~/.claude/model-scorecard.md` (Live Roster). GPT-5.6 Luna is the
+  Codex Senior/Junior lane; qwen/glm/minimax = opencode-go (ONE shared weekly cap, reset ~07-05);
   agy dead till ~07-06 and fail-open (grep its cli log for RESOURCE_EXHAUSTED, never trust exit 0).
 
 ## State at handoff (2026-07-03, all local, nothing pushed)

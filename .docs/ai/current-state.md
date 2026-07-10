@@ -8,7 +8,7 @@ Previous (2026-07-09 → 07-10):
 - **`gauntlet-90e` closed** (`9bd1b91` minimax-m3 + `aa48729` Opus hardening): replay now captures real token cost from the pi log substrate and **fails closed** (`TokenCost::Unknown`, never `0.0`) on lanes that don't report cost. **Gauntlet backlog is empty.**
 
 Blockers / awaiting human:
-- **AWAITING HUMAN**: approve/reject `gauntlet/out/tiers-efficiency-patch.diff` (report `gauntlet/m6-efficiency-20260709`, block `tiers-efficiency-patch`). Sharp edge: gpt-5.5 `std`→`heavy` steers `L` Senior work to **Sonnet, which is unmeasured** (n=6, runs natively not via pi).
+- **AWAITING HUMAN**: approve/reject the remaining 3-line `gauntlet/out/tiers-efficiency-patch.diff` (MiniMax/Qwen-Max/GLM-5.2); the report's GPT-5.5 proposal was withdrawn when that lane retired 07-10.
 - User's uncommitted `openwiki/{_plan,operations,workflows}.md`: do not touch.
 - `conductor-xa5` + shadow streak 0/3 gate cutover; roster-router/`conductor-m5` un-defer 07-10. Foreman deferred to 2026-08.
 

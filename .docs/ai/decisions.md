@@ -119,3 +119,9 @@
 **Context**: The local Codex catalog added `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` with model-specific reasoning options. Conductor previously had no direct Codex backend or per-roster reasoning field, so routing these models through Pi would both fail and lose Sol's `max` level.
 **Decision**: Add direct Codex roster rows and pass effort per dispatch: Sol = Fable-equivalent Architect / Lead at `max`; Terra = Opus-equivalent Lead at `xhigh`; Luna = Sonnet-equivalent, with `low`/`medium` Junior and `high`/`xhigh`/`max` Senior. Sol/Terra may also use `ultra`, but it is not their default; Luna rejects it. These are metered external routes and do not satisfy a structurally-Claude harness constraint. GPT-5.5 remains in the roster.
 **Rationale**: The roster must encode capability and invocation together so Conductor, Ralph, Arena, scorecard drift, and the digest agree on the exact model/effort pair. Per-dispatch effort prevents one global Codex config from accidentally changing a worker's tier.
+
+## [2026-07-10] Retire GPT-5.5 from active routing
+
+**Context**: GPT-5.6 Sol, Terra, and Luna are now available with explicit effort-aware roles. Keeping GPT-5.5 as a live roster, alias, Arena profile/judge, and Gauntlet baseline would leave a superseded dispatch path selectable.
+**Decision**: Remove GPT-5.5 from the Conductor roster and Arena configuration, the live scorecard and tiers table, Ralph aliases and enabled models, current dispatch guidance, and Gauntlet's allowlist/baseline. Gauntlet uses Qwen-Max as its runnable Pi baseline; Orchestra's OpenAI boundary route uses GPT-5.6 Terra. Preserve GPT-5.5 in historical ledgers, benchmark rows, and report evidence only. This supersedes the 2026-07-09 decision's temporary preservation of GPT-5.5.
+**Rationale**: A closed roster must not retain a superseded model as a selectable lane. Historical evidence remains useful for scorecard provenance, but must not become a dispatch affordance.
