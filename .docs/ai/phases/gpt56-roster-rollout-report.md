@@ -20,4 +20,4 @@
 
 ## Deferred human step
 
-- Do not wholesale-apply `~/.codex/config.toml`: its live file has unrelated runtime drift and currently carries Terra=`ultra`. Merge the source Terra=`xhigh` setting line-by-line only if desired.
+- Do not wholesale-apply `~/.codex/config.toml`: its live model/effort already matches Terra=`xhigh`, while unrelated runtime drift remains.
