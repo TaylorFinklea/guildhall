@@ -55,7 +55,12 @@ Order matters:
 - **Fleet dispatch**: direct `pi --model <id> --approve -p "$(cat prompt)" </dev/null`, ONE
   background job at a time, verify-by-artifact before every close (re-run exact verify_cmd +
   confirm a real commit). L-items get an Opus adversarial pass.
-- **tier_floor is a hard gate** — fleet never owns lead-floor; below-floor → stop and flag.
+- **GPT-5.6 Codex routing**: Sol is the Fable-equivalent Architect at `max`; Terra is the
+  Opus-equivalent Lead at `xhigh`; Luna is Sonnet-equivalent with `low`/`medium` as Junior and
+  `high`/`xhigh`/`max` as Senior. These are metered external routes, never substitutes for a
+  structurally-Claude harness requirement; Luna does not accept `ultra`.
+- **tier_floor is a hard gate** — only a Lead-tier roster entry may own lead-floor work; below-floor
+  → stop and flag. The Codex Sol/Terra rows qualify where the task is not structurally-Claude.
 
 ## Provider quota calendar + rhythms (observed, 2026-07-02/03)
 

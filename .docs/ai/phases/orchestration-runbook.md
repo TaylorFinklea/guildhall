@@ -23,10 +23,12 @@ session's evidence.)*
    `~/git/harness-conductor/templates/worker-prompt.md` — task data wrapped in
    delimiters as untrusted, rules AFTER the data, forbid push/bd/chezmoi/
    out-of-repo writes, require ONE commit + self-run verify. Backends:
-   Claude work = in-session Sonnet subagent (Opus only for lead-floor);
+   Claude-native work = in-session Sonnet subagent (Opus only for the hardest Lead work);
    pi = `pi --model <dispatch-id> --approve -p '…' < /dev/null` (stdin
-   redirect is load-bearing); agy = needs `--add-dir "$PWD"` (and is
-   quota-parked until ~2026-07-06). **One writer per repo at a time.**
+   redirect is load-bearing); Codex = `codex exec -c 'model_reasoning_effort="<effort>"'
+   --model <dispatch-id> '…'` (the roster supplies the effort); agy = needs
+   `--add-dir "$PWD"` (and is quota-parked until ~2026-07-06). Sol=max and Terra=xhigh;
+   Luna low/medium is Junior while high/xhigh/max is Senior. **One writer per repo at a time.**
 4. **Verify by artifact**: YOU re-run the bead's `verify_cmd` and confirm a
    NEW commit exists — never trust the worker's word or exit code (exit codes
    are testimony; artifacts are evidence; agy exits 0 on quota no-ops — grep

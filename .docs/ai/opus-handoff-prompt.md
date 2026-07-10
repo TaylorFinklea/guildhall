@@ -40,8 +40,12 @@ Read in order, before anything else:
 
 ## Routing (ADR-locked)
 
-- **Claude = you (orchestrate/verify) + Sonnet for lead-floor beads + adversarial review of L-items
-  + structurally-Claude beads** (skill dogfoods: `envoy-e2e-dryrun` → Sonnet, see its bd comment).
+- **Claude = you (orchestrate/verify) + native/structurally-Claude work + adversarial review of
+  L-items** (skill dogfoods: `envoy-e2e-dryrun` → Sonnet, see its bd comment).
+- **GPT-5.6 Codex lead lanes**: Sol is Fable-equivalent Architect (`max`); Terra is
+  Opus-equivalent Lead (`xhigh`). They may own non-structurally-Claude Lead work through the
+  canonical Conductor roster. Luna is Sonnet-equivalent: `low`/`medium` = Junior,
+  `high`/`xhigh`/`max` = Senior. `ultra` is valid only for Sol/Terra, not Luna.
 - **Everything else → the external fleet**; when the fleet is quota-dead, WAIT (poller pattern:
   probe `pi --model openai-codex/gpt-5.5 --no-tools -p 'reply PONG' </dev/null` every ~20min).
   No P1 exception. If all providers are down: human tails, docs, or stop.

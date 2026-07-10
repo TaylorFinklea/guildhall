@@ -15,6 +15,7 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 > details in bd close reasons + git history — not restated here).
 
 ### Now — Phase A: close v1 (~week 1)
+- [x] **GPT-5.6 roster rollout** — Sol/Architect=`max`, Terra/Lead=`xhigh`, Luna=`medium` Junior / `high` Senior; direct Codex backend, per-row effort, Arena/Ralph propagation, and scorecard drift/digest alignment. Landed in Conductor `e4aeda9` + chezmoi scorecard `68d76d3`; 236+1 tests, clippy, installed `conductor` config/drift, Ralph isolated preflights, digest + harness-deck validation, and the read-only Guildhall demo passed. Spec/report: `phases/gpt56-roster-rollout-{spec,report}.md`.
 - [x] `conductor-review` — **the v1 gate SHIPPED** (c01377d, gpt-5.5, verified; 153 tests + clippy green).
 - [x] `conductor-bursar` — SHIPPED (000fe3a, gpt-5.5; BursarClient trait+fake, 4/4 acceptance tests, 196/0).
 - [x] `conductor-h23` — SHIPPED (ef2e812, gpt-5.5; ScanGap plumbing, 3 acceptance tests, 199/0).
