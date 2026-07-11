@@ -92,8 +92,9 @@ Budget caps ride with the plan (charter invariant 7). The user-approved
 
 ### Provider quota rhythms
 
-Printed reset times go stale — check live at session start. Known standing at
-the 2026-07-03 handoff:
+Printed reset times go stale — check live at session start. This table is a
+historical snapshot from the 2026-07-03 handoff, useful for recognizing common
+quota shapes but not for current routing decisions:
 
 | Provider | Rhythm | Notes |
 |---|---|---|
@@ -120,7 +121,7 @@ dispatch authority" — the **autonomy ladder** — while closing out v1.
 
 v1-done = dry-run cycle ✅ + bursar budget + conductor-review + every member at
 final milestone (foreman explicitly excepted). Key remaining items at the
-2026-07-07 state:
+2026-07-07 state were:
 
 - `conductor-bursar` (P1, v1-gating) — fleet.
 - `conductor-h23` (P1, autonomy precondition: silent-empty scan fix) — fleet.
@@ -131,6 +132,9 @@ final milestone (foreman explicitly excepted). Key remaining items at the
 - `envoy-e2e-dryrun` — **structurally-Claude** (skill dogfood) → Sonnet.
 - Clippy sweeps ×3 (warden, provenance, gauntlet) — fleet.
 - Human tails (non-gating, the user closes them).
+
+For live status, read `.docs/ai/current-state.md`, `.docs/ai/roadmap.md`, and
+the relevant beads; this page intentionally does not replace those sources.
 
 ### Phase B — autonomy ladder (weeks 2–4)
 

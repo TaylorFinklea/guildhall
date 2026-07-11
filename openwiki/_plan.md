@@ -19,5 +19,5 @@ Guildhall is the **charter repo** for a "craft guild whose members are models" �
 
 ## Notes
 - Repository is small (~10 files of substance). Using quickstart + 3 supporting pages. No directories needed — each page is substantial enough to stand alone.
-- No existing /AGENTS.md OpenWiki section — need to add one.
+- `AGENTS.md` now has a softened OpenWiki pointer: read normal session state first, then use OpenWiki for reference.
 - No /CLAUDE.md exists.

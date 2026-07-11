@@ -90,7 +90,9 @@ The handoff template (`.docs/ai/handoff-template.md`) provides a structured form
 
 The fleet never pushes, never applies chezmoi, and never writes into `~/.claude`, `~/.pi`, `~/.codex`, `~/.gemini`, or chezmoi-config. Anything destined for those locations is produced as content in-repo plus a **pending-human handoff item**.
 
-Standing pending-human items (as of 2026-07-08):
+Historical pending-human snapshot from 2026-07-08, kept as an example of the
+handoff shape. For the current list, read `.docs/ai/current-state.md`,
+`.docs/ai/roadmap.md`, and beads:
 
 - Guildhall-dogfood dashboard eyeball → human closes `conductor-guildhall-dogfood`.
 - `conductor-m3b` live render.
