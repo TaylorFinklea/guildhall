@@ -67,6 +67,25 @@ and drops it. `grep events hindsight/src/cli.rs` finds only a prose summary line
 is no `hindsight events` subcommand. The event model the substrate principle is named
 for exists only as a discarded in-memory intermediate.
 
+**The cost of C4, measured [V].** Run live on this repo:
+
+```
+$ provenance annotate ~/git/guildhall
+annotations: 147
+uncorrelated commits: 38
+$ git -C ~/git/guildhall log --oneline | wc -l
+38
+```
+
+**38 commits. 38 uncorrelated. 100%.** Provenance — the member whose entire purpose is
+"which model wrote this line, and was it ever reviewed?" — attributes *nothing*, because
+it is still on `FixtureEventSource` and no live event source is published. It is a
+working engine with no fuel line.
+
+This is the justification for Slice 3, and it is stronger than any argument from
+architecture: the pipe is not an aesthetic upgrade, it is the reason one of the six
+members currently does nothing.
+
 ### C5 — Nobody handles SIGPIPE **[V]**
 
 `grep -rn "SIGPIPE\|BrokenPipe" hindsight/src conductor/src bursar/src` → no matches.
@@ -88,6 +107,27 @@ work, found by the panel before a line was written.
   `$?`. Judging this on `$?` measures the wrong interface. Leave it.
 - `provenance query unreviewed-junior` → exit 0 even when it flags hunks. Real but low;
   blocks CI gating only.
+
+### C6b — `conductor config check` never checks bursar **[V]**
+
+Run live: `conductor config check` verifies **ten** external tools — bd, pi, agy, claude,
+codex, opencode, ralph, orchestra, bun, harness-deck — plus the state dir, and exits 0.
+**It does not check `bursar`**, the one guild member conductor actually shells out to.
+
+This is the direct answer to "why did nobody catch C2." The tool whose entire job is
+*"will my dependencies resolve?"* omits the dependency that didn't. Adding bursar to the
+preflight is a one-line change that would have caught the fail-open the day it appeared.
+
+### C6c — `conductor scan` is cwd-dependent and has no `--config` **[V]**
+
+`scan` is the only subcommand carrying `--json`, and the only one *without* `--config`
+(confirmed against the binary's own usage string). It reads `conductor.toml` from the
+process cwd, so from anywhere but `~/git/conductor` it exits 2 with "failed to read
+conductor.toml". From the right cwd it emits 478 KB of clean JSON on stdout, empty
+stderr — **and exits 1**, from ordinary `NotBeadsRepo` skips.
+
+The suite's one machine-readable endpoint is the one you cannot point at a config, and
+its exit code reports failure on a healthy fleet.
 
 ### C7 — The `harness-conductor` → `conductor` rename left live breakage **[V/S]**
 
@@ -214,9 +254,17 @@ Three slices. **Slice 1 is safety and ships first, alone, tested.** It is not Un
    v1 rule that a *complete* status run exits 0; the change is that a live auth failure
    (the 401) is not a complete run.
    *Verify:* `cargo test`; live `bursar status --json; echo $?` against a bad token.
-4. **conductor `scan`: exit 0 on ordinary skips.** `NotBeadsRepo` / `Excluded` are
-   normal, not errors. Reserve non-zero for a real `ScanGap`.
-   *Verify:* `conductor scan ~/git; echo $?` → 0 on a healthy fleet.
+4. **conductor `scan`: exit 0 on ordinary skips, and accept `--config`.** `NotBeadsRepo` /
+   `Excluded` are normal, not errors — reserve non-zero for a real `ScanGap`. Add
+   `--config <path>`, mirroring every other subcommand, so the suite's one JSON endpoint
+   is not cwd-dependent (C6c).
+   *Verify:* `conductor scan --json --config ~/git/conductor/conductor.toml` from `/tmp`
+   → exit 0, valid JSON on stdout.
+
+4b. **Add `bursar` to `conductor config check`'s preflight** (C6b). It currently checks
+   ten external tools and omits the one guild member it shells out to. **This is the
+   cheapest change in the spec and the one that would have prevented C2 entirely.**
+   *Verify:* with bursar off PATH, `conductor config check` reports it missing and exits non-zero.
 5. **warden: fail closed on crash.** Non-zero exit + a deny-shaped JSON object on
    malformed/non-UTF-8 stdin. **Leave allow/ask/deny at exit 0** — that is the correct
    hook contract.
