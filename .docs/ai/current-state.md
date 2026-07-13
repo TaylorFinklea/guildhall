@@ -36,10 +36,8 @@ thrust, user-authorized 2026-07-13; ADRs in decisions.md). Guide: `USAGE.md`.
 
 ## Blockers / awaiting human
 
-- **conductor's `[[repo_policy]]` table is UNCOMMITTED** — it gates which repos a
-  *free-train* model may see (patchstand/seedkeep deliberately absent as private), and the
-  *committed* test asserts 11 rows. Conductor's suite passes ONLY because of an uncommitted
-  file; a fresh clone goes red. Not this session's work. **Human: commit it or explain it.**
+- ~~conductor's `[[repo_policy]]` table uncommitted~~ — **RESOLVED** in conductor `5e6fab3`
+  ("free-train lanes were dark"). 11 rows now in version control; conductor 242/242 green.
 - **Anthropic OAuth token for bursar is EXPIRED** — live `HTTP 401`. That lane is blind.
 - Pre-existing: tiers.md efficiency patch; `conductor-xa5`; roster-router chain — SLIP by
   the cost of this thrust, per the [2026-07-13] month-focus amendment.

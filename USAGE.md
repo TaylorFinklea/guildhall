@@ -259,8 +259,8 @@ ralph -t opencode -n 5                                  # headless Plan-item loo
 | 4 | `bursar` has no predicate — parse the JSON, never gate on `$?` | Slice 2 |
 | 5 | No `--help` anywhere. Run a tool bare to get its usage. | Slice 2 |
 | 6 | `gauntlet run` without `--dry-run` **spends real money** | by design |
-| 7 | **conductor's `[[repo_policy]]` table is UNCOMMITTED.** It decides which repos a free-train model may see, and conductor's own test asserts 11 rows — so the suite passes *only* because of an uncommitted file. A fresh clone goes red. | **needs a human decision** |
-| ~~8~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 and mutates live repos~~ · ~~warden exits 0 on crash~~ | **FIXED, Slice 1** |
+| 7 | A `cargo clean` leaves the `~/.local/bin` symlinks dangling; a `cargo test` (debug) does **not** update them. **Rebuild `--release` before trusting a PATH binary.** | inherent |
+| ~~8~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 and mutates live repos~~ · ~~warden exits 0 on crash~~ · ~~conductor's `[[repo_policy]]` table uncommitted~~ (committed in `5e6fab3`) | **FIXED** |
 
 ## What "fixed" looks like next
 
