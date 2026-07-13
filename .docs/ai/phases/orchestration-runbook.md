@@ -20,7 +20,7 @@ session's evidence.)*
    Re-claim after a release needs `update <id> --assignee "<model>"` (claim
    errors if already claimed).
 3. **Dispatch**: build the worker prompt from
-   `~/git/harness-conductor/templates/worker-prompt.md` — task data wrapped in
+   `~/git/conductor/templates/worker-prompt.md` — task data wrapped in
    delimiters as untrusted, rules AFTER the data, forbid push/bd/chezmoi/
    out-of-repo writes, require ONE commit + self-run verify. Backends:
    Claude-native work = in-session Sonnet subagent (Opus only for the hardest Lead work);

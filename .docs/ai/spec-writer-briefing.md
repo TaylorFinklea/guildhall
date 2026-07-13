@@ -5,7 +5,7 @@ and seeding its beads backlog. Read FIRST: `~/git/guildhall/README.md`
 (charter — especially the invariants), and the two shared specs if your
 component touches them (`ingestion-event-model.md`, `envoy-envelope.md`).
 Mirror the structure and register of the reference spec:
-`~/git/harness-conductor/.docs/ai/phases/conductor-v1-spec.md`.
+`~/git/conductor/.docs/ai/phases/conductor-v1-spec.md`.
 
 ## Spec structure (mirror it)
 
@@ -49,7 +49,7 @@ any repo other than your component repo.
 ## Language/runtime guidance
 
 Default for code-bearing members: Rust mirroring
-`~/git/harness-conductor` + `~/git/larkline` discipline (serde/serde_json,
+`~/git/conductor` + `~/git/larkline` discipline (serde/serde_json,
 no tokio unless justified in an ADR). Members whose MVP is
 content/scripts (envoy) or where recon argues otherwise: justify in the
 repo's decisions.md. Do not add dependencies without an ADR entry.

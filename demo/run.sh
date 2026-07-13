@@ -37,8 +37,8 @@ ensure_built() {
 demo_conductor() {
   section "Conductor — master of works" "live · the v1 integration proof"
   note "Scans ~/git, triages every repo's ready beads by tier_floor/complexity, routes each to a roster model, and publishes ONE plan to harness-deck. This dry-run IS the Guildhall vertical slice."
-  cmd "conductor cycle --dry-run --config ~/git/harness-conductor/conductor.toml"
-  conductor cycle --dry-run --config "$GH/harness-conductor/conductor.toml" 2>&1 | tail -2
+  cmd "conductor cycle --dry-run --config ~/git/conductor/conductor.toml"
+  conductor cycle --dry-run --config "$GH/conductor/conductor.toml" 2>&1 | tail -2
   local rpt; rpt=$(ls -t "$HOME"/.harness/reports/conductor/*/report.json 2>/dev/null | head -1)
   if [ -n "$rpt" ]; then
     note "plan report → $rpt"

@@ -13,7 +13,7 @@ repo's spec.
 | The charter | Shared agent law: tiers, conventions, landmines | `~/AGENTS.md` |
 | Ranks (apprentice/journeyman/master) | Junior / Senior / Lead tiers | `~/.claude/templates/tiers.md` |
 | The register | Live roster + experience log, evidence-based | `~/.claude/model-scorecard.md` + `~/.claude/model-bench.jsonl` |
-| **Conductor** — master of works | Cycle orchestrator: scan → triage → dispatch → verify → report | `~/git/harness-conductor` |
+| **Conductor** — master of works | Cycle orchestrator: scan → triage → dispatch → verify → report | `~/git/conductor` |
 | **Foreman** — the works office | Spec-to-backlog compiler (interview → spec → bead DAG) | `~/git/foreman` |
 | **Gauntlet** — masterpiece trials | Eval CI for the agent stack; rank evidence | `~/git/gauntlet` |
 | **Hindsight** — the inquest | Fleet flight recorder over transcript substrate | `~/git/hindsight` |

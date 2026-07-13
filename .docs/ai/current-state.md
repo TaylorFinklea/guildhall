@@ -1,47 +1,53 @@
 # Current State
 
 Branch: `main` — local/unpushed. Active: `phases/unix-composability-spec.md` (fourth
-thrust, user-authorized 2026-07-13; ADRs in decisions.md).
+thrust, user-authorized 2026-07-13; ADRs in decisions.md). Guide: `USAGE.md`.
 
 ## Plan
 
-Slice 1 — safety. Items 1+2 MUST land in one commit (see spec).
+**Slice 1 SHIPPED 2026-07-13** — conductor `08b35b4` · warden `49157c8` · gauntlet
+`490655c` · guildhall docs. Six binaries symlinked into `~/.local/bin`. See spec § AS BUILT.
 
-- [ ] S1.1+1.2 — symlink 6 binaries → `~/.local/bin`; conductor `bursar unavailable` →
-      `SpendCautiously`/`Warn` (mirror the `unknown` arm), never `StaticCaps`/`Info`.
-      Verify: `command -v conductor bursar warden hindsight provenance gauntlet && cargo test --manifest-path ~/git/conductor/Cargo.toml`
-- [ ] S1.3 — bursar exits non-zero on provider auth/quota failure (live 401 → exit != 0).
-      Verify: `cargo test --manifest-path ~/git/bursar/Cargo.toml`
-- [ ] S1.4 — conductor `scan`: exit 0 on ordinary skips + accept `--config`.
-      Verify: `cd /tmp && conductor scan --json --config ~/git/conductor/conductor.toml; test $? -eq 0`
-- [ ] S1.4b — add `bursar` to `conductor config check` preflight (would have caught C2).
-      Verify: `cargo test --manifest-path ~/git/conductor/Cargo.toml`
-- [ ] S1.5 — warden: fail closed (non-zero + deny JSON) on crash/malformed stdin; leave
-      allow/ask/deny at exit 0.
-      Verify: `cargo test --manifest-path ~/git/warden/Cargo.toml`
-- [ ] S1.6 — fix `harness-conductor` rename fallout (README, demo/run.sh, gauntlet golden `origin_path`).
-      Verify: `cd ~/git/gauntlet && ./target/release/gauntlet lint golden-tasks; test $? -eq 0`
-- [ ] S1.7 — `gauntlet lint` static: no live worktree ops.
-      Verify: `cd ~/git/gauntlet && ./target/release/gauntlet lint golden-tasks && git -C ~/git/warden status --porcelain | wc -l | grep -q '^ *0$'`
-- [ ] S1.8 — regression test on the bursar↔conductor seam (nothing tests it; that is why C2 shipped).
-      Verify: `cargo test --manifest-path ~/git/conductor/Cargo.toml`
+- [x] S1.1+1.2 — six binaries on PATH; conductor `bursar unavailable` → `SpendCautiously`
+      (was `StaticCaps`/`Info`). Budget gate no longer fails open.
+- [x] S1.4 — `conductor scan` exits 0 on ordinary skips. (`--config` already existed; only
+      the USAGE string omitted it.)
+- [x] S1.4b — `bursar` added to `conductor config check` preflight — the omission that let C2 hide.
+- [x] S1.5 — warden fails closed on crash: deny JSON on stdout + exit 1. allow/ask/deny stay exit 0.
+- [x] S1.6 — rename fallout fixed (guildhall README + demo + runbook + briefing; gauntlet golden
+      task, its `prompt` field, and `gauntlet.toml` read_only_refs).
+- [x] S1.7 — `gauntlet lint` static; discrimination check moved to `validate --smoke-run`,
+      and lint now PRINTS what it no longer covers.
+- [x] S1.8 — regression test on the bursar↔conductor seam.
+- [x] ~~S1.3~~ **WITHDRAWN** — "bursar exits non-zero on 401" was wrong; it would have made
+      conductor discard the whole report. `bursar status` is a report; exit 0 is correct.
+      Replaced by a `bursar check <provider>` predicate → Slice 2.
+
 - [ ] S2.9 — `--help` on all six binaries.
       Verify: `for t in conductor bursar warden-claude-pretooluse hindsight provenance gauntlet; do $t --help >/dev/null || exit 1; done`
-- [ ] S2.10 — refresh `USAGE.md` to post-Slice-1 truth (drop absolute paths + landmines 1-5,7).
+- [ ] S2.9b — `bursar check <provider>` exit-code predicate (0=affordable, non-zero=no/unknown/error).
+      Verify: `cargo test --manifest-path ~/git/bursar/Cargo.toml`
+- [ ] S2.10 — keep `USAGE.md` honest as Slice 2 lands.
       Verify: every command in USAGE.md runs from a clean shell
-- [ ] S3.11+3.12 — `hindsight events --since <t> --json` (SIGPIPE-safe, redacted,
-      carries `artifact{path,sha256}`) SHIPPED WITH its consumer `gauntlet cost --stdin`;
-      retire `gauntlet/src/cost.rs`'s forked pi-log parser.
+- [ ] S3.11+3.12 — `hindsight events --since <t> --json` (SIGPIPE-safe, redacted, carries
+      `artifact{path,sha256}`) SHIPPED WITH its consumer `gauntlet cost --stdin`; retire
+      `gauntlet/src/cost.rs`'s forked pi-log parser.
       Verify: `hindsight events --since 30d | head -1 && ! grep -rq 'pi/agent/logs' ~/git/gauntlet/src && cargo test --manifest-path ~/git/gauntlet/Cargo.toml`
 
 ## Blockers / awaiting human
 
-- **Anthropic OAuth token for bursar is EXPIRED** — live `HTTP 401: Invalid bearer token`.
-  bursar's anthropic lane is blind until re-auth. (Human: re-auth.)
-- Pre-existing: tiers.md efficiency patch approval; `conductor-xa5`; roster-router chain.
-  These SLIP by the cost of this thrust — accepted in the [2026-07-13] month-focus amendment.
+- **conductor's `[[repo_policy]]` table is UNCOMMITTED** — it gates which repos a
+  *free-train* model may see (patchstand/seedkeep deliberately absent as private), and the
+  *committed* test asserts 11 rows. Conductor's suite passes ONLY because of an uncommitted
+  file; a fresh clone goes red. Not this session's work. **Human: commit it or explain it.**
+- **Anthropic OAuth token for bursar is EXPIRED** — live `HTTP 401`. That lane is blind.
+- Pre-existing: tiers.md efficiency patch; `conductor-xa5`; roster-router chain — SLIP by
+  the cost of this thrust, per the [2026-07-13] month-focus amendment.
 
 ## Open questions
 
-- Slice 3 redaction scope. If a full classifier is too large, fall back to `--redact` on
-  by default with explicit opt-out. **Never ship raw transcripts to stdout.**
+- Slice 3 redaction scope. If a full classifier is too large, fall back to `--redact` on by
+  default with explicit opt-out. **Never ship raw transcripts to stdout.**
+- conductor's own `provider-trust-integration-spec.md` (approved, unstarted) moves
+  `unavailable` → `Defer`, stricter than the `SpendCautiously` shipped here. Compatible;
+  sequence it deliberately rather than discovering the overlap twice.

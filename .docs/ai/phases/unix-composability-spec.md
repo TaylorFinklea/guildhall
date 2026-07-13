@@ -323,6 +323,51 @@ Cut deliberately, on the panel's advice:
 - **`hindsight events` as a standalone.** It ships with a consumer or not at all.
 - **`provenance`'s view structs.** Not a defect. Do not "fix."
 
+### Slice 1 — AS BUILT (2026-07-13)
+
+Shipped: conductor `08b35b4` (241 tests + 1 integration, clippy clean) · warden `49157c8`
+(48 tests, clippy clean) · gauntlet `490655c` (138 tests, clippy clean) · guildhall (docs).
+Six binaries symlinked into `~/.local/bin` (source dir is `private_dot_local/bin` — **no
+`exact_` prefix**, so chezmoi will not purge them on apply; verified before writing).
+
+**S1.3 WITHDRAWN — it was wrong, and would have shipped a regression.**
+The item said "make `bursar status` exit non-zero on auth failure." Tracing conductor's
+error handling first (`src/bursar.rs:159`) showed that a non-zero bursar exit makes
+conductor treat the run as a **command error and discard the entire report** — including a
+perfectly healthy `codex: ok, 100%`. One provider's expired token would have made conductor
+cautious about *every* provider.
+
+The category error was mine: **a global exit code cannot express per-provider state.**
+`bursar status` is a *report*; exit 0 is correct and the report is honest — the same defense
+the panel correctly gave warden, which I then failed to apply to bursar. Conductor already
+maps `ProviderState::Error` → `SpendCautiously` (`bursar.rs:231-240`), so the 401 was
+*already* handled. What is missing is a **predicate** — `bursar check <provider>` — which is
+an addition, not a bug fix. **Moved to Slice 2.**
+
+**C6c partially wrong.** `conductor scan` *does* accept `--config`; only the `USAGE` string
+omitted it, so the flag was undiscoverable. The cwd-dependence I observed was me not passing
+a flag I didn't know existed. Fixed the doc string; no parsing change needed.
+
+**C7 ran deeper than the audit found.** Beyond the README, demo, and golden task: gauntlet's
+`gauntlet.toml` `[sandbox] read_only_refs` and a golden task's own `prompt` field carried the
+dead path (a worker agent found both); the guildhall runbook still told agents to load the
+worker-prompt template from the dead path; and `tests/worker_prompt.rs` failed on a
+**stale build artifact** — `env!("CARGO_MANIFEST_DIR")` is baked in at compile time, so a
+binary compiled before the rename carried the old path. Not a source bug; a rebuild fixes it.
+
+**NEW, and it needs a human**: conductor's `[[repo_policy]]` table — the control deciding
+which repos a *free-train* model may see — is **uncommitted** in the working tree, while the
+*committed* test asserts `repo_policies.len() == 11`. Conductor's suite therefore passes only
+because of an uncommitted file; a fresh clone goes red, and the security policy itself is not
+in version control. Left untouched (not this session's work, and security-relevant).
+
+**Conductor has its own newer ADR.** `conductor/.docs/ai/decisions.md` `[2026-07-13]`
+("Provider state is fail-closed at plan and dispatch") + `phases/provider-trust-integration-spec.md`
+already approve a v2 where `unknown`/`unavailable` both map to `Defer` — stricter than the
+`SpendCautiously` shipped here. Not a collision: both are fail-closed, and this is a
+compatible interim hardening of the v1 model. Whoever picks up that spec will move this arm
+to `Defer`; that is expected, not a regression.
+
 ### Findings routed but not fixed here
 
 Every finding above is routed. These are the ones this spec deliberately does **not**
