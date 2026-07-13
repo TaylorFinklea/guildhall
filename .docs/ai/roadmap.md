@@ -31,6 +31,29 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 - [x] **`gauntlet-90e` CLOSED 07-10** (9bd1b91 + aa48729) — replay captures real pi-log cost and fails closed (`unknown`, never zero) for unreported lanes; correlation accepts the provider-bare model ID and normalizes macOS `/private` cwd paths. 138/0 + clippy. A controlled same-task A/B is now mechanically possible; opencode-go/ollama-cloud cost remains unreported.
 - [ ] Human tails (user): guildhall-dogfood dashboard eyeball → human closes it; conductor-m3b live render; hindsight-m3 eyeball; bursar seven_day Keychain smoke. Stash drops (provenance-m2, hindsight-m2). `conductor-frv` is obsolete: GPT-5.5 retired 07-10.
 
+### Now — Phase A2: suite composability (NEW thrust, user-authorized 2026-07-13)
+
+Spec: `phases/unix-composability-spec.md`. Guide: `USAGE.md`. ADRs: decisions.md
+`[2026-07-13]` ×3 (charter amendment · pipe-not-crate · month-focus amendment).
+Adversarially reviewed by glm-5.2 / qwen3.7-max / minimax-m3 — the panel killed the
+first draft's rubric and rescued provenance from a wrongful finding.
+
+- [ ] **Slice 1 — make the guardrails guard** (senior/M). **conductor's budget gate fails
+      open in the branch production is in**: bursar isn't on PATH, so `Command::new("bursar")`
+      fails → `StaticCaps` → rendered `Info`, while bursar *present-but-uncertain* renders
+      `Warn`. Missing ranks safer than uncertain. Charter invariant 3. Also: `conductor
+      config check` verifies ten external tools and **never checks bursar** — that's why
+      nobody caught it. Landmine: items 1+2 must land in ONE commit, else every cycle
+      flips to SpendCautiously fleet-wide.
+- [ ] **Slice 2 — make it usable** (junior/S). `--help` on all six; keep `USAGE.md` honest.
+- [ ] **Slice 3 — the one pipe that pays for itself** (lead/L). `hindsight events` shipped
+      *with* `gauntlet cost --stdin`, never speculatively. Payoff, measured: `provenance
+      annotate ~/git/guildhall` → **38 of 38 commits uncorrelated (100%)**. Provenance
+      attributes nothing because hindsight builds the event stream and discards it.
+      Landmine: nobody handles SIGPIPE anywhere, so `hindsight events | head` panics
+      unless fixed first; and transcripts on stdout are a secret-egress surface.
+- [ ] **HUMAN**: re-auth bursar's Anthropic OAuth token — live `HTTP 401`, lane is blind.
+
 ### Next — Phase B: autonomy ladder (weeks 2–4)
 - [x] `conductor-m6` ratchet **SHIPPED 07-08** (6698534, minimax-m3; ratchet.rs + `[ratchet]` config **junior/S/3** default per ADR; all 9 spec invariants tested, 228/0 clippy-green; orchestrator-verified — NO safety gap). Mechanism done; auto-dispatch activation gated by cutover — `cycle.rs` deliberately unwired (dry-run stays propose-only; wiring is a future one-liner via `triage_state_map`).
 - [ ] `conductor-m5` triage-suggest backfill (deferred → 07-10, queue-hygiene ADR).

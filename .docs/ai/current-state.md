@@ -1,23 +1,47 @@
 # Current State
 
-Branch: `main` — local/unpushed. OpenWiki is reference-only; user OpenWiki WIP stays untouched.
+Branch: `main` — local/unpushed. Active: `phases/unix-composability-spec.md` (fourth
+thrust, user-authorized 2026-07-13; ADRs in decisions.md).
 
-Previous (2026-07-09 → 07-10):
-- OpenWiki adopted (`c4b38bf`); demo shipped (`3fec3aa`): `demo/run.sh [all|<member>]`, 8 members, no metered dispatch.
-- `gauntlet-m5` (`8c37580`), `gauntlet-nfx` (`7521a9f`, gates discriminate, lint `defective=0`), **`gauntlet-m6`** closed — gauntlet v1 complete (m3→m4→m5→m6).
-- **`gauntlet-90e` closed** (`9bd1b91` minimax-m3 + `aa48729` Opus hardening): replay now captures real token cost from the pi log substrate and **fails closed** (`TokenCost::Unknown`, never `0.0`) on lanes that don't report cost. **Gauntlet backlog is empty.**
+## Plan
 
-Blockers / awaiting human:
-- **AWAITING HUMAN**: approve/reject the remaining 3-line `gauntlet/out/tiers-efficiency-patch.diff` (MiniMax/Qwen-Max/GLM-5.2); the report's GPT-5.5 proposal was withdrawn when that lane retired 07-10.
-- User's uncommitted `openwiki/{_plan,operations,workflows}.md`: do not touch.
-- `conductor-xa5` + shadow streak 0/3 gate cutover; roster-router/`conductor-m5` un-defer 07-10. Foreman deferred to 2026-08.
+Slice 1 — safety. Items 1+2 MUST land in one commit (see spec).
 
-Notes:
-- A controlled same-task A/B efficiency study (m6's stated method) is now mechanically possible — 90e removed the blocker. `opencode-go`/`ollama-cloud` still report `cost:0` (correctly surfaced as unknown), so minimax's own rating stays `lean (cost unconfirmed)`.
+- [ ] S1.1+1.2 — symlink 6 binaries → `~/.local/bin`; conductor `bursar unavailable` →
+      `SpendCautiously`/`Warn` (mirror the `unknown` arm), never `StaticCaps`/`Info`.
+      Verify: `command -v conductor bursar warden hindsight provenance gauntlet && cargo test --manifest-path ~/git/conductor/Cargo.toml`
+- [ ] S1.3 — bursar exits non-zero on provider auth/quota failure (live 401 → exit != 0).
+      Verify: `cargo test --manifest-path ~/git/bursar/Cargo.toml`
+- [ ] S1.4 — conductor `scan`: exit 0 on ordinary skips + accept `--config`.
+      Verify: `cd /tmp && conductor scan --json --config ~/git/conductor/conductor.toml; test $? -eq 0`
+- [ ] S1.4b — add `bursar` to `conductor config check` preflight (would have caught C2).
+      Verify: `cargo test --manifest-path ~/git/conductor/Cargo.toml`
+- [ ] S1.5 — warden: fail closed (non-zero + deny JSON) on crash/malformed stdin; leave
+      allow/ask/deny at exit 0.
+      Verify: `cargo test --manifest-path ~/git/warden/Cargo.toml`
+- [ ] S1.6 — fix `harness-conductor` rename fallout (README, demo/run.sh, gauntlet golden `origin_path`).
+      Verify: `cd ~/git/gauntlet && ./target/release/gauntlet lint golden-tasks; test $? -eq 0`
+- [ ] S1.7 — `gauntlet lint` static: no live worktree ops.
+      Verify: `cd ~/git/gauntlet && ./target/release/gauntlet lint golden-tasks && git -C ~/git/warden status --porcelain | wc -l | grep -q '^ *0$'`
+- [ ] S1.8 — regression test on the bursar↔conductor seam (nothing tests it; that is why C2 shipped).
+      Verify: `cargo test --manifest-path ~/git/conductor/Cargo.toml`
+- [ ] S2.9 — `--help` on all six binaries.
+      Verify: `for t in conductor bursar warden-claude-pretooluse hindsight provenance gauntlet; do $t --help >/dev/null || exit 1; done`
+- [ ] S2.10 — refresh `USAGE.md` to post-Slice-1 truth (drop absolute paths + landmines 1-5,7).
+      Verify: every command in USAGE.md runs from a clean shell
+- [ ] S3.11+3.12 — `hindsight events --since <t> --json` (SIGPIPE-safe, redacted,
+      carries `artifact{path,sha256}`) SHIPPED WITH its consumer `gauntlet cost --stdin`;
+      retire `gauntlet/src/cost.rs`'s forked pi-log parser.
+      Verify: `hindsight events --since 30d | head -1 && ! grep -rq 'pi/agent/logs' ~/git/gauntlet/src && cargo test --manifest-path ~/git/gauntlet/Cargo.toml`
 
-Build: gauntlet `aa48729` 138/0 + clippy; conductor `e4aeda9` 236+1 + clippy.
+## Blockers / awaiting human
 
-Resume:
-1. `bd prime`. Gauntlet backlog empty. Human tail: tiers.md patch approval.
-2. Roster-router chain + `conductor-m5` un-defer 07-10; `conductor-xa5` remains Lead.
-3. Run `demo/run.sh` (or `demo/run.sh <member>`).
+- **Anthropic OAuth token for bursar is EXPIRED** — live `HTTP 401: Invalid bearer token`.
+  bursar's anthropic lane is blind until re-auth. (Human: re-auth.)
+- Pre-existing: tiers.md efficiency patch approval; `conductor-xa5`; roster-router chain.
+  These SLIP by the cost of this thrust — accepted in the [2026-07-13] month-focus amendment.
+
+## Open questions
+
+- Slice 3 redaction scope. If a full classifier is too large, fall back to `--redact` on
+  by default with explicit opt-out. **Never ship raw transcripts to stdout.**
