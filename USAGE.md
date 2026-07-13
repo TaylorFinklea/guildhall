@@ -1,7 +1,10 @@
 # Guildhall — operator's guide
 
-**Every command in this file was run on 2026-07-13 and does what it says.** Where a
-tool misbehaves, that is recorded rather than hidden.
+**Every command in this file was run on 2026-07-13**, with **two deliberate exceptions**,
+marked 🚫 below: `hindsight recap` (writes a report directory on every run) and
+`gauntlet lint` (mutates live sibling repos). Their behavior is attested by a recon agent
+that ran them, not by me. Everything else is first-hand. Where a tool misbehaves, that is
+recorded rather than hidden.
 
 ## Read this first
 
@@ -138,7 +141,7 @@ Parses the fleet's transcript substrate (Claude Code, Codex, pi, agy, guardian J
 tells you what happened in a window.
 
 ```sh
-~/git/hindsight/target/release/hindsight recap --since 24h
+~/git/hindsight/target/release/hindsight recap --since 24h    # 🚫 not run here — it writes
 ```
 
 ⚠️ **`recap` writes a new report directory every single time you run it** —
@@ -170,11 +173,26 @@ uncorrelated commits: 38
 sidecar: ~/.local/state/provenance/-Users-tfinklea-git-guildhall/annotations.jsonl
 ```
 
-**Guildhall has exactly 38 commits. All 38 are uncorrelated.**
+**Guildhall has exactly 38 commits. All 38 are uncorrelated.** Provenance works — and it
+correlates *nothing*, because it has no event source. It is still on `FixtureEventSource`,
+waiting on a live stream that hindsight builds and throws away. **A working engine with no
+fuel line.** That is what Slice 3 connects.
 
-Provenance works. It correlates nothing — because it has no event source. It is still
-running on `FixtureEventSource`, waiting on a live stream that hindsight builds and throws
-away. **This tool is a working engine with no fuel line.** That is what Slice 3 connects.
+**Credit where it's due: provenance is the most honest tool in the suite.** `query` does
+not claim "all clear" — it reports its own blindness:
+
+```
+FLAGGED HUNKS (Junior-tier, no later Senior+ touch to the same file)
+(no flagged hunks)
+
+EXCLUDED FROM RESULT SET (per Invariants 2 and 9)
+unknown-tier hunks:  0
+uncorrelated hunks:  147
+```
+
+That is charter invariant 8 ("coverage gaps are reported as gaps") working as written.
+⚠️ Its one defect is narrow: it **exits 0** regardless — so `provenance query && merge`
+passes on "I'm blind" exactly as readily as on "it's clean." Read the output, not `$?`.
 
 The sidecar is plain JSONL under `~/.local/state/`, never inside the annotated repo — so
 `jq` it directly if you want the data today.

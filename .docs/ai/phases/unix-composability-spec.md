@@ -330,7 +330,7 @@ close — recorded so they are not silently dropped, and filed as beads instead:
 
 | finding | disposition |
 |---|---|
-| C6 — `provenance query` exits 0 on findings | **Bead, P3.** Blocks CI gating only, and nothing gates on it today. Fix when a consumer exists. |
+| C6 — `provenance query` exits 0 on findings **and on blindness** | **Bead, P2** (raised from P3 on live evidence). Provenance's *prose* is exemplary — it reports `uncorrelated hunks: 147` rather than claiming "all clear," which is charter invariant 8 working as written. But it **exits 0 regardless**, so `provenance query && merge` passes on "I could not evaluate 147 hunks" exactly as readily as on "it's clean." Fix the exit code, not the output: a distinct non-zero for *flagged*, and another for *could-not-evaluate*. Do NOT "fix" the prose — it is the model the rest of the suite should copy. |
 | C8 — `hindsight recap` writes a report dir every run | **Bead, P2.** Arguably the persisted report *is* recap's product; the defect is the absence of `--no-write`, not the write. Add the flag; don't change the default. |
 | C8 — `conductor cycle --dry-run` writes a report | **Accepted.** The report *is* the dry-run's deliverable. The name is misleading; the behavior is right. No change. |
 | C8 — `conductor arena run` auto-applies the winner | **Bead, P2 — and a real footgun.** Applying a model's patch to a live repo by default inverts the fail-closed invariant. Should default to `--no-apply`. Out of this spec's scope (it touches the Arena path, not the budget path), but it should not wait long. |
