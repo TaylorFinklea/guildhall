@@ -21,8 +21,7 @@ done
 One name is not what you'd guess: **warden's binary is `warden-claude-pretooluse`**, not
 `warden`.
 
-**There is no `--help` yet.** Run a tool with **no arguments** to get its usage string —
-that is the discovery mechanism today. (Slice 2 fixes this.)
+**Every binary has `--help` now** (exit 0, usage on stdout). Start there.
 
 ## The suite in one breath
 
@@ -91,9 +90,19 @@ right. A global exit code cannot express per-provider state, and making `status`
 non-zero would make conductor discard the whole report — losing the good `codex: ok` data
 because a *different* provider's token expired.
 
-What's missing is a **predicate**, not a different exit code: `bursar check <provider>`
-for shell gating (`bursar check codex && dispatch`). That's Slice 2. **Until then, parse
-the JSON — never gate on `$?`.**
+**The predicate — this is what you gate on:**
+
+```sh
+bursar check codex && echo "safe to dispatch"
+```
+
+`bursar check <provider>` → **0** affordable · **1** exhausted · **2** usage error · **3**
+**cannot determine**. It **fails closed**: `unknown` and `error` both exit 3, so
+`bursar check anthropic && spend` will *not* spend while that lane is blind. Live today:
+`codex`→0 · `anthropic`→3 · `opencode-go`→3 (vendor-opaque) · `nonesuch`→2.
+
+`--threshold <pct>` (default 90, matching conductor) gates earlier if you want.
+**`percent` means utilization — percent *used*, not remaining.**
 
 Every call does a live network request **and a macOS Keychain read**. No cache, no
 `--offline`. Don't put it in a loop.
@@ -137,16 +146,29 @@ Parses the fleet's transcript substrate (Claude Code, Codex, pi, agy, guardian J
 tells you what happened in a window.
 
 ```sh
-hindsight recap --since 24h    # 🚫 not run here — see below
+hindsight recap  --since 24h                  # a summary. ⚠️ writes a report dir.
+hindsight events --since 24h                  # the EVENT STREAM — one JSON Event per line
 ```
 
-⚠️ **`recap` writes a new report directory every single time you run it** —
-`~/.harness/reports/hindsight/recap-<ts>/` — with no `--no-write`. Run it three times, get
-three directories. A read command with a permanent side effect. (Filed as a P2 bead.)
+**`hindsight events` is the `cat` of the suite** — the normalized stream every other
+member reads. ~170,000 events over 7 days. It is a proper filter: SIGPIPE-safe (`| head`
+works), quiet, no side effects, and each event carries `raw_ref{path,line}` pointing back
+at the exact transcript record it came from — **the stream is a view; the record is the
+evidence.**
 
-**It cannot emit the event stream.** `recap` builds the normalized `Vec<Event>`, folds it
-into summary tallies, and discards it. There is no `hindsight events`. This is the
-suite's most consequential gap — see provenance.
+```sh
+hindsight events --since 7d | jq -r 'select(.kind=="commit_evidence") | .agent.model' | sort | uniq -c
+```
+
+🔒 **It redacts by risk, not blanket.** `tool.input_summary` is **cleared on every event
+kind except `commit_evidence`** — because for a Bash call that field holds the raw shell
+command, which may carry a credential. A commit message is already in `git log`, so
+emitting it discloses nothing new. Verified: across a 7-day, 175k-event stream, the only
+non-`commit_evidence` `input_summary` value is the empty string. `--unsafe-include-tool-input`
+opts in and warns on stderr.
+
+⚠️ **`recap` writes a new report directory every single time you run it** —
+`~/.harness/reports/hindsight/recap-<ts>/` — with no `--no-write`. `events` does not.
 
 ---
 
@@ -155,20 +177,34 @@ suite's most consequential gap — see provenance.
 Correlates agent transcripts against git hunks: *which model wrote this line, and was it
 ever reviewed by an equal-or-higher tier?*
 
+**The fuel line — this is the money shot:**
+
 ```sh
-provenance annotate ~/git/guildhall
+hindsight events --since 30d | provenance annotate ~/git/guildhall --events -
 provenance query unreviewed-junior ~/git/guildhall
 ```
 
-Real output on this repo: `annotations: 147` · `uncorrelated commits: 38`.
+Then ask who wrote what:
 
-**Guildhall has exactly 38 commits. All 38 are uncorrelated.** Provenance works — and
-correlates *nothing*, because it has no event source. It is still on `FixtureEventSource`,
-waiting on a stream that hindsight builds and throws away. **A working engine with no fuel
-line.** That is what Slice 3 connects.
+```sh
+jq -r 'select(.model != "") | "\(.commit[0:7])  \(.model)  \(.tier)  \(.file)"' \
+  ~/.local/state/provenance/-Users-tfinklea-git-guildhall/annotations.jsonl | sort -u
+# 19990ea  claude-opus-4-8  lead  .docs/ai/phases/unix-composability-spec.md
+# 19990ea  claude-opus-4-8  lead  README.md
+```
 
-**Credit where it's due: provenance is the most honest tool here.** `query` does not claim
-"all clear" — it reports its own blindness:
+**It was 43 of 43 commits uncorrelated — 100% blind. It is now 37.** Provenance had no
+event source and was stuck on a `FixtureEventSource`; `hindsight events` is the stream it
+was always waiting for. It correlates by commit **message + cwd + window** (hash
+correlation can't fire yet — live events don't carry `repo.git_commit`; bead
+`hindsight-w5w`).
+
+📊 **The honest gap**: all 37 still-uncorrelated commits **predate `2026-07-12T02:41Z`** —
+the earliest record in hindsight's transcript retention. That is a *retention* limit, not a
+join defect, and provenance says so rather than hiding it.
+
+**Provenance is the most honest tool here.** `query` does not claim "all clear" — it
+reports its own blindness:
 
 ```
 FLAGGED HUNKS (Junior-tier, no later Senior+ touch to the same file)
@@ -199,6 +235,20 @@ gauntlet lint golden-tasks     # static; exit 0, defective=0
 gauntlet config check
 gauntlet run --dry-run         # no metered dispatch
 ```
+
+**It no longer forks hindsight's parser.** `gauntlet cost` now reads the normalized event
+stream on stdin — one parser, one ground truth, over a pipe:
+
+```sh
+hindsight events --since 7d | gauntlet cost --stdin --model glm-5.2 \
+  --cwd ~/git/tesela --started 2026-07-12T04:30:00Z --finished 2026-07-12T04:40:00Z
+# cost	$0.2441
+```
+
+🔒 **`cost: 0` still means UNKNOWN, not free.** Some lanes report zero cost for every
+record; treating that as `$0.00` would make the roster's efficiency ratings fiction.
+Gauntlet fails closed to `unknown` — verified to survive the de-fork.
+**hindsight reports facts; gauntlet judges them.**
 
 **`lint` is now static** — it validates structure and resolves `base_commit` read-only
 (`git cat-file -e`), and never creates a worktree in your live repos. It also prints, on
@@ -253,17 +303,27 @@ ralph -t opencode -n 5                                  # headless Plan-item loo
 
 | # | landmine | status |
 |---|---|---|
-| 1 | `hindsight recap` writes a report dir on **every** run | open (P2) |
-| 2 | `conductor arena run` **auto-applies** the winner — use `--no-apply` | open (P2) |
-| 3 | `provenance query` exits **0** whether it's clean *or blind*. Read the output. | open (P2) |
-| 4 | `bursar` has no predicate — parse the JSON, never gate on `$?` | Slice 2 |
-| 5 | No `--help` anywhere. Run a tool bare to get its usage. | Slice 2 |
-| 6 | `gauntlet run` without `--dry-run` **spends real money** | by design |
-| 7 | A `cargo clean` leaves the `~/.local/bin` symlinks dangling; a `cargo test` (debug) does **not** update them. **Rebuild `--release` before trusting a PATH binary.** | inherent |
-| ~~8~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 and mutates live repos~~ · ~~warden exits 0 on crash~~ · ~~conductor's `[[repo_policy]]` table uncommitted~~ (committed in `5e6fab3`) | **FIXED** |
+| 1 | **A `cargo test` (debug) does NOT update the `~/.local/bin` symlinks — they point at `target/release/`. Rebuild `--release` before trusting a PATH binary.** This bit three times in one session. | inherent |
+| 2 | `hindsight recap` writes a report dir on **every** run (`events` does not) | open (P2) |
+| 3 | `conductor arena run` **auto-applies** the winner — use `--no-apply` | open (P2) |
+| 4 | `provenance query` exits **0** whether it's clean *or blind*. Read the output. | open (P2) |
+| 5 | `gauntlet run` without `--dry-run` **spends real money** | by design |
+| 6 | Provenance can only see back to **2026-07-12** — hindsight's transcript retention. Older commits are honestly reported as uncorrelated, not as clean. | inherent |
+| 7 | **Don't run two agent sessions against the same repo.** Charter invariant 5. A concurrent session `git reset` away a commit during this work; it was only recovered from the reflog because an agent noticed. | **process** |
+| ~~8~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 + mutates~~ · ~~warden exits 0 on crash~~ · ~~`[[repo_policy]]` uncommitted~~ · ~~no `--help` anywhere~~ · ~~no `bursar` predicate~~ · ~~no event stream~~ · ~~gauntlet forked the parser~~ · ~~provenance blind~~ | **FIXED** |
 
-## What "fixed" looks like next
+## The suite, composed
 
-`.docs/ai/phases/unix-composability-spec.md`. Slice 2 gives every binary a `--help`, adds
-`bursar check <provider>`, and keeps this guide honest. Slice 3 builds `hindsight events`
-and finally gives provenance its fuel line.
+Everything below is one shell line. That was the point.
+
+```sh
+bursar check codex && conductor cycle --dry-run --config ~/git/conductor/conductor.toml
+
+hindsight events --since 30d | provenance annotate ~/git/guildhall --events -
+
+hindsight events --since 7d | gauntlet cost --stdin --model glm-5.2 --cwd ~/git/tesela \
+  --started 2026-07-12T04:30:00Z --finished 2026-07-12T04:40:00Z
+
+hindsight events --since 24h | jq -r 'select(.kind=="commit_evidence") | .agent.model' \
+  | sort | uniq -c | sort -rn
+```

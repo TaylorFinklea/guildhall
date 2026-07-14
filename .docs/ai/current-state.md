@@ -1,51 +1,48 @@
 # Current State
 
-Branch: `main` — local/unpushed. Active: `phases/unix-composability-spec.md` (fourth
-thrust, user-authorized 2026-07-13; ADRs in decisions.md). Guide: `USAGE.md`.
+Branch: `main` — local/unpushed. **`phases/unix-composability-spec.md` COMPLETE** — all
+three slices shipped 2026-07-13. Guide: `USAGE.md`. ADRs: decisions.md `[2026-07-13]` ×3.
 
 ## Plan
 
-**Slice 1 SHIPPED 2026-07-13** — conductor `08b35b4` · warden `49157c8` · gauntlet
-`490655c` · guildhall docs. Six binaries symlinked into `~/.local/bin`. See spec § AS BUILT.
+**ALL SLICES SHIPPED.** conductor `b3631a0` · bursar `1fab043` · warden `b7a6205` ·
+hindsight `2d80c5e` · provenance `e06d6df` · gauntlet `52828b9`.
 
-- [x] S1.1+1.2 — six binaries on PATH; conductor `bursar unavailable` → `SpendCautiously`
-      (was `StaticCaps`/`Info`). Budget gate no longer fails open.
-- [x] S1.4 — `conductor scan` exits 0 on ordinary skips. (`--config` already existed; only
-      the USAGE string omitted it.)
-- [x] S1.4b — `bursar` added to `conductor config check` preflight — the omission that let C2 hide.
-- [x] S1.5 — warden fails closed on crash: deny JSON on stdout + exit 1. allow/ask/deny stay exit 0.
-- [x] S1.6 — rename fallout fixed (guildhall README + demo + runbook + briefing; gauntlet golden
-      task, its `prompt` field, and `gauntlet.toml` read_only_refs).
-- [x] S1.7 — `gauntlet lint` static; discrimination check moved to `validate --smoke-run`,
-      and lint now PRINTS what it no longer covers.
-- [x] S1.8 — regression test on the bursar↔conductor seam.
-- [x] ~~S1.3~~ **WITHDRAWN** — "bursar exits non-zero on 401" was wrong; it would have made
-      conductor discard the whole report. `bursar status` is a report; exit 0 is correct.
-      Replaced by a `bursar check <provider>` predicate → Slice 2.
-
-- [ ] S2.9 — `--help` on all six binaries.
-      Verify: `for t in conductor bursar warden-claude-pretooluse hindsight provenance gauntlet; do $t --help >/dev/null || exit 1; done`
-- [ ] S2.9b — `bursar check <provider>` exit-code predicate (0=affordable, non-zero=no/unknown/error).
-      Verify: `cargo test --manifest-path ~/git/bursar/Cargo.toml`
-- [ ] S2.10 — keep `USAGE.md` honest as Slice 2 lands.
-      Verify: every command in USAGE.md runs from a clean shell
-- [ ] S3.11+3.12 — `hindsight events --since <t> --json` (SIGPIPE-safe, redacted, carries
-      `artifact{path,sha256}`) SHIPPED WITH its consumer `gauntlet cost --stdin`; retire
-      `gauntlet/src/cost.rs`'s forked pi-log parser.
-      Verify: `hindsight events --since 30d | head -1 && ! grep -rq 'pi/agent/logs' ~/git/gauntlet/src && cargo test --manifest-path ~/git/gauntlet/Cargo.toml`
+- [x] **Slice 1 — the guardrails guard.** Six binaries on PATH. conductor's budget gate no
+      longer fails open (`bursar unavailable` → SpendCautiously, was StaticCaps/Info).
+      `bursar` added to `conductor config check` — the omission that let it hide. warden
+      fails closed on crash. `gauntlet lint` static + exit 0. Rename fallout fixed.
+      ~~S1.3~~ **WITHDRAWN**: "bursar exits non-zero on 401" was wrong — it would have made
+      conductor discard the whole report. `status` is a REPORT; exit 0 is correct.
+- [x] **Slice 2 — usable.** `--help` on all six (exit 0). `bursar check <provider>` →
+      0/1/2/3, **fails closed** (unknown+error → 3, never 0).
+- [x] **Slice 3 — the pipe.** `hindsight events --since <t>` — SIGPIPE-safe, redacts by
+      risk (`commit_evidence` keeps its message — already in `git log`; every other kind's
+      `input_summary` is cleared — a Bash command may hold a credential). `gauntlet cost
+      --stdin` consumes it and **the forked pi-log parser is retired** (`grep pi/agent/logs
+      gauntlet/src` → empty); `cost: 0` still → `unknown`, never `$0.00`.
+      **`provenance annotate --events -` — the fuel line. 43/43 uncorrelated → 37.**
+      Provenance now attributes authorship (`claude-opus-4-8 / lead`) on the very commits
+      that built it.
 
 ## Blockers / awaiting human
 
-- ~~conductor's `[[repo_policy]]` table uncommitted~~ — **RESOLVED** in conductor `5e6fab3`
-  ("free-train lanes were dark"). 11 rows now in version control; conductor 242/242 green.
-- **Anthropic OAuth token for bursar is EXPIRED** — live `HTTP 401`. That lane is blind.
-- Pre-existing: tiers.md efficiency patch; `conductor-xa5`; roster-router chain — SLIP by
+- 🚨 **A concurrent Opus session `git reset` away a commit in `conductor` mid-work.** It
+  survived only because a subagent recovered it from the reflog. **Charter invariant 5
+  (one writer per repo) was violated by two of your own sessions.** Don't run parallel
+  sessions on the same repo.
+- **Anthropic OAuth token for bursar is EXPIRED** (live `HTTP 401`). That lane is blind, and
+  `bursar check anthropic` correctly exits 3. Re-auth to restore it.
+- Pre-existing: tiers.md efficiency patch; `conductor-xa5`; roster-router chain — slipped by
   the cost of this thrust, per the [2026-07-13] month-focus amendment.
 
 ## Open questions
 
-- Slice 3 redaction scope. If a full classifier is too large, fall back to `--redact` on by
-  default with explicit opt-out. **Never ship raw transcripts to stdout.**
+- Provenance sees back only to **2026-07-12** (hindsight's transcript retention). 37 of 43
+  guildhall commits are honestly uncorrelated for that reason, not a join defect. Is longer
+  retention worth it?
+- Filed, capping provenance's coverage: `hindsight-w5w` (events never carry
+  `repo.git_commit`, so exact-hash correlation can't fire) · `hindsight-pov`
+  (`extract_commit_message` misses ~21% of commits).
 - conductor's own `provider-trust-integration-spec.md` (approved, unstarted) moves
-  `unavailable` → `Defer`, stricter than the `SpendCautiously` shipped here. Compatible;
-  sequence it deliberately rather than discovering the overlap twice.
+  `unavailable` → `Defer`, stricter than the `SpendCautiously` shipped here. Compatible.
