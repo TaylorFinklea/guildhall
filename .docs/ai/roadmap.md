@@ -38,23 +38,60 @@ Spec: `phases/unix-composability-spec.md`. Guide: `USAGE.md`. ADRs: decisions.md
 Adversarially reviewed by glm-5.2 / qwen3.7-max / minimax-m3 — the panel killed the
 first draft's rubric and rescued provenance from a wrongful finding.
 
-- [ ] **Slice 1 — make the guardrails guard** (senior/M). **conductor's budget gate fails
-      open in the branch production is in**: bursar isn't on PATH, so `Command::new("bursar")`
-      fails → `StaticCaps` → rendered `Info`, while bursar *present-but-uncertain* renders
-      `Warn`. Missing ranks safer than uncertain. Charter invariant 3. Also: `conductor
-      config check` verifies ten external tools and **never checks bursar** — that's why
-      nobody caught it. Landmine: items 1+2 must land in ONE commit, else every cycle
-      flips to SpendCautiously fleet-wide.
-- [ ] **Slice 2 — make it usable** (junior/S). `--help` on all six; keep `USAGE.md` honest.
-- [ ] **Slice 3 — the one pipe that pays for itself** (lead/L). `hindsight events` shipped
-      *with* `gauntlet cost --stdin`, never speculatively. Payoff, measured: `provenance
-      annotate ~/git/guildhall` → **38 of 38 commits uncorrelated (100%)**. Provenance
-      attributes nothing because hindsight builds the event stream and discards it.
-      Landmine: nobody handles SIGPIPE anywhere, so `hindsight events | head` panics
-      unless fixed first; and transcripts on stdout are a secret-egress surface.
+- [x] **Slice 1/2/3 SHIPPED 2026-07-13** (conductor `b3631a0`, bursar `1fab043`, warden
+      `b7a6205`, hindsight `2d80c5e`, provenance `e06d6df`, gauntlet `52828b9`). Guardrails
+      guard, six binaries on PATH, `hindsight events | gauntlet cost --stdin` +
+      `provenance annotate --events -` compose. See current-state.md + decisions.md `[2026-07-13]`.
 - [ ] **HUMAN**: re-auth bursar's Anthropic OAuth token — live `HTTP 401`, lane is blind.
 
-### Next — Phase B: autonomy ladder (weeks 2–4)
+### Now — Phase A3: post-review stabilization (2026-07-14, breadth-first)
+
+Full suite adversarial review (Fable + 6 Sonnet discovery + GPT-5.6 Sol/Terra ×5 + glm-5.2 ×3,
+every P0/P1 independently verified, several by binary repro). ADRs: decisions.md `[2026-07-14]` ×4.
+**51 beads filed across all members** with tier_floor/complexity/verify_cmd metadata.
+Root cause (guildhall-y10/6mc): pure logic clean, every integration SEAM fails open + untested.
+
+- [ ] **Lead thrust = BREADTH STABILIZE** (user 2026-07-14): sweep the P1/P2 fixes across all
+      members. `bd -C ~/git/<member> ready` per repo. The audit-pipe-correctness items ride
+      inside this sweep at high priority (must-be-correct, user 2026-07-14).
+- [ ] **Audit pipe must be correct**: provenance `provenance-5fu` (empty-msg false-attrib, P0),
+      hindsight `hindsight-d96` (agy/beads/harness-deck parsers unwired, P0), suite `guildhall-y10`
+      (schema+artifact envelope — the pipe is bare JSON, P0). False attribution > no attribution.
+- [ ] **Warden → shadow/logging mode** (user 2026-07-14): NOT an enforcing gate yet. `warden-wyd`
+      (shadow "would-have" mode) + `warden-4ke` (wire the audit sink — the enabler) + `warden-gqw`
+      (install log-only). Adapter fail-opens (`warden-xpf/zxj/a3x`) drop to P2 accuracy-of-advice.
+- [ ] **conductor injection hardening** (glm-5.2 fresh-eyes): `conductor-zg9` (reviewer prompt
+      unfenced → bead text can force verdict:ship) + `conductor-5tg` (stored injection into
+      comments/ledger/verifier). Matters even under supervised autonomy.
+
+### Next — Phase B: SUPERVISED autonomy ladder (retargeted 2026-07-14 — NOT unattended)
+
+> **Target changed** (decisions.md `[2026-07-14]`): the few-weeks goal is **supervised autonomy**
+> (batch-approve bounded plan → auto-execute with per-item resume → human reviews after), NOT the
+> default unattended loop. The ratchet stays **observe-only**. Unattended junior/S is a later
+> canary, only after warden-enforcement + resumable execution + exclusive repo lease + trustworthy
+> verification + provider-fail-closed all have fresh evidence. Sequencing = Sol's 8 gated steps (ADR).
+
+- [ ] **`conductor-1i9` (P0, LINCHPIN)**: worker success is identity-free (`dispatch.rs:350-352`
+      counts ANY new HEAD, not the worker's) + no repo lease → the ratchet's "clean session"
+      signal is forgeable by any concurrent commit (already happened once). Fix: identity-checked
+      success + exclusive lease/worktree. **Blocks the whole ladder.**
+- [ ] **`conductor-vnu` (P0)** + **`conductor-9uk` (P0)**: no resume/reclaim (crash → bead claimed
+      forever) + fail-stop loop (one item's error aborts the whole plan). Resumable per-item state
+      machine is Sol's step 4, a hard prerequisite for batch autonomy.
+- [ ] **`conductor-ldz`**: `SpendCautiously` is a no-op (only `Defer` gates) — align with
+      `provider-trust-integration-spec` (uncertain → Defer). `conductor-0ma` (percent bounds check).
+- [x] `conductor-m6` ratchet mechanism built (6698534) — but **UNWIRED** (`conductor-jx2`): no
+      non-dry-run cycle calls it. Stays observe-only per the retarget; wiring is gated by the above.
+- [ ] `conductor-m5` triage-suggest backfill (deferred → 07-10, queue-hygiene ADR).
+- [ ] `conductor-ilv` shadow protocol → **superseded framing**: cutover is no longer "3 matching
+      sessions → default unattended loop" but "supervised autonomy solid, ratchet observe-only."
+      Still bd-blocked-by `conductor-xa5`.
+- [ ] **`conductor-xa5`** (cutover blocker, lead-floor): blanket-approval fires ALL proposals across
+      the whole-`~/git` scan — no per-item/suite scoping. Now also gated by the supervised-autonomy
+      bounded-plan work (Sol's step 3: immutable bounded plan + drift rejection).
+- [ ] **Roster-router refactor Phase 1**: `conductor-d5j`→`r6p`→`xm9`→`3u3`/`o5k`, dep-chained.
+- [ ] Post-supervised: revisit unattended junior/S canary — only with the [2026-07-14] evidence gates met.
 - [x] `conductor-m6` ratchet **SHIPPED 07-08** (6698534, minimax-m3; ratchet.rs + `[ratchet]` config **junior/S/3** default per ADR; all 9 spec invariants tested, 228/0 clippy-green; orchestrator-verified — NO safety gap). Mechanism done; auto-dispatch activation gated by cutover — `cycle.rs` deliberately unwired (dry-run stays propose-only; wiring is a future one-liner via `triage_state_map`).
 - [ ] `conductor-m5` triage-suggest backfill (deferred → 07-10, queue-hygiene ADR).
 - [ ] `conductor-ilv` shadow protocol → cutover after 3 matching sessions (lead-floor). **Session 1 (07-07) NO-MATCH · session 2 (07-07) MATCH · session 3 (07-08) NO-MATCH → streak reset 0/3.** Routing matched on suite items; the reset is the whole-`~/git` scan + blanket-approval structural gap. Now bd-blocked-by `conductor-xa5`.

@@ -1,48 +1,35 @@
 # Current State
 
-Branch: `main` — local/unpushed. **`phases/unix-composability-spec.md` COMPLETE** — all
-three slices shipped 2026-07-13. Guide: `USAGE.md`. ADRs: decisions.md `[2026-07-13]` ×3.
+Branch: `main` — local/unpushed. **Suite-wide adversarial review DONE 2026-07-14** (Fable + 6
+Sonnet + Sol/Terra ×5 + glm-5.2 ×3). 51 beads filed across all members. Direction retargeted:
+**supervised autonomy, not unattended.** ADRs: decisions.md `[2026-07-14]` ×4.
 
-## Plan
+## Plan (Phase A3 — breadth-first stabilization)
 
-**ALL SLICES SHIPPED.** conductor `b3631a0` · bursar `1fab043` · warden `b7a6205` ·
-hindsight `2d80c5e` · provenance `e06d6df` · gauntlet `52828b9`.
-
-- [x] **Slice 1 — the guardrails guard.** Six binaries on PATH. conductor's budget gate no
-      longer fails open (`bursar unavailable` → SpendCautiously, was StaticCaps/Info).
-      `bursar` added to `conductor config check` — the omission that let it hide. warden
-      fails closed on crash. `gauntlet lint` static + exit 0. Rename fallout fixed.
-      ~~S1.3~~ **WITHDRAWN**: "bursar exits non-zero on 401" was wrong — it would have made
-      conductor discard the whole report. `status` is a REPORT; exit 0 is correct.
-- [x] **Slice 2 — usable.** `--help` on all six (exit 0). `bursar check <provider>` →
-      0/1/2/3, **fails closed** (unknown+error → 3, never 0).
-- [x] **Slice 3 — the pipe.** `hindsight events --since <t>` — SIGPIPE-safe, redacts by
-      risk (`commit_evidence` keeps its message — already in `git log`; every other kind's
-      `input_summary` is cleared — a Bash command may hold a credential). `gauntlet cost
-      --stdin` consumes it and **the forked pi-log parser is retired** (`grep pi/agent/logs
-      gauntlet/src` → empty); `cost: 0` still → `unknown`, never `$0.00`.
-      **`provenance annotate --events -` — the fuel line. 43/43 uncorrelated → 37.**
-      Provenance now attributes authorship (`claude-opus-4-8 / lead`) on the very commits
-      that built it.
+- [ ] **Breadth-stabilize sweep** — work each member's `bd -C ~/git/<member> ready`, P1/P2 first.
+      Verify: each bead's `verify_cmd` (mostly `cargo test`).
+- [ ] **Audit pipe must be correct** — `provenance-5fu` (P0 false-attrib) · `hindsight-d96`
+      (P0 unwired sources) · `guildhall-y10` (P0 pipe envelope). Verify: cargo test in each.
+- [ ] **Warden shadow mode** — `warden-4ke` (wire audit sink) → `warden-wyd` (shadow "would-have")
+      → `warden-gqw` (install log-only handoff). Verify: cargo test + manual smoke.
+- [ ] **Supervised-autonomy track (parallel, gated)** — `conductor-1i9` (P0 linchpin: identity-
+      checked success + repo lease) → `conductor-vnu`/`9uk` (resumable loop). Verify: cargo test.
 
 ## Blockers / awaiting human
 
-- 🚨 **A concurrent Opus session `git reset` away a commit in `conductor` mid-work.** It
-  survived only because a subagent recovered it from the reflog. **Charter invariant 5
-  (one writer per repo) was violated by two of your own sessions.** Don't run parallel
-  sessions on the same repo.
-- **Anthropic OAuth token for bursar is EXPIRED** (live `HTTP 401`). That lane is blind, and
-  `bursar check anthropic` correctly exits 3. Re-auth to restore it.
-- Pre-existing: tiers.md efficiency patch; `conductor-xa5`; roster-router chain — slipped by
-  the cost of this thrust, per the [2026-07-13] month-focus amendment.
+- **Anthropic OAuth token for bursar is EXPIRED** (live `HTTP 401`). `bursar check anthropic`
+  correctly exits 3. Re-auth to restore the lane.
+- **HUMAN decisions still open** from before this review: tiers.md efficiency patch;
+  `conductor-xa5` scoping; roster-router chain.
+- **Do not run parallel sessions on the same repo** — a prior concurrent Opus session `git reset`
+  away a commit (charter invariant 5). This is also the real-world instance of `conductor-1i9`.
 
 ## Open questions
 
-- Provenance sees back only to **2026-07-12** (hindsight's transcript retention). 37 of 43
-  guildhall commits are honestly uncorrelated for that reason, not a join defect. Is longer
-  retention worth it?
-- Filed, capping provenance's coverage: `hindsight-w5w` (events never carry
-  `repo.git_commit`, so exact-hash correlation can't fire) · `hindsight-pov`
-  (`extract_commit_message` misses ~21% of commits).
-- conductor's own `provider-trust-integration-spec.md` (approved, unstarted) moves
-  `unavailable` → `Defer`, stricter than the `SpendCautiously` shipped here. Compatible.
+- Provenance retention only reaches 2026-07-12 (hindsight transcript window) — but part of the
+  "uncorrelated" count may be `hindsight-d96` (3 sources never wired), not just retention. Re-measure
+  after `hindsight-d96` + `provenance-5fu` land.
+- Warden effectiveness is TBD by design — shadow-mode logs are the evidence to decide whether it
+  becomes an enforced gate later (Sol's step 2).
+- Scorecard experience-log entries for this session's Sol/Terra/glm-5.2 runs: pending (see
+  `~/.claude/model-scorecard.md`).
