@@ -1,17 +1,17 @@
 # Current State
 
 Branch: `main` — local/unpushed; Conductor-core consolidation approved 2026-07-14.
-Spec: `phases/conductor-core-consolidation-spec.md`; plan + 26-Bead dry-run generator ready; no Beads created.
+Spec: `phases/conductor-core-consolidation-spec.md`; 26 Beads applied/reconciled; all nine queues lint-clean/acyclic.
 
 ## Plan
 
-- [ ] Fresh Lead: finish/merge Conductor worktree `codex/provider-trust-p1` through `vly` + `j84`. Verify: `cargo test && cargo clippy --all-targets -- -D warnings` there.
-- [ ] Review/apply `phases/bd-create-conductor-core-consolidation.sh`; reconcile replaced Beads. Verify: dry-run plus `bd lint` and `bd dep cycles` clean in all nine repos.
-- [ ] Execute plan Wave 0 with `/loops`, one claimed Bead and one repo writer at a time. Verify: every Bead's metadata `verify_cmd`; audit-pipe P0s closed before migrations.
+- [x] Conductor adversarial review landed through `vly` + `j84` at `055692e`.
+- [x] Generator applied; obsolete Beads reconciled; all queue gates clean.
+- [ ] Execute Wave 0 one claimed Bead and one repo writer at a time; first close:
+      `provenance-5fu` at `bc2db7b`; audit-pipe P0s close before migrations.
 
 ## Blockers
 
-- Active Conductor adversarial worktree must land before Conductor main changes.
 - Anthropic Bursar lane remains HTTP 401 until human re-auth; no invented quota state.
 - `chezmoi-personal` has unrelated dirty work; cutover stays a later targeted-reconcile tail.
 

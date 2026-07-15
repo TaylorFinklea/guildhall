@@ -63,22 +63,23 @@ create_bead() {
     exit 1
   fi
 
-  local dry=()
+  local create_args=(
+    -C "$ROOT/$repo" create
+    --id "$id"
+    --type task
+    --priority "$priority"
+    --estimate "$estimate"
+    --title "$title"
+    --description "$description"
+    --acceptance "$acceptance"
+    --notes "$notes"
+    --metadata "$metadata"
+  )
   if [[ "$MODE" == "--dry-run" ]]; then
-    dry+=(--dry-run)
+    create_args+=(--dry-run)
   fi
 
-  bd -C "$ROOT/$repo" create \
-    --id "$id" \
-    --type task \
-    --priority "$priority" \
-    --estimate "$estimate" \
-    --title "$title" \
-    --description "$description" \
-    --acceptance "$acceptance" \
-    --notes "$notes" \
-    --metadata "$metadata" \
-    "${dry[@]}" < /dev/null
+  bd "${create_args[@]}" < /dev/null
   PLANNED_IDS+=("$repo/$id")
 }
 

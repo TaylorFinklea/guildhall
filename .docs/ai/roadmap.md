@@ -19,10 +19,12 @@ The runtime product is now four Unix-style tools: Conductor runs explicit verifi
 - [x] Architecture, execution plan, and reviewable 26-Bead generator authored:
       `phases/conductor-core-consolidation-{spec,plan}.md` and
       `phases/bd-create-conductor-core-consolidation.sh`.
-- [ ] Fresh Lead session: finish/merge the active Conductor adversarial-review worktree (`vly`,
-      `j84`), dry-run/review/apply the Bead generator, lint every queue, then execute by waves.
-- [ ] Wave 0 correctness: audit attribution/source/envelope P0s, Conductor identity/lease/resume,
-      adversarial injection hardening, Bursar fail-closed status, corrected migration corpora.
+- [x] Fresh Lead Task 0: Conductor adversarial review landed at `055692e`; the 26-Bead
+      generator was applied, obsolete goals reconciled, and all nine queues pass lint and
+      dependency-cycle checks.
+- [ ] Wave 0 correctness (started: `provenance-5fu` closed at `bc2db7b`): audit
+      attribution/source/envelope P0s, Conductor identity/lease/resume, adversarial injection
+      hardening, Bursar fail-closed status, corrected migration corpora.
 - [ ] Waves 1–3: Bursar roster → Hindsight store/events → Conductor loop/jobs → scorecards,
       attribution, Warden findings, consult/Arena/eval folds.
 - [ ] Wave 4 human-controlled tails: chezmoi Ralph/skills/LaunchAgent cutover and private
