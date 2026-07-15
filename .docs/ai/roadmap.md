@@ -22,7 +22,7 @@ The runtime product is now four Unix-style tools: Conductor runs explicit verifi
 - [x] Fresh Lead Task 0: Conductor adversarial review landed at `055692e`; the 26-Bead
       generator was applied, obsolete goals reconciled, and all nine queues pass lint and
       dependency-cycle checks.
-- [ ] Wave 0 correctness (started: `provenance-5fu` closed at `bc2db7b`): audit
+- [ ] Wave 0 correctness (started: `provenance-5fu` → `bc2db7b`; `hindsight-d96` → `8ad0446`): audit
       attribution/source/envelope P0s, Conductor identity/lease/resume, adversarial injection
       hardening, Bursar fail-closed status, corrected migration corpora.
 - [ ] Waves 1–3: Bursar roster → Hindsight store/events → Conductor loop/jobs → scorecards,
@@ -71,8 +71,8 @@ Root cause (guildhall-y10/6mc): pure logic clean, every integration SEAM fails o
 - [ ] **Lead thrust = BREADTH STABILIZE** (user 2026-07-14): sweep the P1/P2 fixes across all
       members. `bd -C ~/git/<member> ready` per repo. The audit-pipe-correctness items ride
       inside this sweep at high priority (must-be-correct, user 2026-07-14).
-- [ ] **Audit pipe must be correct**: provenance `provenance-5fu` (empty-msg false-attrib, P0),
-      hindsight `hindsight-d96` (agy/beads/harness-deck parsers unwired, P0), suite `guildhall-y10`
+- [ ] **Audit pipe must be correct**: provenance `provenance-5fu` closed at `bc2db7b`;
+      hindsight `hindsight-d96` closed at `8ad0446`; suite `guildhall-y10` remains
       (schema+artifact envelope — the pipe is bare JSON, P0). False attribution > no attribution.
 - [ ] **Warden → read-only Hindsight filter** (supersedes the same-day shadow-hook direction):
       `hindsight events | warden inspect` emits advisory findings; no hook install or enforcement.

@@ -7,8 +7,8 @@ Spec: `phases/conductor-core-consolidation-spec.md`; 26 Beads applied/reconciled
 
 - [x] Conductor adversarial review landed through `vly` + `j84` at `055692e`.
 - [x] Generator applied; obsolete Beads reconciled; all queue gates clean.
-- [ ] Execute Wave 0 one claimed Bead and one repo writer at a time; first close:
-      `provenance-5fu` at `bc2db7b`; audit-pipe P0s close before migrations.
+- [ ] Execute Wave 0 one claimed Bead and one repo writer at a time; closes:
+      `provenance-5fu` at `bc2db7b`, `hindsight-d96` at `8ad0446`; audit-pipe P0s precede migrations.
 
 ## Blockers
 
