@@ -1,35 +1,20 @@
 # Current State
 
-Branch: `main` — local/unpushed. **Suite-wide adversarial review DONE 2026-07-14** (Fable + 6
-Sonnet + Sol/Terra ×5 + glm-5.2 ×3). 51 beads filed across all members. Direction retargeted:
-**supervised autonomy, not unattended.** ADRs: decisions.md `[2026-07-14]` ×4.
+Branch: `main` — local/unpushed; Conductor-core consolidation approved 2026-07-14.
+Spec: `phases/conductor-core-consolidation-spec.md`; plan + 26-Bead dry-run generator ready; no Beads created.
 
-## Plan (Phase A3 — breadth-first stabilization)
+## Plan
 
-- [ ] **Breadth-stabilize sweep** — work each member's `bd -C ~/git/<member> ready`, P1/P2 first.
-      Verify: each bead's `verify_cmd` (mostly `cargo test`).
-- [ ] **Audit pipe must be correct** — `provenance-5fu` (P0 false-attrib) · `hindsight-d96`
-      (P0 unwired sources) · `guildhall-y10` (P0 pipe envelope). Verify: cargo test in each.
-- [ ] **Warden shadow mode** — `warden-4ke` (wire audit sink) → `warden-wyd` (shadow "would-have")
-      → `warden-gqw` (install log-only handoff). Verify: cargo test + manual smoke.
-- [ ] **Supervised-autonomy track (parallel, gated)** — `conductor-1i9` (P0 linchpin: identity-
-      checked success + repo lease) → `conductor-vnu`/`9uk` (resumable loop). Verify: cargo test.
+- [ ] Fresh Lead: finish/merge Conductor worktree `codex/provider-trust-p1` through `vly` + `j84`. Verify: `cargo test && cargo clippy --all-targets -- -D warnings` there.
+- [ ] Review/apply `phases/bd-create-conductor-core-consolidation.sh`; reconcile replaced Beads. Verify: dry-run plus `bd lint` and `bd dep cycles` clean in all nine repos.
+- [ ] Execute plan Wave 0 with `/loops`, one claimed Bead and one repo writer at a time. Verify: every Bead's metadata `verify_cmd`; audit-pipe P0s closed before migrations.
 
-## Blockers / awaiting human
+## Blockers
 
-- **Anthropic OAuth token for bursar is EXPIRED** (live `HTTP 401`). `bursar check anthropic`
-  correctly exits 3. Re-auth to restore the lane.
-- **HUMAN decisions still open** from before this review: tiers.md efficiency patch;
-  `conductor-xa5` scoping; roster-router chain.
-- **Do not run parallel sessions on the same repo** — a prior concurrent Opus session `git reset`
-  away a commit (charter invariant 5). This is also the real-world instance of `conductor-1i9`.
+- Active Conductor adversarial worktree must land before Conductor main changes.
+- Anthropic Bursar lane remains HTTP 401 until human re-auth; no invented quota state.
+- `chezmoi-personal` has unrelated dirty work; cutover stays a later targeted-reconcile tail.
 
 ## Open questions
 
-- Provenance retention only reaches 2026-07-12 (hindsight transcript window) — but part of the
-  "uncorrelated" count may be `hindsight-d96` (3 sources never wired), not just retention. Re-measure
-  after `hindsight-d96` + `provenance-5fu` land.
-- Warden effectiveness is TBD by design — shadow-mode logs are the evidence to decide whether it
-  becomes an enforced gate later (Sol's step 2).
-- Scorecard experience-log entries for this session's Sol/Terra/glm-5.2 runs: pending (see
-  `~/.claude/model-scorecard.md`).
+- None architectural. Archive timing is evidence-gated by the ten cutover checks in the spec.

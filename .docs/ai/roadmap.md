@@ -4,7 +4,7 @@
 
 ## Vision
 
-Guildhall — a craft guild whose members are models: eight cooperating tools (Conductor, Warden, Hindsight, Envoy, Bursar, Provenance, Gauntlet, Foreman) that route, gate, record, audit, budget, evaluate, and compile the AI coding fleet's own work. Charter: `README.md`. Integration + v1-done: `phases/guildhall-integration-v1-spec.md`. Operations: `phases/orchestration-runbook.md`.
+The runtime product is now four Unix-style tools: Conductor runs explicit verified job loops; Bursar owns roster/availability; Hindsight owns evidence, attribution, and scorecards; Warden reads events and emits advisory findings. Provenance, Gauntlet, Envoy, and Foreman migrate into those surfaces; Guildhall preserves migration history and then archives. Approved design: `phases/conductor-core-consolidation-spec.md`.
 
 ## Now / Next / Later
 
@@ -13,6 +13,21 @@ Guildhall — a craft guild whose members are models: eight cooperating tools (C
 > **MONTH PLAN (2026-07)**: `phases/2026-07-autonomy-month-spec.md` + the four `[2026-07-03]`
 > ADRs govern this section. Sessions 2026-07-02→03 closed 27 beads (exec #1–#2d + review;
 > details in bd close reasons + git history — not restated here).
+
+### Now — Conductor core consolidation (approved 2026-07-14)
+
+- [x] Architecture, execution plan, and reviewable 26-Bead generator authored:
+      `phases/conductor-core-consolidation-{spec,plan}.md` and
+      `phases/bd-create-conductor-core-consolidation.sh`.
+- [ ] Fresh Lead session: finish/merge the active Conductor adversarial-review worktree (`vly`,
+      `j84`), dry-run/review/apply the Bead generator, lint every queue, then execute by waves.
+- [ ] Wave 0 correctness: audit attribution/source/envelope P0s, Conductor identity/lease/resume,
+      adversarial injection hardening, Bursar fail-closed status, corrected migration corpora.
+- [ ] Waves 1–3: Bursar roster → Hindsight store/events → Conductor loop/jobs → scorecards,
+      attribution, Warden findings, consult/Arena/eval folds.
+- [ ] Wave 4 human-controlled tails: chezmoi Ralph/skills/LaunchAgent cutover and private
+      scorecard-state migration. Never version the Hindsight SQLite database.
+- [ ] Final no-spend four-tool vertical slice; archive Guildhall only after all ten spec gates pass.
 
 ### Now — Phase A: close v1 (~week 1)
 - [x] **GPT-5.6 roster rollout** — Sol/Architect=`max`, Terra/Lead=`xhigh`, Luna=`medium` Junior / `high` Senior; direct Codex backend, per-row effort, Arena/Ralph propagation, and scorecard drift/digest alignment. Landed in Conductor `e4aeda9` + chezmoi scorecard `68d76d3`; 236+1 tests, clippy, installed `conductor` config/drift, Ralph isolated preflights, digest + harness-deck validation, and the read-only Guildhall demo passed. Spec/report: `phases/gpt56-roster-rollout-{spec,report}.md`.
@@ -57,14 +72,17 @@ Root cause (guildhall-y10/6mc): pure logic clean, every integration SEAM fails o
 - [ ] **Audit pipe must be correct**: provenance `provenance-5fu` (empty-msg false-attrib, P0),
       hindsight `hindsight-d96` (agy/beads/harness-deck parsers unwired, P0), suite `guildhall-y10`
       (schema+artifact envelope — the pipe is bare JSON, P0). False attribution > no attribution.
-- [ ] **Warden → shadow/logging mode** (user 2026-07-14): NOT an enforcing gate yet. `warden-wyd`
-      (shadow "would-have" mode) + `warden-4ke` (wire the audit sink — the enabler) + `warden-gqw`
-      (install log-only). Adapter fail-opens (`warden-xpf/zxj/a3x`) drop to P2 accuracy-of-advice.
+- [ ] **Warden → read-only Hindsight filter** (supersedes the same-day shadow-hook direction):
+      `hindsight events | warden inspect` emits advisory findings; no hook install or enforcement.
 - [ ] **conductor injection hardening** (glm-5.2 fresh-eyes): `conductor-zg9` (reviewer prompt
       unfenced → bead text can force verdict:ship) + `conductor-5tg` (stored injection into
       comments/ledger/verifier). Matters even under supervised autonomy.
 
 ### Next — Phase B: SUPERVISED autonomy ladder (retargeted 2026-07-14 — NOT unattended)
+
+> **Superseded as a product direction by the Conductor-core ADR above.** Preserve
+> `conductor-1i9`/`vnu`/`9uk` as explicit-loop prerequisites. Retire ratchet wiring,
+> shadow cutover, and automatic triage backfill instead of completing this ladder.
 
 > **Target changed** (decisions.md `[2026-07-14]`): the few-weeks goal is **supervised autonomy**
 > (batch-approve bounded plan → auto-execute with per-item resume → human reviews after), NOT the
