@@ -183,3 +183,13 @@ The Hindsight SQLite database is derived, never sole truth: raw harness artifact
 **Alternatives considered**: keep eight independently growing products (rejected: most boundaries have not earned separate state/execution); put roster, evidence, policy, and execution into Conductor (rejected: creates the black box the redesign is meant to avoid); keep Ralph as Conductor's permanent inner engine (rejected: two resumable state machines and split truth); make SQLite canonical or add Postgres/DuckDB (rejected: raw evidence must remain inspectable/rebuildable and a local CLI workload does not justify a service); automatically tune Bursar from scorecards (rejected: correlated verifier errors must not escalate model privilege).
 
 **Rationale**: Four questions remain independently useful and testable: Conductor answers how an explicit job completes, Bursar who can run, Hindsight what happened/how profiles performed, and Warden what deserves attention. Everything else becomes data, a job, a skill, or history. Versioned JSONL plus artifact hashes preserves the existing Unix composability ADR while sharply reducing hidden control surfaces.
+
+## [2026-07-17] Roster maintenance UI belongs to Bursar
+
+**Context**: The consolidation spec canceled the old Conductor roster TUI until the read-only Bursar CLI earned operational demand. Bursar now owns the canonical roster and ships `roster list`, `check`, and `snapshot`; the user has explicitly asked to maintain the roster interactively after exercising those surfaces.
+
+**Decision**: Build the optional roster and availability TUI in Bursar (`bursar-vsv`), never Conductor. Roster edits remain staged, validated, diffed, atomically written, and human-confirmed. Manual allow, defer, and clear actions remain append-only availability observations on a visibly separate surface. Hindsight may show evidence and recommendations but cannot apply them, and Conductor continues to own only job selection and fallback policy.
+
+**Supersedes**: only the consolidation spec's no-demand TUI cancellation. It does not change Bursar roster ownership, fail-closed eligibility, or the ban on automatic scorecard-driven roster mutation.
+
+**Rationale**: The read-only CLI established the ownership boundary; the remaining problem is safe human ergonomics, not another source of truth. Keeping the UI in Bursar lets one validator and one roster contract govern both terminal and non-interactive workflows.

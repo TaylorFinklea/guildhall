@@ -121,9 +121,12 @@ rewrite. Fallback chains do **not** belong in Bursar; they are job policy.
 Each provider/profile entry includes resolved enablement and current
 availability with evidence timestamps. Missing config, invalid profile
 references, unknown/stale availability, or an unreadable observation ledger
-cannot become eligible. Bursar offers `check`, `list`, and `snapshot`; no TUI
-is in scope. The active Conductor roster-TUI work is re-homed to these CLI
-surfaces and the TUI itself is cancelled.
+cannot become eligible. Bursar offers `check`, `list`, and `snapshot`. After
+those read-only surfaces shipped, explicit operator demand established the case
+for an optional Bursar-owned roster and availability TUI (`bursar-vsv`). It is
+human-confirmed, uses the same validation and append-only observation paths,
+and never applies a Hindsight recommendation automatically. Conductor still
+does not own roster editing.
 
 ### Conductor run artifacts
 
@@ -221,7 +224,14 @@ The first release uses a closed `JobKind` enum instead of a workflow DSL:
 Configuration binds jobs to Bursar profile IDs. For example, a review job may
 bind two reviewer profiles corresponding to GPT-5.6 Sol and Claude Fable 5,
 but config validation rejects any ID absent from the pinned Bursar snapshot.
-The example does not predeclare either profile in the roster.
+The example does not predeclare either profile in the roster. The validated job
+binding is the single operational source for reviewer and fallback order; skills
+and migration notes defer to it instead of duplicating model-name policy. For
+the requested first review binding, Fable 5 is the preferred reviewer when
+positively eligible, the same target also receives a positively eligible
+non-Anthropic review, and the Lead synthesis judge is independent of both the
+implementation profile and reviewer attempts. A degraded panel is explicit and
+cannot satisfy the product-readiness gate.
 
 `scan`, fleet-wide `cycle`, automatic triage backfill, and the unattended
 ratchet are legacy compatibility surfaces. They receive correctness fixes while
@@ -300,7 +310,12 @@ isolation:
 
 Every attempt also records harness/model version when available, but versions
 do not rewrite the stable Bursar profile ID. The model scorecard and harness
-scorecard are views over the same attempt evidence.
+scorecard are views over the same attempt evidence. Planned and actually
+executed post-fallback profile IDs are separate fields. The interaction fixture
+matrix covers work candidates and fallbacks, qualitative review and repair,
+model-based verification judges, adversarial reviewers and synthesis judges,
+consult calls, and Arena candidates and judges; a multi-call Bead is never
+collapsed into one opaque attempt.
 
 Required metrics:
 
@@ -322,6 +337,10 @@ Human ratings are immutable observation records. A correction appends a new
 record referencing the old one; it does not edit history. Legacy
 `~/.claude/model-bench.jsonl` rows and `model-scorecard.md` Experience Log lines
 are imported once with their original raw references and source labels.
+Conductor may dual-write the legacy ledger only until Hindsight import,
+scorecard, and published-report parity are pinned. The parity gate then removes
+the legacy writer and obsolete scorecard-driven roster-drift path without
+deleting historical inputs.
 
 Hindsight provides:
 
@@ -401,7 +420,8 @@ Guildhall may be archived only when all are true:
 7. Warden consumes Hindsight v2 events and emits findings without writes.
 8. Conductor Arena/eval matches the corrected Gauntlet corpus.
 9. Ralph, scorecard generator, orchestration skills, and state-backup scripts have reviewed compatibility migrations in chezmoi/state repos.
-10. A no-metered-dispatch vertical smoke runs Bursar → Conductor → Hindsight → Warden and verifies every artifact hash/schema boundary.
+10. An installed-binary, no-metered-dispatch vertical smoke runs Bursar → Conductor → Hindsight → Warden in isolated state roots and verifies every artifact hash/schema boundary.
+11. A supervised readiness check proves the configured Fable-plus-non-Anthropic review panel and independent Lead judge are positively eligible, or records an explicit blocking/degraded result that cannot be reported as product-ready.
 
 ## Non-goals
 
@@ -409,7 +429,7 @@ Guildhall may be archived only when all are true:
 - Automatic model promotion, auto-enable, or scorecard-driven routing changes.
 - A general workflow DSL or user-authored plugin runtime.
 - Preserving fleet-wide unattended `cycle`/ratchet behavior as the product goal.
-- Shipping a roster TUI before the read-only CLI earns operational demand.
+- A Conductor-owned roster editor or any automatic scorecard-to-roster change.
 - Migrating raw transcripts into SQLite.
 - Deleting historical repos before parity and rollback artifacts exist.
 
@@ -417,8 +437,9 @@ Guildhall may be archived only when all are true:
 
 - Current Ralph driver: `~/git/chezmoi-personal/private_dot_local/bin/executable_ralph`
 - Current loop policy: `~/git/chezmoi-personal/dot_claude/skills/loops/SKILL.md`
-- Conductor roster and Arena profiles: `~/git/conductor/conductor.toml`
-- Conductor active roster-TUI plan: `~/git/conductor/.docs/ai/current-state.md`
+- Bursar roster and execution profiles: `~/git/bursar/roster.toml`
+- Conductor job and fallback policy: `~/git/conductor/conductor.toml`
+- Bursar roster-TUI backlog: `bursar-vsv` in `~/git/bursar/.beads/`
 - Conductor adversarial-review spec and active worktree state:
   `~/git/conductor/.docs/ai/phases/adversarial-design-review-spec.md` and
   `~/git/.worktrees/conductor-provider-trust-p1/.docs/ai/current-state.md`
