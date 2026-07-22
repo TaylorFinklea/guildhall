@@ -118,12 +118,12 @@
 
 **Context**: The local Codex catalog added `gpt-5.6-sol`, `gpt-5.6-terra`, and `gpt-5.6-luna` with model-specific reasoning options. Conductor previously had no direct Codex backend or per-roster reasoning field, so routing these models through Pi would both fail and lose Sol's `max` level.
 **Decision**: Add direct Codex roster rows and pass effort per dispatch: Sol = Fable-equivalent Architect / Lead at `max`; Terra = Opus-equivalent Lead at `xhigh`; Luna = Sonnet-equivalent, with `low`/`medium` Junior and `high`/`xhigh`/`max` Senior. Sol/Terra may also use `ultra`, but it is not their default; Luna rejects it. These are metered external routes and do not satisfy a structurally-Claude harness constraint. GPT-5.5 remains in the roster.
-**Rationale**: The roster must encode capability and invocation together so Conductor, Ralph, Arena, scorecard drift, and the digest agree on the exact model/effort pair. Per-dispatch effort prevents one global Codex config from accidentally changing a worker's tier.
+**Rationale**: The roster must encode capability and invocation together so Conductor, Ralph, the then-current comparison tooling, scorecard drift, and the digest agree on the exact model/effort pair. Per-dispatch effort prevents one global Codex config from accidentally changing a worker's tier.
 
 ## [2026-07-10] Retire GPT-5.5 from active routing
 
-**Context**: GPT-5.6 Sol, Terra, and Luna are now available with explicit effort-aware roles. Keeping GPT-5.5 as a live roster, alias, Arena profile/judge, and Gauntlet baseline would leave a superseded dispatch path selectable.
-**Decision**: Remove GPT-5.5 from the Conductor roster and Arena configuration, the live scorecard and tiers table, Ralph aliases and enabled models, current dispatch guidance, and Gauntlet's allowlist/baseline. Gauntlet uses Qwen-Max as its runnable Pi baseline; Orchestra's OpenAI boundary route uses GPT-5.6 Terra. Preserve GPT-5.5 in historical ledgers, benchmark rows, and report evidence only. This supersedes the 2026-07-09 decision's temporary preservation of GPT-5.5.
+**Context**: GPT-5.6 Sol, Terra, and Luna are now available with explicit effort-aware roles. Keeping GPT-5.5 as a live roster, alias, comparison profile/judge, and Gauntlet baseline would leave a superseded dispatch path selectable.
+**Decision**: Remove GPT-5.5 from the Conductor roster and then-current comparison configuration, the live scorecard and tiers table, Ralph aliases and enabled models, current dispatch guidance, and Gauntlet's allowlist/baseline. Gauntlet uses Qwen-Max as its runnable Pi baseline; Orchestra's OpenAI boundary route uses GPT-5.6 Terra. Preserve GPT-5.5 in historical ledgers, benchmark rows, and report evidence only. This supersedes the 2026-07-09 decision's temporary preservation of GPT-5.5.
 **Rationale**: A closed roster must not retain a superseded model as a selectable lane. Historical evidence remains useful for scorecard provenance, but must not become a dispatch affordance.
 
 ## [2026-07-13] Charter amendment: stdout JSONL is a permitted live-query layer
@@ -174,7 +174,7 @@
 
 **Context**: The eight-member Guildhall design accumulated overlapping state machines and ownership: Ralph already runs the fresh-context phase loop, Conductor scans/routes/dispatches, Conductor and the live scorecard both describe the roster, Gauntlet owns another executor/eval path, Provenance owns a second evidence store, and Envoy/Foreman remain separate packaging for behavior that can be a job or skill. The user challenged whether the abstractions would earn their keep and chose a Linux-style shape: one focused core plus small pipeable tools. The adversarial reviewer has repeatedly earned its keep and must survive. Model and harness scorecards now also need a durable empirical home.
 
-**Decision**: Adopt `phases/conductor-core-consolidation-spec.md`. **Conductor** owns one explicit, verified, resumable job-loop kernel with a closed first-release job set (`work`, `review`, `consult`, `arena`); the existing adversarial reviewer becomes `review`. **Bursar** owns the versioned provider/execution-profile roster and availability facts; Conductor owns job selection and fallback policy. **Hindsight** owns canonical append-only human observations, a rebuildable SQLite evidence index, attribution, and model/harness/profile/job scorecards; it may propose but never apply roster changes. **Warden** becomes a stateless read-only Hindsight-event filter that emits advisory findings. Provenance folds into Hindsight, Gauntlet into Conductor Arena plus Hindsight scorecards, Envoy into `consult`, and Foreman into a skill. Guildhall remains only through migration proof and then is archived. Ralph becomes a temporary compatibility shim only after Conductor reaches loop parity; Conductor does not wrap Ralph as a second permanent state machine.
+**Decision**: Adopt `phases/conductor-core-consolidation-spec.md`, as amended by the 2026-07-22 role-routing cutover below. **Conductor** owns one explicit, verified, resumable job-loop kernel with a closed first-release job set (`work`, `review`, `consult`, `plan`); the existing N-reviewer plus independent-judge adversarial flow becomes `review`, while `plan` is a separate bounded artifact-producing job. **Bursar** owns strict v2 provider/execution-profile identities, unordered role capabilities, and availability facts; Conductor owns enabled role pools, weights, selection, fallback, and gates. **Hindsight** owns canonical append-only human observations, a rebuildable SQLite evidence index, attribution, and model/harness/profile/job scorecards; it may propose but never apply roster changes. **Warden** becomes a stateless read-only Hindsight-event filter that emits advisory findings. Provenance folds into Hindsight, Gauntlet remains corrected evaluation evidence for Conductor plan/review plus Hindsight scorecards, Envoy folds into `consult`, and Foreman into a skill. Guildhall remains only through migration proof and then is archived. Ralph becomes a temporary compatibility shim only after Conductor reaches loop parity; Conductor does not wrap Ralph as a second permanent state machine.
 
 The Hindsight SQLite database is derived, never sole truth: raw harness artifacts, Git, Conductor run artifacts, and `observations.jsonl` are canonical. Start with SQLite rollback-journal mode, not WAL, because the SQLite WAL-reset corruption bug disclosed in 2026 affects the currently inspected local/bundled versions; WAL requires an explicit fixed-version gate if reconsidered. There is no daemon, broker, workflow DSL, shared Cargo crate, or automatic scorecard-to-roster feedback loop.
 
@@ -193,3 +193,35 @@ The Hindsight SQLite database is derived, never sole truth: raw harness artifact
 **Supersedes**: only the consolidation spec's no-demand TUI cancellation. It does not change Bursar roster ownership, fail-closed eligibility, or the ban on automatic scorecard-driven roster mutation.
 
 **Rationale**: The read-only CLI established the ownership boundary; the remaining problem is safe human ergonomics, not another source of truth. Keeping the UI in Bursar lets one validator and one roster contract govern both terminal and non-interactive workflows.
+
+## [2026-07-22] Add role-aware planning and cut strict v2 state
+
+**Context**: OMP exposes functional model roles, but Bursar v1 carried no role
+capabilities and Conductor reduced an eligible route to one primary plus retry
+fallbacks. The comparison job also duplicated execution policy instead of
+serving the explicit-target product.
+
+**Decision**: Replace the fourth native job with `plan`; the closed set is
+exactly `work|review|consult|plan`. `review` retains its N-reviewer plus
+independent-judge contract. `plan` authors a strict spec or implementation plan
+under bounded peer review and, for specs, a distinct final second opinion. It
+is neither a hidden `work` phase nor another loop engine.
+
+Bursar v2 advertises unordered validated role capabilities and exact
+profile/execution/provider identities. Conductor owns generic role bindings,
+60/20/20 initial plan weights, deterministic durable smooth weighted
+round-robin, retry order, relational reviewer constraints, approvals, and
+stopping rules. Strict `conductor/run@2` and `conductor/event@2` live only in
+`runs-v2/` and pin a copied exact Bursar snapshot; v1 state is never parsed by
+the new binary.
+
+**Supersedes**: the 2026-07-14 fourth-job and v1 run/roster portions, the open
+`conductor-arena-loop` and `conductor-eval-fold` backlog paths, and any active
+operator contract selecting a comparison runtime. Closed v1 Beads and Git
+history remain evidence only. The corrected Gauntlet corpus remains an
+evaluation source for plan/review and does not become another runtime.
+
+**Rationale**: Role capability is a roster fact; weighted selection and review
+policy are Conductor decisions. Durable deterministic rotation gives auditable
+proportional exposure without random streaks, while strict copied snapshots and
+structural v2 state preserve immutable approval and resume safety.

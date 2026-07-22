@@ -16,23 +16,26 @@ The runtime product is now four Unix-style tools: Conductor runs explicit verifi
 
 ### Now — Conductor core consolidation (approved 2026-07-14)
 
-- [x] Architecture, execution plan, and reviewable 26-Bead generator authored:
+- [x] Architecture, execution plan, and reviewable 26-Bead generator authored
+      and amended for strict v2 role-aware routing:
       `phases/conductor-core-consolidation-{spec,plan}.md` and
       `phases/bd-create-conductor-core-consolidation.sh`.
-- [x] Fresh Lead Task 0: Conductor adversarial review landed at `055692e`; the 26-Bead
-      generator was applied, obsolete goals reconciled, and all nine queues pass lint and
-      dependency-cycle checks.
+- [x] Contract/backlog cutover: active job set is `work|review|consult|plan`;
+      strict run v2, role routing, native plan, and plan/review evaluation Beads
+      created; obsolete comparison Beads superseded; active definitions and
+      dependencies reconciled without duplicate Beads.
 - [ ] Wave 0 correctness (started: `provenance-5fu` → `bc2db7b`; `hindsight-d96` → `8ad0446`): audit
       attribution/source/envelope P0s, Conductor identity/lease/resume, adversarial injection
       hardening, Bursar fail-closed status, corrected migration corpora.
-- [ ] Waves 1–3: Bursar roster → Hindsight store/events → Conductor loop/jobs → scorecards,
-      attribution, Warden findings, consult/Arena/eval folds.
+- [ ] Waves 1–3: Bursar roster v2 roles → Hindsight store/events → Conductor
+      run v2/role routing/loop/jobs → scorecards, attribution, Warden findings,
+      consult/plan/review evaluation folds.
 - [ ] Wave 4 human-controlled tails: chezmoi Ralph/skills/LaunchAgent cutover and private
       scorecard-state migration. Never version the Hindsight SQLite database.
-- [ ] Final no-spend four-tool vertical slice; archive Guildhall only after all ten spec gates pass.
+- [ ] Final no-spend four-tool vertical slice; archive Guildhall only after all eleven spec gates pass.
 
 ### Now — Phase A: close v1 (~week 1)
-- [x] **GPT-5.6 roster rollout** — Sol/Architect=`max`, Terra/Lead=`xhigh`, Luna=`medium` Junior / `high` Senior; direct Codex backend, per-row effort, Arena/Ralph propagation, and scorecard drift/digest alignment. Landed in Conductor `e4aeda9` + chezmoi scorecard `68d76d3`; 236+1 tests, clippy, installed `conductor` config/drift, Ralph isolated preflights, digest + harness-deck validation, and the read-only Guildhall demo passed. Spec/report: `phases/gpt56-roster-rollout-{spec,report}.md`.
+- [x] **GPT-5.6 roster rollout** — Sol/Architect=`max`, Terra/Lead=`xhigh`, Luna=`medium` Junior / `high` Senior; direct Codex backend, per-row effort, then-current comparison/Ralph propagation, and scorecard drift/digest alignment. Landed in Conductor `e4aeda9` + chezmoi scorecard `68d76d3`; 236+1 tests, clippy, installed `conductor` config/drift, Ralph isolated preflights, digest + harness-deck validation, and the read-only Guildhall demo passed. Spec/report: `phases/gpt56-roster-rollout-{spec,report}.md`.
 - [ ] **HUMAN**: review and apply the intended chezmoi source changes for GPT-5.5 retirement. Do not wholesale-apply while unrelated HOME drift remains.
 - [x] `conductor-review` — **the v1 gate SHIPPED** (c01377d, gpt-5.5, verified; 153 tests + clippy green).
 - [x] `conductor-bursar` — SHIPPED (000fe3a, gpt-5.5; BursarClient trait+fake, 4/4 acceptance tests, 196/0).

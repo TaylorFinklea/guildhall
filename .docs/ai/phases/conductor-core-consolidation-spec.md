@@ -29,15 +29,16 @@ tool silently editing another tool's state.
 | Conductor's one job | Run one explicit target under one named job until a verifier-backed terminal state. |
 | Fleet discovery | Not core. `scan`/`cycle` remain compatibility surfaces during migration; new runs require an explicit repo plus Bead, plan, or artifact. |
 | Loop engine | Native Conductor state machine. Ralph becomes a temporary compatibility shim only after parity; Conductor does not wrap Ralph as a second state machine. |
-| Jobs in the first release | Closed set: `work`, `review`, `consult`, `arena`. Configuration binds these jobs to Bursar profile IDs and limits; no general workflow DSL. |
-| Adversarial review | Survives intact and becomes the `review` job. The existing `adversarial-review` command remains a compatibility alias during cutover. |
-| Roster owner | Bursar owns providers and execution profiles, including approved tier, ceiling, cost, data policy, enablement, and invocation coordinates. |
-| Routing policy | Conductor owns job selection, fallback order, stopping rules, verification, and approval. Bursar never dispatches or chooses a job. |
+| Jobs in the first release | Closed set: `work`, `review`, `consult`, `plan`. Configuration binds jobs and roles to Bursar profile IDs and limits; no general workflow DSL. |
+| Adversarial review | Survives intact as the `review` job: N provider-diverse reviewers plus an independent Lead judge. The existing `adversarial-review` command remains a compatibility alias during cutover. |
+| Planning | `plan` is a separate bounded job for producing a strict spec or implementation plan. It is not a hidden `work` stage or a second loop engine. |
+| Roster owner | Bursar owns providers, exact execution profiles, unordered role capabilities, and availability facts. |
+| Routing policy | Conductor owns enabled role pools, weights, selection, fallback order, stopping rules, verification, and approval. Bursar never dispatches or chooses a job. |
 | Scorecard owner | Hindsight owns empirical model, harness, execution-profile, and job/profile scorecards. Bursar stores only the human-approved operational roster. |
 | Feedback loop | Hindsight may emit an evidence-pinned roster recommendation. It never writes Bursar config. Human approval is mandatory. |
 | Hindsight database | SQLite is a disposable materialized index. Raw harness artifacts, Git, Conductor run artifacts, and Hindsight's append-only observation journal are canonical. |
 | Provenance | Correlation, attribution, and unreviewed-change queries move into Hindsight after the existing false-attribution defects are corrected and frozen as a parity corpus. |
-| Gauntlet | Golden tasks, discrimination, replay, and judging move into Conductor Arena/eval. Cost and scorecard aggregation move to Hindsight. |
+| Gauntlet | Its corrected corpus remains evaluation evidence for Conductor `plan`/`review`; it does not survive as another executor. Cost and scorecard aggregation move to Hindsight. |
 | Envoy | Its read-only evidence envelope and prompt become Conductor's `consult` job. |
 | Foreman | Becomes a concise skill that creates a spec and reviewable Bead script; the planned Rust binary is retired. |
 | Warden | Read-only and advisory. It consumes Hindsight's event stream and emits findings; it does not install a blocking hook, mutate repos, or write Hindsight state. |
@@ -63,8 +64,8 @@ workflow language, or shared service.
 ```mermaid
 flowchart LR
     Human["Human or fresh orchestrator"] -->|explicit target + job| C["Conductor\nverified loop kernel"]
-    B["Bursar\nroster + availability"] -->|bursar/roster@1 snapshot| C
-    C -->|conductor/run@1 + conductor/event@1| Raw["Durable run artifacts"]
+    B["Bursar\nroster + availability"] -->|bursar/roster@2 snapshot| C
+    C -->|conductor/run@2 + conductor/event@2| Raw["Durable runs-v2 artifacts"]
     Logs["Harness logs + Git + legacy ledgers"] --> H["Hindsight\nSQLite derived index"]
     Raw --> H
     Obs["Append-only human observations"] --> H
@@ -85,15 +86,15 @@ Diagnostics never share stdout with data.
 
 ### Bursar roster snapshot
 
-The canonical version-controlled roster moves from
-`conductor/conductor.toml` to `bursar/roster.toml`. Static config uses
-`bursar/roster-config@1`; the read-only snapshot command emits
-`bursar/roster@1`.
+The canonical version-controlled roster lives in `bursar/roster.toml`. Static
+config uses strict `bursar/roster-config@2`; the read-only snapshot command
+emits strict `bursar/roster@2`.
 
-An execution profile is the operational unit. It binds a model to the harness,
-provider, invocation ID, and reasoning effort that actually run it. Profile IDs
-are opaque, stable, and unique; changing a model/harness/effort combination
-creates a new profile rather than rewriting historical identity.
+An execution profile is the operational unit. `ProfileId` is an opaque stable
+roster label. `ExecutionKey` is the exact provider, model, harness, dispatch
+ID, and reasoning-effort coordinate; both identities are unique. Provider
+diversity compares exact `ProviderId`, while `AvailabilityKey` is only a health
+lookup key and may not collapse diversity.
 
 Required profile fields:
 
@@ -101,70 +102,90 @@ Required profile fields:
 - optional `reasoning_effort`
 - approved `tier`, `ceiling`, `efficiency`, `cost`, and `data_policy`
 - `enabled`
+- a sorted, duplicate-free role array
 
-Provider records carry `provider_id`, the Bursar availability lookup key, and
-manual enablement. This removes Conductor's current hard-coded provider-name
-rewrite. Fallback chains do **not** belong in Bursar; they are job policy.
+Roles are unordered capability facts validated with Bursar's identifier
+grammar. Every enabled profile has `default` and `task`; Junior adds `smol`,
+`tiny`, and `commit`; Senior and Lead add `advisor`; Lead adds `slow` and
+`plan`. Exact confirmed image-capable execution paths add `vision`, and only a
+Lead with confirmed vision adds `designer`. This is the complete initial
+taxonomy. Fallback order, weights, review constraints, and job policy do
+**not** belong in Bursar.
 
 `bursar roster snapshot --config <path> --json` emits:
 
 ```json
 {
-  "schema": "bursar/roster@1",
+  "schema": "bursar/roster@2",
   "generated_at": "RFC3339",
-  "artifact": {"path": "/absolute/path/roster.toml", "sha256": "64-hex"},
+  "source_artifact": {"path": "/absolute/path/roster.toml", "sha256": "64-hex"},
+  "policy_sha256": "64-hex",
   "providers": [],
   "profiles": []
 }
 ```
 
-Each provider/profile entry includes resolved enablement and current
-availability with evidence timestamps. Missing config, invalid profile
-references, unknown/stale availability, or an unreadable observation ledger
-cannot become eligible. Bursar offers `check`, `list`, and `snapshot`. After
-those read-only surfaces shipped, explicit operator demand established the case
-for an optional Bursar-owned roster and availability TUI (`bursar-vsv`). It is
-human-confirmed, uses the same validation and append-only observation paths,
-and never applies a Hindsight recommendation automatically. Conductor still
-does not own roster editing.
+The source hash preserves raw provenance. `policy_sha256` hashes the canonical
+nonvolatile provider/profile/capability projection. A prepared Conductor run
+copies the exact emitted snapshot bytes into a run-local artifact and pins that
+copy's path, size, and SHA-256; authorization and resume never authenticate
+eligibility by rereading only the live roster path.
+
+Each provider/profile entry includes resolved enablement and point-in-time
+availability with evidence timestamps. Missing config, duplicate execution
+coordinates, invalid roles, unknown/stale availability, or an unreadable
+observation ledger cannot become eligible. Bursar offers `check`, `list`, and
+`snapshot`; its optional roster/availability TUI remains human-confirmed and
+uses the same validation and append-only observation paths. Conductor does not
+own roster editing.
 
 ### Conductor run artifacts
 
-Every invocation creates:
+Every v2 invocation creates:
 
 ```text
-~/.local/state/conductor/runs/<run-id>/
-  manifest.json       # conductor/run@1, atomic replacement
-  events.jsonl        # conductor/event@1, append-only
+~/.local/state/conductor/runs-v2/<run-id>/
+  manifest.json       # conductor/run@2, atomic replacement
+  events.jsonl        # conductor/event@2, append-only
   approval.json       # immutable approved envelope when required
+  roster.json         # copied exact bursar/roster@2 snapshot
   attempts/           # stdout, stderr, verifier, and reviewer artifacts
-  artifacts/          # prompt/spec snapshots and hashes
+  artifacts/          # target, prompt, plan, and hash-pinned evidence
 ```
 
-Run IDs are collision-resistant, not second-granular. `manifest.json` pins the
-target, job, Bursar roster artifact hash, approved profiles/fallback envelope,
-limits, verifier, lifecycle state, and final outcome. Every event carries at
-least:
+The v2 binary scans only `runs-v2/`; finished v1 `runs/` and legacy state remain
+inert historical data. Before deployment, cycle/dispatch is quiesced and every
+v1 run that recovery classifies as pending, implementing, or reclaimable is
+resolved. There is no mixed-schema parser.
+
+`conductor/run@2` uses strict job-tagged details so `work`, `review`, `consult`,
+and `plan` cannot carry one another's state. It pins the copied roster snapshot,
+roster-policy digest, exact target artifacts, approved constrained stage routes,
+limits, lifecycle, and final outcome. Plan progress is a tagged transition
+system with immutable author/reviewer bindings and bounded attempts/revisions.
+Every event carries at least:
 
 ```json
 {
-  "schema": "conductor/event@1",
+  "schema": "conductor/event@2",
   "event_id": "stable-id",
   "run_id": "run-id",
   "seq": 1,
   "ts": "RFC3339",
   "kind": "run_started|attempt_started|attempt_finished|verify_finished|review_finished|run_finished|coverage_gap",
-  "job": "work|review|consult|arena",
+  "job": "work|review|consult|plan",
+  "role": "optional-role-id",
+  "stage": "optional-snake-case-stage",
   "profile_id": "optional-profile-id",
-  "target": {"repo": "/absolute/path", "bead": "optional-id"},
-  "artifact_refs": [{"path": "/absolute/path", "sha256": "64-hex"}],
+  "target": {"repo": "/canonical/absolute/path", "artifact": "optional-run-local-ref"},
+  "artifact_refs": [{"path": "/absolute/run-local/path", "sha256": "64-hex"}],
   "outcome": "optional-stable-outcome"
 }
 ```
 
-Conductor emits evidence, not scorecards. During migration it may continue the
-legacy `model-bench.jsonl` write for compatibility, but `conductor/event@1` is
-the cutover source and dual-write ends once Hindsight parity is proven.
+Conductor emits one generic attempt lifecycle for every backend invocation,
+including plan authoring, peer review, revision, second opinion, adversarial
+reviewers, and judges. It emits evidence, not scorecards.
 
 ### Hindsight event stream
 
@@ -217,21 +238,55 @@ The first release uses a closed `JobKind` enum instead of a workflow DSL:
 | Job | Mutation | Selection | Terminal rule |
 |---|---|---|---|
 | `work` | Repo writes allowed inside approved scope | Lowest capable eligible profile, then job-configured fallback | Verified commit and optional qualitative review |
-| `review` | Read-only | Approved provider-diverse reviewer panel plus Lead judge | Complete schema-valid panel and synthesis |
+| `review` | Read-only | Approved provider-diverse N-reviewer panel plus independent Lead judge | Complete schema-valid panel and synthesis |
 | `consult` | Read-only | Explicit ordered profile IDs | Evidence-or-gaps answer envelope |
-| `arena` | Isolated worktrees only | Explicit candidate profile IDs plus judge | All candidates graded; winner application remains separately approved |
+| `plan` | Disposable isolated worktree; no target mutation | Role-compatible weighted planner, peer, and optional second opinion | Strict plan artifact passes every required bounded gate |
 
-Configuration binds jobs to Bursar profile IDs. For example, a review job may
-bind two reviewer profiles corresponding to GPT-5.6 Sol and Claude Fable 5,
-but config validation rejects any ID absent from the pinned Bursar snapshot.
-The example does not predeclare either profile in the roster. The validated job
-binding is the single operational source for reviewer and fallback order; skills
-and migration notes defer to it instead of duplicating model-name policy. For
-the requested first review binding, Fable 5 is the preferred reviewer when
-positively eligible, the same target also receives a positively eligible
-non-Anthropic review, and the Lead synthesis judge is independent of both the
-implementation profile and reviewer attempts. A degraded panel is explicit and
-cannot satisfy the product-readiness gate.
+`review` retains the shipped N-plus-one adversarial contract: immutable
+approval, anonymous provider-diverse reviewers, schema repair, minority
+preservation, and an independent synthesis judge. `plan` is separate. It takes
+one immutable Bead or local-artifact target and produces either a strict spec or
+an implementation plan; it never applies code, mutates Beads, or starts work.
+
+Configuration validates every profile against the pinned Bursar v2 snapshot.
+An unknown job, profile, role, or execution coordinate is a usage/config
+failure. Skills and migration notes defer to validated job and role bindings
+instead of duplicating model-name policy.
+
+### Role-aware plan routing
+
+Conductor owns generic role/profile bindings. The initial `plan` pool is:
+
+- `openai-codex--omp--gpt-5.6-sol--xhigh` at weight 60
+- `anthropic--omp--claude-opus-4-8--max` at weight 20
+- `opencode-go--omp--kimi-k3--max` at weight 20
+
+Weights are relative and need not sum to 100. Smooth
+weighted round-robin is deterministic and durable, with independent lanes keyed
+by roster-policy digest, role, and snake-case plan stage. Hard eligibility is
+applied before weights. A serialized reservation is irreversible at creation;
+cancellation releases capacity but does not rewind rotation.
+
+Authorization pins the complete planner pool and each constrained
+`planner`, `peer_review`, and `second_opinion` route. Planner candidates must
+have legal peer contingencies before approval; spec candidates must have a
+legal pairwise-provider-distinct three-way team. The actual peer and second
+opinion bind only when their stage becomes legal, never from live config.
+
+Specs require peer review and a final distinct second opinion. Implementation
+plans require peer review by default. Peer review returns strict
+`approve|revise`; revision stays on the same author, a valid reviewer verdict
+pins that reviewer, and the revision cap is at most three. A spec second
+opinion returns distinct `accept|reject` and opens no new revision loop. Loss of
+a required legal candidate ends `blocked`, never degraded success.
+
+Plan output is validated into canonical `conductor/plan-document@1` JSON before
+Markdown rendering. Specs require substantive goals, constraints,
+requirements, acceptance, and verification; unresolved open questions end
+`needs_input`. Implementation plans require a deterministic task graph with
+unique IDs, valid dependencies, exact file/symbol targets, changes,
+acceptance, and verify commands. Only validated run-local artifacts leave the
+disposable worktree.
 
 `scan`, fleet-wide `cycle`, automatic triage backfill, and the unattended
 ratchet are legacy compatibility surfaces. They receive correctness fixes while
@@ -314,8 +369,8 @@ scorecard are views over the same attempt evidence. Planned and actually
 executed post-fallback profile IDs are separate fields. The interaction fixture
 matrix covers work candidates and fallbacks, qualitative review and repair,
 model-based verification judges, adversarial reviewers and synthesis judges,
-consult calls, and Arena candidates and judges; a multi-call Bead is never
-collapsed into one opaque attempt.
+consult calls, plan authors and revisions, peer reviewers, and second-opinion
+reviewers; a multi-call job is never collapsed into one opaque attempt.
 
 Required metrics:
 
@@ -366,14 +421,15 @@ Hindsight's `attributions` store and `hindsight attribution` CLI. Only after
 fixture and live-sample parity does the `provenance` command become a warning
 shim and the repo archive.
 
-### Gauntlet into Conductor and Hindsight
+### Gauntlet corpus into plan/review evaluation
 
-Fix the false-PASS and discrimination P1s first. Move golden tasks,
-static lint, smoke discrimination, worktree execution, conjunctive verifier
-plus judge, replay, and A/B comparison into `conductor arena eval`. Arena
-candidates run through the same native loop kernel. Move cost/scorecard
-aggregation to Hindsight. Preserve golden tasks as data; do not preserve a
-second execution engine.
+Fix the false-PASS and discrimination P1s first. Preserve golden tasks, static
+lint, explicit discrimination smoke, worktree integrity, conjunctive verifier
+plus judge, replay, and A/B expectations as a corrected corpus. Fold that
+evidence into plan-document validation, plan peer/second-opinion gates, and the
+surviving adversarial `review` contract. Do not preserve a candidate runtime,
+winner workflow, or second execution engine. Cost and scorecard aggregation
+move to Hindsight.
 
 ### Envoy into the consult job
 
@@ -414,12 +470,12 @@ Guildhall may be archived only when all are true:
 1. The active Conductor adversarial-review worktree is completed, reviewed, and merged.
 2. Existing audit false-attribution and unwired-source P0s are closed.
 3. `bursar roster snapshot` reproduces every enabled current Conductor profile and provider state.
-4. Conductor runs `work`, `review`, `consult`, and `arena` through one native kernel with resumable state and identity-checked verification.
+4. Conductor runs `work`, `review`, `consult`, and `plan` through one native kernel with resumable state and identity-checked verification.
 5. Hindsight rebuilds from canonical inputs and reproduces legacy model/harness scorecards within documented parity tolerances.
 6. Hindsight attribution matches the corrected Provenance corpus.
 7. Warden consumes Hindsight v2 events and emits findings without writes.
-8. Conductor Arena/eval matches the corrected Gauntlet corpus.
-9. Ralph, scorecard generator, orchestration skills, and state-backup scripts have reviewed compatibility migrations in chezmoi/state repos.
+8. Conductor plan/review evaluation matches the corrected Gauntlet corpus without another runtime.
+9. Ralph, role-routing guidance, scorecard generator, orchestration skills, and state-backup scripts have reviewed compatibility migrations in chezmoi/state repos.
 10. An installed-binary, no-metered-dispatch vertical smoke runs Bursar → Conductor → Hindsight → Warden in isolated state roots and verifies every artifact hash/schema boundary.
 11. A supervised readiness check proves the configured Fable-plus-non-Anthropic review panel and independent Lead judge are positively eligible, or records an explicit blocking/degraded result that cannot be reported as product-ready.
 

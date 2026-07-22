@@ -47,6 +47,12 @@ create_bead() {
     "$tier" "$complexity" "$verify")
 
   if existing=$(bd -C "$ROOT/$repo" show "$id" --json 2>/dev/null); then
+    if [[ "$MODE" == "--resume" ]] && jq -e '.[0].status == "closed"' \
+      >/dev/null <<<"$existing"; then
+      PLANNED_IDS+=("$repo/$id")
+      echo "resume: closed Bead preserved as historical state: $repo/$id"
+      return
+    fi
     if [[ "$MODE" == "--resume" ]] && jq -e \
       --arg id "$id" \
       --arg title "$title" \
@@ -56,7 +62,7 @@ create_bead() {
       '.[0].id == $id and .[0].title == $title and .[0].metadata.tier_floor == $tier and .[0].metadata.complexity == $complexity and .[0].metadata.verify_cmd == $verify' \
       >/dev/null <<<"$existing"; then
       PLANNED_IDS+=("$repo/$id")
-      echo "resume: existing Bead matches: $repo/$id"
+      echo "resume: existing open Bead matches: $repo/$id"
       return
     fi
     echo "refusing to overwrite existing Bead: $repo/$id" >&2
@@ -110,33 +116,34 @@ add_dep() {
 # Conductor: one explicit verified job-loop kernel.
 # ---------------------------------------------------------------------------
 
-create_bead conductor conductor-run-contract 1 120 lead M \
-  'cargo test run_event' \
-  'Emit durable versioned run manifests and event JSONL' \
-  'Read the consolidation spec Stable process contracts section first. Files: src/state.rs, src/ledger.rs, src/dispatch_cycle.rs, src/arena.rs, src/adversarial.rs after the active worktree merges, and focused new run-artifact code. Add conductor/run@1 manifest.json and conductor/event@1 events.jsonl beneath one collision-resistant run directory. Reuse the existing atomic plan/report write pattern; do not add scorecard aggregation.' \
-  'Every attempt, verifier, review, coverage gap, and terminal outcome is represented by a stable-schema event; the manifest pins target, job, approved profile envelope, Bursar roster artifact hash, limits, artifacts, lifecycle, and final outcome; unknown schema and partial writes are detected; run IDs cannot collide in a same-second test; legacy cycle and Arena tests remain green.' \
-  'existing correctness gates: conductor-ldq and conductor-z90'
 
-create_bead conductor conductor-bursar-roster 1 180 lead L \
-  'cargo test bursar && cargo test roster && cargo test plan' \
-  'Consume a pinned Bursar roster snapshot and remove Conductor roster ownership' \
-  'Read the consolidation spec Bursar roster snapshot section first. Files: src/config.rs, src/bursar.rs, src/triage.rs, src/plan.rs, src/dispatch_cycle.rs, src/roster_drift.rs, and conductor.toml. Consume bursar/roster@1 through the existing Bursar subprocess seam, pin artifact path and SHA-256 in every approved plan, and migrate selection to Bursar profile IDs. Preserve a read-only legacy parser only for a bounded compatibility window. Do not parse Hindsight scorecards and do not move job fallback policy into Bursar.' \
-  'A missing, malformed, stale, hash-mismatched, disabled, or unavailable profile fails closed before launch and again at dispatch; valid profile IDs route with identical tier, ceiling, cost, data-policy, harness, model, and effort semantics; conductor.toml no longer owns provider or roster rows after cutover; config check identifies the exact Bursar snapshot used.' \
-  'cross-repo-gate: bursar-roster-snapshot; existing correctness gates: conductor-ldz conductor-0ma conductor-1br'
+create_bead conductor conductor-run-v2 1 300 lead XL \
+  'cargo test run && cargo test quarantine && cargo test bursar && cargo clippy --all-targets -- -D warnings' \
+  'Cut Conductor to strict v2 roster and run contracts' \
+  'Read the consolidation spec Stable process contracts and role-aware plan-routing sections first. Files: src/bursar.rs, src/run.rs, src/quarantine.rs, src/dispatch_cycle.rs, src/route.rs, and focused schema fixtures. Consume only bursar/roster@2, validate policy_sha256, copy and pin the exact snapshot bytes per prepared run, and write deny-unknown-fields conductor/run@2 plus conductor/event@2 artifacts under runs-v2. Make job/details, targets, constrained stage routes, and plan progress structural. Quiesce and drain v1 pending, implementing, or reclaimable state before activating the v2 scanner; never scan legacy runs or parse v1/Arena state.' \
+  'Tests reject v1, Arena, unknown fields, duplicate or mismatched execution identities, invalid target/job/state combinations, altered roster snapshots, and mixed-schema scans. Reopen/resume preserves exact transition state, stage bindings, event sequence, and artifact hashes. Finished v1 runs remain inert; deployment preflight proves no actionable v1 state remains. Full focused tests and strict Clippy pass.' \
+  'cross-repo-gate: bursar/roster-config@2 and bursar/roster@2; closed conductor-run-contract and conductor-bursar-roster remain historical evidence'
+
+create_bead conductor conductor-role-routing 1 300 lead XL \
+  'cargo test role_routing && cargo test scheduler && cargo test reservation && cargo clippy --all-targets -- -D warnings' \
+  'Add durable generic role routing and smooth weighted rotation' \
+  'Read the consolidation spec Role-aware plan routing section first. Files: src/config.rs, src/bursar.rs, src/route.rs, src/run.rs, conductor.toml, and focused scheduler/lock modules. Parse strict generic role/profile bindings with nonzero weights and a digest over canonical policy plus the pinned Bursar policy digest. Bind openai-codex--omp--gpt-5.6-sol--xhigh at 60, anthropic--omp--claude-opus-4-8--max at 20, and opencode-go--omp--kimi-k3--max at 20 for the initial plan pool. Implement deterministic smooth weighted round-robin in independent role/stage lanes under fs2 guards. Apply hard eligibility before scoring; persist checked scores, sequence, and irreversible PendingApproval/Committed/Canceled reservations linked to preallocated RunIds. Pin complete planner/peer/second-opinion candidate sets and relational constraints; do not read OMP personal role fallbacks or move policy into Bursar.' \
+  'All-eligible 60/20/20 planner reservations yield exactly 12/4/4 over 20 preparations, including canceled turns. Tests cover deterministic ties, restart persistence, temporary ineligibility without credit accrual, checked arithmetic, policy-digest resets, cancel/commit irreversibility, concurrent preparation, orphan reconciliation, delayed constrained reviewer binding, and fail-closed semantic config. Every bound profile is enabled, eligible, exact-coordinate approved, and tagged with the required role in the pinned snapshot.' \
+  'cross-repo-gate: strict Bursar v2 role capabilities and the three approved OMP plan profiles; depends-on: conductor-run-v2'
 
 create_bead conductor conductor-job-registry 1 120 lead M \
   'cargo test job' \
-  'Add the closed work review consult and arena job registry' \
-  'Read the consolidation spec Conductor loop and job model section first. Files: src/cli.rs, src/config.rs, focused new job module, and templates. Add a closed JobKind enum for work, review, consult, and arena. Config binds each job to Bursar profile IDs, fallback order, mutation posture, limits, verifier, and approval requirements. Do not add an arbitrary workflow language, plugin loader, or fleet scan behavior.' \
-  'All four jobs parse and validate deterministically against a pinned Bursar snapshot; an unknown job or profile is a usage/config failure; read-only jobs cannot request write-capable execution; job explain output shows selection and fallback reasons; legacy CLI tests remain green.' \
-  'depends-on: conductor-bursar-roster'
+  'Add the closed work review consult and plan job registry' \
+  'Read the consolidation spec Conductor loop and job model section first. Files: src/cli.rs, src/config.rs, focused job modules, and templates. Add the closed JobKind set work, review, consult, and plan against strict v2 run details. Review retains the provider-diverse N-reviewer plus independent-judge contract. Plan is a distinct bounded job, not a hidden work stage or second loop engine. Config binds jobs to Bursar profile IDs, mutation posture, limits, verifier, approval, and the generic role-policy seam without adding a workflow language, plugin loader, compatibility parser, or fleet-scan behavior.' \
+  'Exactly work, review, consult, and plan parse and validate against a pinned Bursar v2 snapshot; Arena and unknown jobs fail as usage/config errors. Job-tagged details cannot cross variants, read-only jobs cannot request write-capable execution, plan cannot mutate its target, and explain output shows pinned selection and fallback/constraint reasons. Existing review behavior remains N-plus-one and legacy CLI tests stay green.' \
+  'depends-on: conductor-run-v2'
 
 create_bead conductor conductor-loop-kernel 1 180 lead L \
   'cargo test loop' \
   'Build the native fresh-context resumable explicit-target loop kernel' \
-  'Read the consolidation spec Conductor loop and job model section and the current Ralph driver before editing. Files: src/state.rs, src/dispatch.rs, src/verify.rs, src/plan.rs, src/cli.rs, and focused new loop code. Implement one explicit repo plus Bead or plan target, one fresh harness context per bounded iteration, durable state before and after every subprocess, resume and reclaim, identity-checked commit success, exclusive repo lease, bounded failure continuation, and verifier-gated terminal completion. Reuse existing Exec and verifier seams; do not shell out to Ralph as the steady-state engine.' \
-  'Sandbox tests prove kill-and-resume, unrelated-commit rejection, concurrent-repo-lease rejection, claim release on pre-worker abort, continuation after one failed attempt, max-iteration stop, verifier failure feedback, and successful terminal completion; no test touches a live repo or Beads database; legacy dispatch behavior remains compatible until cutover.' \
-  'existing correctness gates: conductor-1i9 conductor-vnu conductor-9uk conductor-cwl conductor-wxx'
+  'Read the consolidation spec Conductor loop and job model section and the current Ralph driver before editing. Files: src/run.rs, src/dispatch.rs, src/verify.rs, src/plan.rs, src/cli.rs, and focused new loop code. Build on strict v2 run/event state and implement one explicit repo plus Bead or artifact target, one fresh harness context per bounded iteration, durable state before and after every subprocess, resume and reclaim, identity-checked commit success, exclusive repo lease, bounded failure continuation, and verifier-gated terminal completion. Reuse existing Exec and verifier seams; do not shell out to Ralph as the steady-state engine.' \
+  'Sandbox tests prove kill-and-resume, unrelated-commit rejection, concurrent-repo-lease rejection, claim release on pre-worker abort, continuation after one failed attempt, max-iteration stop, verifier failure feedback, and successful terminal completion against runs-v2; no test touches a live repo or Beads database. Legacy dispatch remains isolated compatibility behavior until cutover.' \
+  'existing correctness gates: conductor-1i9 conductor-vnu conductor-9uk conductor-cwl conductor-wxx; depends-on: conductor-run-v2 conductor-job-registry'
 
 create_bead conductor conductor-adversarial-job 1 120 senior M \
   'cargo test adversarial' \
@@ -152,19 +159,19 @@ create_bead conductor conductor-consult-job 2 120 senior M \
   'Golden Envoy question and answer fixtures pass; broken and adversarial fixtures fail visibly; every supported claim has evidence or an explicit gap; the approved profile envelope is pinned; no target-repo mutation occurs; Envoy live transport and MCP remain absent.' \
   'cross-repo-gate: envoy-conductor-corpus; depends-on: conductor-loop-kernel'
 
-create_bead conductor conductor-arena-loop 2 180 lead L \
-  'cargo test arena' \
-  'Run Arena candidates through the native Conductor loop kernel' \
-  'Read src/arena.rs, the current conductor-arena skill, Ralph phase semantics, and the consolidation Arena rules first. Replace Arena candidate Ralph subprocess orchestration with the native explicit-target loop while preserving isolated worktrees, candidate profile as the experimental variable, parallel bounds, verifier and probe capture, judge isolation, winner approval, cleanup, and report behavior. Ralph may appear only in parity tests during migration.' \
-  'Existing Arena fixtures and reports remain compatible; candidates use pinned Bursar profiles and conductor/run@1 artifacts; failure and cleanup are isolated per candidate; no winner applies without the existing approval rule; a sandbox parity test compares old Ralph evidence and new kernel evidence for the same fixture.' \
-  'depends-on: conductor-loop-kernel'
+create_bead conductor conductor-plan-job 1 360 lead XL \
+  'cargo test plan_job && cargo test cli && cargo clippy --all-targets -- -D warnings' \
+  'Implement the bounded native plan job' \
+  'Read the consolidation spec Role-aware plan routing section first. Files: a new src/plan_job.rs distinct from cycle plan code, src/cli.rs, src/run.rs, src/dispatch.rs, src/worker_prompt.rs, src/verify.rs, and plan fixtures. Add prepare/dispatch/status/cancel for one immutable Bead or artifact target. Capture exact target and Bursar snapshot artifacts, output-aware tier/complexity, constrained stage routes, limits, and approval before any model starts. Execute in a disposable worktree; parse strict conductor/plan-document@1 spec or implementation-plan JSON, canonicalize it, hash it, and render Markdown only from the validated value. Implement bounded same-role peer revision and required spec second opinion with provider/execution independence and resume-safe immutable bindings. Never mutate Beads, apply code, start work, or change target HEAD/status/input bytes.' \
+  'Behavioral tests cover strict CLI/config grammar, both plan-document variants and renderers, substantive field/task-graph validation, exact target capture, no target mutation, every-author peer/spec-team contingency, planner fallback before authorship only, same-author revisions, delayed peer binding, same-peer review, pairwise provider diversity, second-opinion rejection, malformed output/repair attempts, revision exhaustion, provider loss, blocked outcomes, cancellation, and crash/resume at every transition. No model starts before exact approval and every invocation has typed role/stage evidence.' \
+  'depends-on: conductor-loop-kernel conductor-run-v2 conductor-role-routing'
 
-create_bead conductor conductor-eval-fold 2 180 lead L \
-  'cargo test eval && cargo test arena' \
-  'Fold corrected Gauntlet golden evaluation into Conductor Arena' \
-  'Read the corrected Gauntlet migration corpus and the consolidation Gauntlet section first. Files: src/arena.rs, focused eval modules, migrated golden-task data, and tests. Import static lint, base-commit discrimination smoke, worktree runner, conjunctive Verify plus judge grading, replay, and A/B comparison. Reuse the native Arena loop and Conductor verifier; do not preserve a second executor or move scorecard aggregation into Conductor.' \
-  'Every migrated golden task fails at base and passes at its reference commit; empty worker output cannot pass; lint is read-only; smoke mutation is explicit and isolated; replay/A-B output matches the corrected corpus; cost and cross-run rankings are absent from Conductor and available to Hindsight through run events.' \
-  'cross-repo-gate: gauntlet-conductor-corpus; depends-on: conductor-arena-loop'
+create_bead conductor conductor-plan-review-eval-fold 2 180 lead L \
+  'cargo test eval && cargo test plan_job && cargo test adversarial && cargo clippy --all-targets -- -D warnings' \
+  'Fold corrected evaluation evidence into plan and review' \
+  'Read the corrected Gauntlet migration corpus and the consolidation Gauntlet section first. Files: plan-document validators, plan peer/second-opinion rubrics, adversarial review fixtures, generic run-event evidence, and migrated corpus fixtures. Reuse corrected static lint, explicit base/reference discrimination, worktree-integrity, conjunctive verifier-plus-judge, replay, and A/B expectations to test plan and review behavior. Do not add a candidate runtime, winner/application workflow, Arena compatibility path, second executor, or Conductor-owned scorecard aggregation.' \
+  'Every imported corpus case has deterministic plan/review expectations; empty or merely schema-shaped output cannot pass; base/reference discrimination remains explicit; target integrity is proven; review stays N-plus-one; plan gates preserve peer and spec second-opinion constraints; replay/A-B evidence is represented through generic job/role/stage attempts for Hindsight. No fresh metered dispatch is required and no legacy comparison command or config remains.' \
+  'cross-repo-gate: gauntlet-conductor-corpus; depends-on: conductor-plan-job conductor-adversarial-job'
 
 # ---------------------------------------------------------------------------
 # Bursar: configured and currently eligible execution profiles.
@@ -173,22 +180,22 @@ create_bead conductor conductor-eval-fold 2 180 lead L \
 create_bead bursar bursar-roster-contract 1 120 lead M \
   'cargo test roster' \
   'Define the versioned Bursar provider and execution-profile roster' \
-  'Read the consolidation spec Bursar roster snapshot section first. Files: Cargo.toml only if a justified dependency is needed, focused roster modules, src/lib.rs, and a checked-in roster.toml. Define bursar/roster-config@1 with stable provider and profile IDs, model, harness, dispatch ID, optional reasoning effort, tier, ceiling, efficiency, cost, data policy, enablement, and availability lookup key. Fallback and job policy remain outside Bursar.' \
-  'Valid config round-trips deterministically; duplicate IDs, dangling providers, invalid enums, incompatible effort fields, unknown keys, and empty invocation coordinates fail closed; disabled provider and profile states remain distinguishable; an ADR records dependency and config decisions; no Conductor or Hindsight files are read.' \
-  'owner-boundary: roster facts only; no dispatch or scorecards'
+  'Read the consolidation spec Bursar roster snapshot section first. Files: focused roster modules, src/lib.rs, and roster.toml. Define strict bursar/roster-config@2 with opaque ProfileId, exact unique ExecutionKey, distinct ProviderId and AvailabilityKey, and private sorted duplicate-free RoleSet. Preserve tier, ceiling, efficiency, cost, data policy, enablement, and invocation coordinates. Require nonempty roles for enabled profiles, validate RoleId with the identifier grammar, and keep fallback, weights, review rules, and job policy outside Bursar.' \
+  'Valid v2 config round-trips deterministically; duplicate IDs, duplicate execution coordinates, duplicate/invalid/empty enabled roles, dangling providers, incompatible effort, unknown keys, and empty invocation coordinates fail closed. Disabled profiles may have no roles. Role ordering is canonical and exact provider identity is preserved for diversity.' \
+  'owner-boundary: unordered capability facts only; no dispatch, weights, fallback, or scorecards'
 
 create_bead bursar bursar-roster-migrate 1 120 senior M \
   'cargo test roster_migration' \
   'Migrate every current Conductor roster profile into Bursar' \
-  'Read the checked-in Conductor conductor.toml and consolidation roster contract first. Populate bursar/roster.toml with every current provider and roster row, assigning stable execution-profile IDs that distinguish harness and reasoning effort. Add a fixture-driven equivalence test comparing the legacy roster snapshot to the new config. Do not copy Arena candidate policy or fallback order as Bursar policy.' \
-  'The equivalence fixture accounts for every enabled and disabled legacy row exactly once; provider lookup aliases become explicit config; tier, ceiling, efficiency, cost, data policy, model, harness, dispatch ID, and reasoning effort match; omissions and duplicates fail the test; roster.toml contains no credentials.' \
+  'Keep the immutable historical migration fixture, prove its execution identities remain a subset of v2, and add separate v2 role fixtures. Populate the complete current role taxonomy and add exact enabled Lead/XL OMP plan profiles openai-codex--omp--gpt-5.6-sol--xhigh, anthropic--omp--claude-opus-4-8--max, and opencode-go--omp--kimi-k3--max with the required models and efforts. Assert vision/designer only for exact harness paths confirmed by catalog/probe; never infer image support from a base model name.' \
+  'The legacy fixture remains byte-unchanged and every historical execution identity appears exactly once in v2. All enabled profiles have default/task plus tier-appropriate roles, the three OMP rows have exact IDs/models/efforts and plan/vision/designer capability, omissions and duplicates fail, and roster.toml contains no credentials or Conductor policy.' \
   'depends-on: bursar-roster-contract'
 
 create_bead bursar bursar-roster-snapshot 1 120 senior M \
   'cargo test roster_snapshot && cargo test status' \
   'Publish read-only Bursar roster list check and snapshot commands' \
-  'Read src/cli.rs, src/status.rs, src/observations.rs, and the consolidation snapshot schema first. Add roster list, roster check, and roster snapshot --json. Join static providers/profiles with status@2 availability, use the config availability key rather than caller-side aliases, and include the roster artifact absolute path and SHA-256. Output data only on stdout and diagnostics on stderr. Do not add an editor or TUI.' \
-  'Snapshot output conforms bursar/roster@1; ordering and hash are deterministic; unreadable provider observations cannot yield eligible profiles; unknown, stale, exhausted, manually disabled, and healthy states are distinguishable; list/check are pure reads; malformed config and missing status fail closed with documented exit codes.' \
+  'Read the consolidation Bursar v2 snapshot contract first. Emit strict bursar/roster@2 with raw source artifact provenance, canonical nonvolatile policy_sha256, exact sorted role/provider/execution identities, and point-in-time availability. Keep RosterSourceArtifact, RosterPolicyDigest, and copied run-local RosterSnapshotArtifact distinct. Output data only on stdout and diagnostics on stderr; do not add job selection or fallback policy.' \
+  'Snapshot output conforms to bursar/roster@2; equivalent role reordering changes the raw TOML hash but preserves policy_sha256; exact emitted bytes receive a separate digest when captured. Unreadable observations, invalid identities, or unknown/stale/exhausted state cannot yield eligibility. List/check are pure reads and malformed config or missing status fails closed.' \
   'existing gate: bursar-trz; depends-on: bursar-roster-migrate'
 
 # ---------------------------------------------------------------------------
@@ -219,9 +226,9 @@ create_bead hindsight hindsight-event-v2 1 120 lead M \
 create_bead hindsight hindsight-conductor-runs 1 120 senior M \
   'cargo test conductor_source' \
   'Ingest Conductor run manifests and events into Hindsight' \
-  'Read conductor/run@1 and conductor/event@1 from the consolidation spec plus the existing Hindsight source-module pattern. Add a Conductor source parser that validates schema, sequence, artifact hashes, profile IDs, job, target, attempts, verifier/reviewer results, usage, and terminal outcome. Store run and attempt rows without importing raw stdout or prompts.' \
-  'Complete, interrupted, resumed, failed, and schema-invalid fixture runs produce the expected run, attempt, artifact, and coverage-gap rows; duplicate ingestion is idempotent; sequence gaps and hash mismatches fail visibly; profile and job dimensions survive for scorecard queries.' \
-  'cross-repo-gate: conductor-run-contract; depends-on: hindsight-store hindsight-ingest'
+  'Read strict conductor/run@2 and conductor/event@2 from the consolidation spec plus the existing Hindsight source-module pattern. Add a Conductor source parser that validates schema, sequence, copied roster snapshot and policy digest, artifact hashes, exact profile/execution/provider identity, job, role, typed stage, target, attempts, verifier/reviewer results, usage, and terminal outcome. Store run and attempt rows without importing raw stdout or prompts; reject v1/Arena rows in the active v2 source.' \
+  'Complete, interrupted, resumed, blocked, rejected, failed, and schema-invalid v2 fixtures produce expected run, stage, attempt, artifact, and coverage-gap rows. Duplicate ingestion is idempotent; sequence gaps and hash mismatches fail visibly; every plan/review call remains distinct; planned and executed identities, role, stage, and job survive scorecard queries.' \
+  'cross-repo-gate: conductor-run-v2; depends-on: hindsight-store hindsight-ingest'
 
 create_bead hindsight hindsight-observations 1 180 senior L \
   'cargo test observations && cargo test legacy_scorecard' \
@@ -309,20 +316,21 @@ create_bead guildhall guildhall-retire 2 120 lead M \
   'bash demo/run.sh --build && bash demo/run.sh all' \
   'Prove the four-tool pipeline and prepare Guildhall for archive' \
   'Read the consolidation cutover gates, current README, USAGE, demo, roadmap, and decisions first. Replace the eight-member runtime demo with a no-metered Bursar to Conductor to Hindsight to Warden vertical slice that verifies schema and artifact hashes. Publish the final ownership and compatibility-shim map, preserve ADR/spec history, remove active claims that retired binaries are products, and prepare an archive handoff without deleting repos or pushing.' \
-  'All ten cutover gates are checked with artifact evidence; the demo performs no metered dispatch and passes from a clean shell; README and USAGE name only the four surviving products and the temporary shims; roadmap has no active Guildhall product work; history remains accessible; archive action is left for the human.' \
+  'All eleven cutover gates are checked with artifact evidence; the demo performs no metered dispatch and passes from a clean shell; README and USAGE name only the four surviving products and the temporary shims; roadmap has no active Guildhall product work; history remains accessible; archive action is left for the human.' \
   'cross-repo-gate: all consolidation Beads plus chezmoi and private-state tails; local gates: guildhall-y10 guildhall-6mc'
 
 # ---------------------------------------------------------------------------
 # Local dependency graph. Cross-repo gates are carried in notes and the plan.
 # ---------------------------------------------------------------------------
 
-add_dep conductor conductor-run-contract conductor-ldq
-add_dep conductor conductor-run-contract conductor-z90
-add_dep conductor conductor-bursar-roster conductor-ldz
-add_dep conductor conductor-bursar-roster conductor-0ma
-add_dep conductor conductor-bursar-roster conductor-1br
-add_dep conductor conductor-job-registry conductor-bursar-roster
-add_dep conductor conductor-loop-kernel conductor-run-contract
+add_dep conductor conductor-run-v2 conductor-ldq
+add_dep conductor conductor-run-v2 conductor-z90
+add_dep conductor conductor-run-v2 conductor-ldz
+add_dep conductor conductor-run-v2 conductor-0ma
+add_dep conductor conductor-run-v2 conductor-1br
+add_dep conductor conductor-role-routing conductor-run-v2
+add_dep conductor conductor-job-registry conductor-run-v2
+add_dep conductor conductor-loop-kernel conductor-run-v2
 add_dep conductor conductor-loop-kernel conductor-job-registry
 add_dep conductor conductor-loop-kernel conductor-1i9
 add_dep conductor conductor-loop-kernel conductor-vnu
@@ -336,8 +344,11 @@ add_dep conductor conductor-adversarial-job conductor-zg9
 add_dep conductor conductor-adversarial-job conductor-5tg
 add_dep conductor conductor-adversarial-job conductor-z8z
 add_dep conductor conductor-consult-job conductor-loop-kernel
-add_dep conductor conductor-arena-loop conductor-loop-kernel
-add_dep conductor conductor-eval-fold conductor-arena-loop
+add_dep conductor conductor-plan-job conductor-loop-kernel
+add_dep conductor conductor-plan-job conductor-run-v2
+add_dep conductor conductor-plan-job conductor-role-routing
+add_dep conductor conductor-plan-review-eval-fold conductor-plan-job
+add_dep conductor conductor-plan-review-eval-fold conductor-adversarial-job
 
 add_dep bursar bursar-roster-migrate bursar-roster-contract
 add_dep bursar bursar-roster-snapshot bursar-roster-migrate

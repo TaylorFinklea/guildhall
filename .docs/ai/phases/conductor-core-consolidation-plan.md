@@ -9,10 +9,11 @@
 kernel, Bursar roster service, Hindsight evidence/scorecard store, and read-only
 Warden filter while preserving the capabilities that have earned their keep.
 
-**Architecture:** Four versioned CLI/file contracts; explicit-target runs;
-SQLite only as Hindsight's rebuildable index; all model/harness feedback remains
-human-gated before Bursar roster changes. Satellite binaries freeze parity
-corpora before becoming shims/history.
+**Architecture:** Four versioned CLI/file contracts; strict Bursar roster v2
+role capabilities; strict Conductor run/event v2 state; explicit-target runs;
+SQLite only as Hindsight's rebuildable index; all model/harness feedback
+remains human-gated before Bursar roster changes. Satellite binaries freeze
+parity corpora before becoming shims/history.
 
 **Tech stack:** Rust 2024 CLIs, TOML, JSON/JSONL, SQLite via `rusqlite`, shell
 compatibility shims, harness-deck reports, Beads metadata.
@@ -27,8 +28,9 @@ compatibility shims, harness-deck reports, Beads metadata.
 - Finish and merge the clean active Conductor adversarial-review worktree
   before touching Conductor main.
 - Never run two writer loops in the same repo.
-- Every Bead retains a runnable `verify_cmd` in both metadata and notes.
-- The fresh orchestrator claims/closes Beads; Ralph/loop workers never call `bd`.
+- Every Bead retains runnable `tier_floor`, `complexity`, and `verify_cmd`
+  metadata; `verify_cmd` is never sourced from notes.
+- The fresh orchestrator claims/closes Beads; loop workers never call `bd`.
 - Existing P0/P1 correctness work is preserved unless this plan explicitly
   names a replacement.
 - Cross-repo gates are prose because Beads cannot encode them; the fresh
@@ -40,12 +42,12 @@ compatibility shims, harness-deck reports, Beads metadata.
 
 | Repo | Files expected to move or appear | Responsibility |
 |---|---|---|
-| `bursar` | `roster.toml`, roster load/validation/snapshot modules, CLI tests | Operational profile catalog and availability |
-| `conductor` | run-event/manifest module, job registry, native loop module, job assets, Arena eval data | Explicit verified job loops |
+| `bursar` | `roster.toml`, strict v2 role/identity validation and snapshot modules, CLI tests | Operational profile capabilities and availability |
+| `conductor` | strict v2 run/event module, role scheduler, job registry, native loop, plan/review assets | Explicit verified job loops |
 | `hindsight` | store/migration/ingest modules, observation journal, scorecard and attribution modules | Evidence index, scorecards, provenance |
 | `warden` | read-only CLI package plus finding schema/rules | Event-stream advice |
 | `provenance` | corrected correlation corpus and compatibility handoff | Attribution parity source |
-| `gauntlet` | corrected eval corpus and migration inventory | Arena/eval parity source |
+| `gauntlet` | corrected eval corpus and migration inventory | Plan/review evaluation evidence |
 | `envoy` | corrected consult corpus | Consult-job parity source |
 | `foreman` | validated skill package and fixture renderer | Skill handoff, no binary |
 | `guildhall` | four-tool demo, retirement map, archived charter/history | Migration proof only |
@@ -54,29 +56,31 @@ compatibility shims, harness-deck reports, Beads metadata.
 
 ## Generated Bead set
 
-The generator creates 26 new Beads. It does not modify or close existing
-Beads. Every ID below is explicit so dependencies and handoffs stay stable.
+The generator declares 26 current Beads. In `--resume` mode it creates only
+missing definitions, validates open IDs/titles/routing metadata, preserves
+closed historical state, and reconciles missing dependency edges without
+duplicating Beads.
 
 ### Conductor — eight Beads
 
 | ID | Purpose | tier_floor / complexity | Local blockers |
 |---|---|---|---|
-| `conductor-run-contract` | Durable `conductor/run@1` manifest and `conductor/event@1` JSONL | lead / M | `conductor-ldq`, `conductor-z90` |
-| `conductor-bursar-roster` | Consume/pin `bursar/roster@1`; remove Conductor roster ownership | lead / L | `conductor-ldz`, `conductor-0ma`, `conductor-1br`; cross: Bursar snapshot |
-| `conductor-job-registry` | Closed `work|review|consult|arena` config bound to Bursar profile IDs | lead / M | `conductor-bursar-roster` |
-| `conductor-loop-kernel` | Native fresh-context, resumable, identity-checked explicit-target loop | lead / L | run contract, jobs, `conductor-1i9`, `vnu`, `9uk`, `cwl`, `wxx` |
-| `conductor-adversarial-job` | Preserve adversarial reviewer as the `review` job and compatibility alias | senior / M | loop kernel, `vly`, `j84`, `zg9`, `5tg`, `z8z` |
+| `conductor-run-v2` | Strict `conductor/run@2` and `conductor/event@2`, copied Bursar v2 snapshot, structural plan state, and `runs-v2/` scanner | lead / XL | existing run/recovery gates; cross: Bursar v2 |
+| `conductor-role-routing` | Generic role/profile policy plus durable smooth-WRR stage reservations | lead / XL | run v2; cross: Bursar v2 role capabilities |
+| `conductor-job-registry` | Closed `work|review|consult|plan` registry | lead / M | run v2 |
+| `conductor-loop-kernel` | Native fresh-context, resumable, identity-checked explicit-target loop | lead / L | run v2, jobs, `conductor-1i9`, `vnu`, `9uk`, `cwl`, `wxx` |
+| `conductor-adversarial-job` | Preserve N-reviewer plus independent-judge behavior as `review` | senior / M | loop kernel, `vly`, `j84`, `zg9`, `5tg`, `z8z` |
 | `conductor-consult-job` | Import Envoy's read-only evidence-or-gaps contract | senior / M | loop kernel; cross: Envoy corpus |
-| `conductor-arena-loop` | Run Arena candidates through the native loop instead of Ralph | lead / L | loop kernel |
-| `conductor-eval-fold` | Import corrected Gauntlet golden/eval behavior into Arena | lead / L | Arena loop; cross: Gauntlet corpus |
+| `conductor-plan-job` | Bounded strict spec/implementation-plan authoring with peer and optional second-opinion gates | lead / XL | loop kernel, run v2, role routing |
+| `conductor-plan-review-eval-fold` | Fold corrected Gauntlet evidence into plan/review validation without another runtime | lead / L | plan job, adversarial review; cross: Gauntlet corpus |
 
 ### Bursar — three Beads
 
 | ID | Purpose | tier_floor / complexity | Local blockers |
 |---|---|---|---|
-| `bursar-roster-contract` | Versioned provider/execution-profile config and validation | lead / M | none |
-| `bursar-roster-migrate` | Move all current Conductor roster rows into Bursar with equivalence fixtures | senior / M | roster contract |
-| `bursar-roster-snapshot` | Read-only list/check/snapshot with artifact hash and resolved availability | senior / M | migration, `bursar-trz` |
+| `bursar-roster-contract` | Strict v2 provider/execution identities and unordered role capabilities | lead / M | none |
+| `bursar-roster-migrate` | Preserve the legacy identity subset and add exact OMP role-capable profiles | senior / M | roster contract |
+| `bursar-roster-snapshot` | Strict v2 list/check/snapshot with source, policy, and exact snapshot digests | senior / M | migration, `bursar-trz` |
 
 ### Hindsight — eight Beads
 
@@ -85,7 +89,7 @@ Beads. Every ID below is explicit so dependencies and handoffs stay stable.
 | `hindsight-store` | Rebuildable SQLite store, migrations, integrity/rebuild commands | lead / L | none |
 | `hindsight-ingest` | Incremental, idempotent ingestion with per-file cursors and isolated gaps | senior / L | store, `d96`, `byi`, `6h8`, `976` |
 | `hindsight-event-v2` | Versioned event envelope with raw artifact path/hash and gap output | lead / M | ingest, `3kn`, `vxd` |
-| `hindsight-conductor-runs` | Ingest Conductor manifests/events into run and attempt rows | senior / M | store + ingest; cross: Conductor run contract |
+| `hindsight-conductor-runs` | Ingest strict Conductor v2 manifests/events into run, stage, and attempt rows | senior / M | store + ingest; cross: Conductor run v2 |
 | `hindsight-observations` | Append-only observation journal plus legacy scorecard/bench import | senior / L | store + ingest |
 | `hindsight-scorecards` | Model, harness, profile, and job-stratified evidence views | lead / L | Conductor runs + observations |
 | `hindsight-scorecard-publish` | Harness-deck publishing and evidence-pinned roster recommendations | senior / M | scorecards |
@@ -115,8 +119,9 @@ Beads. Every ID below is explicit so dependencies and handoffs stay stable.
 
 ## Existing-Bead disposition
 
-The fresh Lead session performs these queue edits only after the new Beads are
-created and after verifying there is no active writer for the affected repo.
+The fresh Lead session performs these queue edits only after the replacement
+Beads are created and after verifying there is no active writer for the
+affected repo.
 
 ### Finish or preserve
 
@@ -133,12 +138,18 @@ created and after verifying there is no active writer for the affected repo.
 - Guildhall: retain `y10` as the event-envelope gate and `6mc` as the live-seam
   definition-of-done gate.
 
+- Closed `conductor-run-contract` and `conductor-bursar-roster` remain immutable
+  historical evidence. `conductor-run-v2` is the canonical strict consumer and
+  run/state replacement; no v1 compatibility parser is added.
+
 ### Replace; do not execute separately
 
 - Conductor roster TUI: `pp0`, `68z`, `c4x` → Bursar roster contract/migration/snapshot.
-- Conductor provider/roster router: `d5j` → Bursar roster; `r6p`, `xm9`,
-  `3u3`, `o5k` → Conductor run contract/job registry plus Bursar list/check.
-- Conductor Arena harness-scorecard plan → Hindsight scorecards/publisher.
+- Conductor provider/roster router: `d5j`, `r6p`, `xm9`, `3u3`, and `o5k` →
+  strict run v2 plus role routing and Bursar v2 list/check.
+- Supersede open `conductor-arena-loop` with `conductor-plan-job`.
+- Supersede open `conductor-eval-fold` with
+  `conductor-plan-review-eval-fold`.
 - Hindsight `3fl` full-scan optimization → `hindsight-ingest`.
 - Hindsight `n79` kind filter → `hindsight-event-v2`.
 - Provenance `y7f` exit/coverage semantics → `hindsight-attribution`.
@@ -157,9 +168,9 @@ created and after verifying there is no active writer for the affected repo.
   loop kernel proves stable. It is an optimization, not a foundation.
 
 Use `bd close <id> --reason "replaced by <new-id> per conductor-core-consolidation-spec"`
-for cross-repo replacements because `bd supersede --with` cannot safely point
-into another repo's Beads database. Use `bd supersede` only for same-repo
-replacements.
+for cross-repo replacements because Beads cannot encode cross-database
+dependencies. Use `bd supersede <old> --with=<new>` for same-repo replacements,
+including the two Conductor replacements above.
 
 ## Execution waves
 
@@ -171,10 +182,12 @@ replacements.
       dirty chezmoi work.
 - [ ] Finish and merge the Conductor adversarial worktree through `vly` and
       `j84`; run its full test/clippy gate.
-- [ ] Run the generator in dry-run mode, inspect all 26 Beads, then apply once.
-- [ ] Run `bd lint` and `bd dep cycles` in every affected repo.
-- [ ] Apply the existing-Bead disposition above, with one explicit queue edit
-      at a time and reasons referencing the spec.
+- [ ] Run the generator in dry-run mode for a fresh database or `--resume` for
+      this applied program; inspect all 26 current definitions and dependencies.
+- [ ] Reconcile the active job-registry/BNC contracts, create the four v2/role/
+      plan Beads, supersede the two open legacy comparison Beads, and update
+      dependency edges before implementation.
+- [ ] Run `bd lint`, `bd dep cycles`, and `bd preflight` for touched queues.
 
 Verify:
 
@@ -211,7 +224,9 @@ cargo test --manifest-path /Users/tfinklea/git/hindsight/Cargo.toml
 
 ### Task 3: Build the focused Conductor kernel
 
-- [ ] Execute run contract → Bursar roster consumer → job registry → loop kernel.
+- [ ] Execute strict run v2 → role routing and job registry → loop kernel.
+- [ ] Execute the bounded plan job only after loop kernel, run v2, role routing,
+      and the Bursar v2 cross-repo gate are ready.
 - [ ] Prove interruption/resume, unrelated-commit rejection, exclusive repo
       lease, bounded failure continuation, and verifier-gated success in a
       sandbox repo.
@@ -239,8 +254,9 @@ Verify: Hindsight Bead commands plus `hdeck validate` on both generated reports.
 ### Task 5: Fold earned capabilities
 
 - [ ] Freeze Provenance, Gauntlet, and Envoy corpora.
-- [ ] Execute Hindsight attribution, Conductor review/consult/Arena/eval, and
-      Warden findings/cutover Beads in dependency order.
+- [ ] Execute Hindsight attribution, Conductor review/consult/plan, the
+      plan/review evaluation fold, and Warden findings/cutover Beads in
+      dependency order.
 - [ ] Validate each new surface against the old corrected corpus before adding
       a warning shim.
 - [ ] Build and validate the Foreman skill; only then retire the deferred binary plan.
@@ -253,10 +269,11 @@ This is the deliberate non-Beads tail because `chezmoi-personal` is the repo's
 documented Beads exception and currently has unrelated dirty work.
 
 - [ ] Add one self-contained `.docs/ai/roadmap.md` item in `chezmoi-personal`
-      covering: Ralph shim to Conductor; `/loops`; `dispatch-to-pi`;
-      `conductor-arena`; retire `guildhall-orchestration`; install Foreman
-      skill; remove scorecard seed/bench-create ownership; replace the Node
-      digest LaunchAgent target with `hindsight scorecard publish`.
+      covering: Ralph shim to Conductor; `/loops`; `dispatch-to-pi`; native
+      `plan` and surviving `review` routing; retire obsolete comparison skills;
+      install Foreman skill; remove scorecard seed/bench-create ownership; and
+      replace the Node digest LaunchAgent target with
+      `hindsight scorecard publish`.
 - [ ] Edit managed sources only; perform path-targeted apply only when the user
       chooses, after a chezmoi reconciliation pass.
 - [ ] Update `model-scorecard-state` sync/restore scripts to preserve the
@@ -269,7 +286,7 @@ inside headless loops.
 ### Task 7: Prove and retire
 
 - [ ] Run the four-tool no-metered vertical slice.
-- [ ] Verify the ten cutover gates in the spec.
+- [ ] Verify the eleven cutover gates in the spec.
 - [ ] Execute `guildhall-retire`: update README/demo/roadmap, point to the four
       owners, preserve ADR/spec history, and prepare archive handoff.
 - [ ] Remove compatibility shims only after at least one real project has run

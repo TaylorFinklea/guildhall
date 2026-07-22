@@ -1,14 +1,14 @@
 # Current State
 
-Branch: `main` — local/unpushed; Conductor-core consolidation approved 2026-07-14.
-Spec: `phases/conductor-core-consolidation-spec.md`; 26 Beads applied/reconciled; all nine queues lint-clean/acyclic.
+Branch: `feat/omp-role-aware-routing` — local/unpushed.
+Spec: `phases/conductor-core-consolidation-spec.md`; strict v2 role-aware contract/backlog cutover complete.
 
 ## Plan
 
-- [x] Conductor adversarial review landed through `vly` + `j84` at `055692e`.
-- [x] Generator applied; obsolete Beads reconciled; all queue gates clean.
-- [ ] Execute Wave 0 one claimed Bead and one repo writer at a time; closes:
-      `provenance-5fu` at `bc2db7b`, `hindsight-d96` at `8ad0446`; audit-pipe P0s precede migrations.
+- [x] Closed job set is `work|review|consult|plan`; review keeps N-plus-one and plan is separate/bounded.
+- [x] Created run-v2, role-routing, plan-job, and plan/review-eval Beads; superseded legacy comparison Beads.
+- [x] Generator resume reconciliation, routing metadata, targeted lint, dependency cycles, and preflight checklist verified.
+- [ ] Execute Bursar v2 → Conductor run v2/role routing → native plan in dependency order.
 
 ## Blockers
 
@@ -17,4 +17,4 @@ Spec: `phases/conductor-core-consolidation-spec.md`; 26 Beads applied/reconciled
 
 ## Open questions
 
-- None architectural. Archive timing is evidence-gated by the ten cutover checks in the spec.
+- None architectural. Archive timing is evidence-gated by the eleven cutover checks in the spec.
