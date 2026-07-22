@@ -22,8 +22,10 @@ The runtime product is now four Unix-style tools: Conductor runs explicit verifi
       `phases/bd-create-conductor-core-consolidation.sh`.
 - [x] Contract/backlog cutover: active job set is `work|review|consult|plan`;
       strict run v2, role routing, native plan, and plan/review evaluation Beads
-      created; obsolete comparison Beads superseded; active definitions and
-      dependencies reconciled without duplicate Beads.
+      created; closed Bursar/Hindsight v1 contracts preserved; new open
+      `bursar-roster-v2-*` and `hindsight-conductor-runs-v2` chains wired;
+      obsolete comparison Beads superseded; active definitions and dependencies
+      reconciled without duplicate Beads.
 - [ ] Wave 0 correctness (started: `provenance-5fu` → `bc2db7b`; `hindsight-d96` → `8ad0446`): audit
       attribution/source/envelope P0s, Conductor identity/lease/resume, adversarial injection
       hardening, Bursar fail-closed status, corrected migration corpora.

@@ -6,9 +6,9 @@ Spec: `phases/conductor-core-consolidation-spec.md`; strict v2 role-aware contra
 ## Plan
 
 - [x] Closed job set is `work|review|consult|plan`; review keeps N-plus-one and plan is separate/bounded.
-- [x] Created run-v2, role-routing, plan-job, and plan/review-eval Beads; superseded legacy comparison Beads.
-- [x] Generator resume reconciliation, routing metadata, targeted lint, dependency cycles, and preflight checklist verified.
-- [ ] Execute Bursar v2 → Conductor run v2/role routing → native plan in dependency order.
+- [x] Created Conductor v2/role/plan Beads and open Bursar/Hindsight v2 chains; preserved closed v1 contracts and superseded comparison Beads.
+- [x] Strict generator resume reconciliation, routing metadata, targeted lint, dependency cycles, and preflight checklist verified.
+- [ ] Execute `bursar-roster-v2-contract` → v2 migrate/snapshot → Conductor run v2/role routing → native plan.
 
 ## Blockers
 

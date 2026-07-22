@@ -112,6 +112,15 @@ Lead with confirmed vision adds `designer`. This is the complete initial
 taxonomy. Fallback order, weights, review constraints, and job policy do
 **not** belong in Bursar.
 
+The executable Bursar v2 backlog is the new open chain
+`bursar-roster-v2-contract` → `bursar-roster-v2-migrate` →
+`bursar-roster-v2-snapshot`. The closed `bursar-roster-contract`,
+`bursar-roster-migrate`, and `bursar-roster-snapshot` Beads remain immutable v1
+implementation evidence and cannot satisfy any v2 gate. Both
+`conductor-run-v2` and `conductor-role-routing` are cross-repo gated on the
+terminal `bursar-roster-v2-snapshot` Bead; `conductor-plan-job` inherits that
+gate through role routing.
+
 `bursar roster snapshot --config <path> --json` emits:
 
 ```json
@@ -355,6 +364,14 @@ that source file's derived rows and replays it. Event IDs deduplicate retries.
 One malformed record produces a coverage gap and does not discard the rest of
 the file. Existing Hindsight P0/P1 parser, discovery, redaction, and gap defects
 must land before their source is admitted to the index.
+
+The closed `hindsight-conductor-runs` Bead and its review findings remain the
+v1 `conductor/run@1` and `conductor/event@1` ingestion evidence. Strict v2
+ingestion is separate open work in `hindsight-conductor-runs-v2`, cross-repo
+gated on `conductor-run-v2` and locally blocked by the completed store and
+ingest foundations. `hindsight-scorecards` depends on that new v2 ingestion
+Bead; v1 close evidence cannot satisfy scorecard parity for plan/review
+role-stage attempts.
 
 ## Scorecards in Hindsight
 

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "fixture-current-v2",
+    "title": "Fixture current v2 contract",
+    "description": "Canonical generated description",
+    "acceptance_criteria": "Canonical generated acceptance",
+    "notes": "tier_floor: lead · complexity: M · verify_cmd: cargo test fixture",
+    "status": "open",
+    "priority": 1,
+    "issue_type": "task",
+    "estimated_minutes": 120,
+    "metadata": {
+      "complexity": "M",
+      "tier_floor": "lead",
+      "verify_cmd": "cargo test fixture"
+    }
+  }
+]

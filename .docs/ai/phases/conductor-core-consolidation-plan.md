@@ -56,17 +56,19 @@ compatibility shims, harness-deck reports, Beads metadata.
 
 ## Generated Bead set
 
-The generator declares 26 current Beads. In `--resume` mode it creates only
-missing definitions, validates open IDs/titles/routing metadata, preserves
-closed historical state, and reconciles missing dependency edges without
-duplicating Beads.
+The generator declares 26 current definitions and an explicit allowlist of
+historical closed IDs. In `--resume` mode it creates only missing definitions,
+requires every current definition to be `open`, and compares ID, title,
+priority, type, estimate, description, acceptance, notes, and routing metadata
+before reconciling dependency edges. Only the named historical IDs may bypass
+that active-contract comparison.
 
 ### Conductor — eight Beads
 
 | ID | Purpose | tier_floor / complexity | Local blockers |
 |---|---|---|---|
-| `conductor-run-v2` | Strict `conductor/run@2` and `conductor/event@2`, copied Bursar v2 snapshot, structural plan state, and `runs-v2/` scanner | lead / XL | existing run/recovery gates; cross: Bursar v2 |
-| `conductor-role-routing` | Generic role/profile policy plus durable smooth-WRR stage reservations | lead / XL | run v2; cross: Bursar v2 role capabilities |
+| `conductor-run-v2` | Strict `conductor/run@2` and `conductor/event@2`, copied Bursar v2 snapshot, structural plan state, and `runs-v2/` scanner | lead / XL | existing run/recovery gates; cross: `bursar-roster-v2-snapshot` |
+| `conductor-role-routing` | Generic role/profile policy plus durable smooth-WRR stage reservations | lead / XL | run v2; cross: `bursar-roster-v2-snapshot` role capabilities |
 | `conductor-job-registry` | Closed `work|review|consult|plan` registry | lead / M | run v2 |
 | `conductor-loop-kernel` | Native fresh-context, resumable, identity-checked explicit-target loop | lead / L | run v2, jobs, `conductor-1i9`, `vnu`, `9uk`, `cwl`, `wxx` |
 | `conductor-adversarial-job` | Preserve N-reviewer plus independent-judge behavior as `review` | senior / M | loop kernel, `vly`, `j84`, `zg9`, `5tg`, `z8z` |
@@ -78,9 +80,9 @@ duplicating Beads.
 
 | ID | Purpose | tier_floor / complexity | Local blockers |
 |---|---|---|---|
-| `bursar-roster-contract` | Strict v2 provider/execution identities and unordered role capabilities | lead / M | none |
-| `bursar-roster-migrate` | Preserve the legacy identity subset and add exact OMP role-capable profiles | senior / M | roster contract |
-| `bursar-roster-snapshot` | Strict v2 list/check/snapshot with source, policy, and exact snapshot digests | senior / M | migration, `bursar-trz` |
+| `bursar-roster-v2-contract` | Strict v2 provider/execution identities and unordered role capabilities | lead / M | none; closed `bursar-roster-contract` is v1 history |
+| `bursar-roster-v2-migrate` | Preserve the immutable v1 identity subset and add exact OMP role-capable profiles | senior / M | `bursar-roster-v2-contract`; closed `bursar-roster-migrate` is v1 history |
+| `bursar-roster-v2-snapshot` | Strict v2 list/check/snapshot with source, policy, and exact snapshot digests | senior / M | `bursar-roster-v2-migrate`, `bursar-trz`; closed `bursar-roster-snapshot` is v1 history |
 
 ### Hindsight — eight Beads
 
@@ -89,9 +91,9 @@ duplicating Beads.
 | `hindsight-store` | Rebuildable SQLite store, migrations, integrity/rebuild commands | lead / L | none |
 | `hindsight-ingest` | Incremental, idempotent ingestion with per-file cursors and isolated gaps | senior / L | store, `d96`, `byi`, `6h8`, `976` |
 | `hindsight-event-v2` | Versioned event envelope with raw artifact path/hash and gap output | lead / M | ingest, `3kn`, `vxd` |
-| `hindsight-conductor-runs` | Ingest strict Conductor v2 manifests/events into run, stage, and attempt rows | senior / M | store + ingest; cross: Conductor run v2 |
+| `hindsight-conductor-runs-v2` | Ingest strict Conductor v2 manifests/events into run, stage, and attempt rows | senior / M | store + ingest; cross: `conductor-run-v2`; closed `hindsight-conductor-runs` is v1 history |
 | `hindsight-observations` | Append-only observation journal plus legacy scorecard/bench import | senior / L | store + ingest |
-| `hindsight-scorecards` | Model, harness, profile, and job-stratified evidence views | lead / L | Conductor runs + observations |
+| `hindsight-scorecards` | Model, harness, profile, and job-stratified evidence views | lead / L | `hindsight-conductor-runs-v2` + observations |
 | `hindsight-scorecard-publish` | Harness-deck publishing and evidence-pinned roster recommendations | senior / M | scorecards |
 | `hindsight-attribution` | Fold corrected Provenance correlation/query/store into Hindsight | lead / L | event v2, `pov`, `w5w`; cross: Provenance corpus |
 
@@ -141,6 +143,13 @@ affected repo.
 - Closed `conductor-run-contract` and `conductor-bursar-roster` remain immutable
   historical evidence. `conductor-run-v2` is the canonical strict consumer and
   run/state replacement; no v1 compatibility parser is added.
+- Closed `bursar-roster-contract`, `bursar-roster-migrate`, and
+  `bursar-roster-snapshot` retain their original v1 descriptions, acceptance,
+  close reasons, and review evidence. The new `bursar-roster-v2-*` chain is the
+  only executable v2 prerequisite, ending at `bursar-roster-v2-snapshot`.
+- Closed `hindsight-conductor-runs` retains its original v1 ingestion contract
+  and findings. `hindsight-conductor-runs-v2` is the only active strict-v2
+  ingestion item, and downstream scorecards depend on it.
 
 ### Replace; do not execute separately
 
@@ -176,24 +185,34 @@ including the two Conductor replacements above.
 
 ### Task 0: Recover and freeze the starting point
 
-- [ ] Read this plan, the spec, every affected repo's `current-state.md`, and
+- [x] Read this plan, the spec, every affected repo's `current-state.md`, and
       run `bd prime` after any context clear.
-- [ ] Verify all repo statuses and `git worktree list`; do not touch unrelated
+- [x] Verify all repo statuses and `git worktree list`; do not touch unrelated
       dirty chezmoi work.
-- [ ] Finish and merge the Conductor adversarial worktree through `vly` and
+- [x] Finish and merge the Conductor adversarial worktree through `vly` and
       `j84`; run its full test/clippy gate.
-- [ ] Run the generator in dry-run mode for a fresh database or `--resume` for
-      this applied program; inspect all 26 current definitions and dependencies.
-- [ ] Reconcile the active job-registry/BNC contracts, create the four v2/role/
-      plan Beads, supersede the two open legacy comparison Beads, and update
-      dependency edges before implementation.
-- [ ] Run `bd lint`, `bd dep cycles`, and `bd preflight` for touched queues.
+- [x] Run the generator in `--resume` for this applied program; inspect all 26
+      current definitions, listed historical IDs, and dependencies.
+- [x] Reconcile the active job-registry/BNC contracts, create the four
+      Conductor v2/role/plan Beads plus the new Bursar/Hindsight v2 Beads,
+      supersede the two open legacy comparison Beads, and update dependency
+      edges before implementation.
+- [x] Run focused `bd lint`, `bd dep cycles`, and `bd preflight` checks for
+      touched queues.
 
-Verify:
+Verify a fresh empty set:
 
 ```bash
 bash -n .docs/ai/phases/bd-create-conductor-core-consolidation.sh
 .docs/ai/phases/bd-create-conductor-core-consolidation.sh --dry-run
+```
+
+Verify this repository's already-applied durable queues:
+
+```bash
+bash .docs/ai/phases/test-bd-create-conductor-core-consolidation.sh
+GUILDHALL_GIT_ROOT=/Users/tfinklea/git \
+  .docs/ai/phases/bd-create-conductor-core-consolidation.sh --resume
 ```
 
 ### Task 1: Close correctness prerequisites
@@ -210,8 +229,11 @@ Rust repo when the narrower command does not cover the integration seam.
 
 ### Task 2: Establish Bursar and Hindsight foundations
 
-- [ ] Execute Bursar roster contract → migration → snapshot.
-- [ ] Execute Hindsight store → ingestion → event v2.
+- [ ] Execute `bursar-roster-v2-contract` → `bursar-roster-v2-migrate` →
+      `bursar-roster-v2-snapshot`.
+- [ ] Execute Hindsight store → ingestion → event v2 foundations; preserve
+      their closed evidence while strict Conductor ingestion remains the new
+      `hindsight-conductor-runs-v2` work.
 - [ ] Close `guildhall-y10` only after v2 producer and compatibility consumers
       reject unknown schemas and verify artifact identity.
 
@@ -225,8 +247,9 @@ cargo test --manifest-path /Users/tfinklea/git/hindsight/Cargo.toml
 ### Task 3: Build the focused Conductor kernel
 
 - [ ] Execute strict run v2 → role routing and job registry → loop kernel.
-- [ ] Execute the bounded plan job only after loop kernel, run v2, role routing,
-      and the Bursar v2 cross-repo gate are ready.
+- [ ] Do not start `conductor-run-v2`, `conductor-role-routing`, or the bounded
+      plan job until the exact cross-repo terminal gate
+      `bursar-roster-v2-snapshot` is closed with v2 verification evidence.
 - [ ] Prove interruption/resume, unrelated-commit rejection, exclusive repo
       lease, bounded failure continuation, and verifier-gated success in a
       sandbox repo.
@@ -241,7 +264,8 @@ cargo clippy --manifest-path /Users/tfinklea/git/conductor/Cargo.toml --all-targ
 
 ### Task 4: Move evidence and scorecards into Hindsight
 
-- [ ] Ingest Conductor runs.
+- [ ] Execute `hindsight-conductor-runs-v2` after `conductor-run-v2`; never use
+      the closed v1 `hindsight-conductor-runs` close proof as this gate.
 - [ ] Add canonical observations and import legacy model-bench/Experience Log.
 - [ ] Build model/harness/profile/job views and publish both scorecard reports.
 - [ ] Validate rebuild parity from canonical inputs before turning off the old

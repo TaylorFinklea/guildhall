@@ -1,0 +1,11 @@
+.[0] as $bead
+| ($bead.id == $id)
+  and ($bead.status == "open")
+  and ($bead.priority == $priority)
+  and ($bead.issue_type == $issue_type)
+  and ($bead.estimated_minutes == $estimate)
+  and ($bead.title == $title)
+  and ($bead.description == $description)
+  and ($bead.acceptance_criteria == $acceptance)
+  and ($bead.notes == $notes)
+  and ($bead.metadata == $metadata)
