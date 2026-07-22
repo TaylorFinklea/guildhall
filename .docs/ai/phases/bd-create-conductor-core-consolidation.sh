@@ -54,7 +54,9 @@ is_historical_closed() {
 
 preserve_closed_bead() {
   local repo="$1" id="$2" existing
-  [[ "$MODE" == "--resume" ]] || return
+  if [[ "$MODE" != "--resume" ]]; then
+    return 0
+  fi
   existing=$(bd -C "$ROOT/$repo" show "$id" --json 2>/dev/null) || {
     echo "missing listed historical Bead: $repo/$id" >&2
     exit 1
@@ -141,6 +143,10 @@ create_bead() {
 
 add_dep() {
   local repo="$1" issue="$2" blocker="$3"
+  if [[ "$MODE" == "--dry-run" ]]; then
+    echo "dry-run dependency: $repo/$issue blocked-by $blocker"
+    return 0
+  fi
   if ! is_planned "$repo/$issue" && ! bd -C "$ROOT/$repo" show "$issue" --json >/dev/null 2>&1; then
     echo "dependency issue does not exist and is not planned: $repo/$issue" >&2
     exit 1
@@ -148,10 +154,6 @@ add_dep() {
   if ! is_planned "$repo/$blocker" && ! bd -C "$ROOT/$repo" show "$blocker" --json >/dev/null 2>&1; then
     echo "dependency blocker does not exist and is not planned: $repo/$blocker" >&2
     exit 1
-  fi
-  if [[ "$MODE" == "--dry-run" ]]; then
-    echo "dry-run dependency: $repo/$issue blocked-by $blocker"
-    return
   fi
   if bd -C "$ROOT/$repo" show "$issue" --json | jq -e \
     --arg blocker "$blocker" '.[0].dependencies[]? | select(.id == $blocker)' \
@@ -240,22 +242,22 @@ create_bead bursar bursar-roster-v2-contract 1 120 lead M \
   'cargo test roster' \
   'Define the strict Bursar v2 provider and execution-profile roster' \
   'Read the consolidation spec Bursar roster snapshot section first. Files: focused roster modules, src/lib.rs, and roster.toml. Define strict bursar/roster-config@2 with opaque ProfileId, exact unique ExecutionKey, distinct ProviderId and AvailabilityKey, and private sorted duplicate-free RoleSet. Preserve tier, ceiling, efficiency, cost, data policy, enablement, and invocation coordinates. Require nonempty roles for enabled profiles, validate RoleId with the identifier grammar, and keep fallback, weights, review rules, and job policy outside Bursar.' \
-  'Valid v2 config round-trips deterministically; duplicate IDs, duplicate execution coordinates, duplicate/invalid/empty enabled roles, dangling providers, incompatible effort, unknown keys, and empty invocation coordinates fail closed. Disabled profiles may have no roles. Role ordering is canonical and exact provider identity is preserved for diversity.' \
-  'owner-boundary: unordered capability facts only; no dispatch, weights, fallback, or scorecards; closed bursar-roster-contract remains immutable v1 evidence'
+  'Valid v2 config round-trips deterministically; duplicate IDs, duplicate execution coordinates, duplicate/invalid/empty enabled roles, dangling providers, incompatible effort, unknown keys, and empty invocation coordinates fail closed. Disabled profiles may have no roles. Role ordering is canonical, exact provider identity is preserved for diversity, and no execution coordinate or capability fact is inferred by parsing an opaque ProfileId.' \
+  'owner-boundary: unordered capability facts only; no dispatch, weights, fallback, or scorecards; identity-boundary: ProfileId labels are never parsed; closed bursar-roster-contract remains immutable v1 evidence'
 
 create_bead bursar bursar-roster-v2-migrate 1 120 senior M \
   'cargo test roster_migration' \
   'Migrate the immutable Bursar v1 identity set into the v2 roster' \
-  'Keep the immutable historical migration fixture, prove its execution identities remain a subset of v2, and add separate v2 role fixtures. Populate the complete current role taxonomy and add exact enabled Lead/XL OMP plan profiles openai-codex--omp--gpt-5.6-sol--xhigh, anthropic--omp--claude-opus-4-8--max, and opencode-go--omp--kimi-k3--max with the required models and efforts. Assert vision/designer only for exact harness paths confirmed by catalog/probe; never infer image support from a base model name.' \
-  'The legacy fixture remains byte-unchanged and every historical execution identity appears exactly once in v2. All enabled profiles have default/task plus tier-appropriate roles, the three OMP rows have exact IDs/models/efforts and plan/vision/designer capability, omissions and duplicates fail, and roster.toml contains no credentials or Conductor policy.' \
-  'depends-on: bursar-roster-v2-contract; closed bursar-roster-migrate remains immutable v1 evidence'
+  'Keep the immutable historical migration fixture, prove its execution identities remain a subset of v2, and add separate v2 role fixtures. Add these enabled rows by asserting ProfileId separately from every field: openai-codex--omp--gpt-5.6-sol--xhigh => ExecutionKey(provider_id=openai-codex, model=gpt-5.6-sol, harness=omp, dispatch_id=openai-codex/gpt-5.6-sol, reasoning_effort=xhigh); anthropic--omp--claude-opus-4-8--max => ExecutionKey(provider_id=anthropic, model=claude-opus-4-8, harness=omp, dispatch_id=anthropic/claude-opus-4-8, reasoning_effort=max); opencode-go--omp--kimi-k3--max => ExecutionKey(provider_id=opencode-go, model=kimi-k3, harness=omp, dispatch_id=opencode-go/kimi-k3, reasoning_effort=max). Every row is tier=lead, ceiling=XL, efficiency=heavy, data_policy=standard, enabled=true, with the sorted roles advisor/default/designer/plan/slow/task/vision. Assert vision/designer only for these exact confirmed harness paths; never infer any fact from a base model name or opaque ProfileId.' \
+  'The legacy fixture remains byte-unchanged and every historical execution identity appears exactly once in v2. Tests assert every ProfileId, ExecutionKey field, enabled Lead/XL envelope, heavy efficiency, standard data policy, and exact sorted advisor/default/designer/plan/slow/task/vision RoleSet for all three OMP rows without parsing their labels. All other enabled profiles have default/task plus tier-appropriate roles; omissions, substitutions, and duplicates fail; roster.toml contains no credentials or Conductor policy.' \
+  'depends-on: bursar-roster-v2-contract; normative matrix: exact OMP execution/profile facts in the consolidation spec; ProfileId is opaque; closed bursar-roster-migrate remains immutable v1 evidence'
 
 create_bead bursar bursar-roster-v2-snapshot 1 120 senior M \
   'cargo test roster_snapshot && cargo test status' \
   'Publish strict Bursar v2 roster list check and snapshot commands' \
   'Read the consolidation Bursar v2 snapshot contract first. Emit strict bursar/roster@2 with raw source artifact provenance, canonical nonvolatile policy_sha256, exact sorted role/provider/execution identities, and point-in-time availability. Keep RosterSourceArtifact, RosterPolicyDigest, and copied run-local RosterSnapshotArtifact distinct. Output data only on stdout and diagnostics on stderr; do not add job selection or fallback policy.' \
-  'Snapshot output conforms to bursar/roster@2; equivalent role reordering changes the raw TOML hash but preserves policy_sha256; exact emitted bytes receive a separate digest when captured. Unreadable observations, invalid identities, or unknown/stale/exhausted state cannot yield eligibility. List/check are pure reads and malformed config or missing status fails closed.' \
-  'existing gate: bursar-trz; depends-on: bursar-roster-v2-migrate; closed bursar-roster-snapshot remains immutable v1 evidence'
+  'Snapshot output conforms to bursar/roster@2; equivalent role reordering changes the raw TOML hash but preserves policy_sha256; exact emitted bytes receive a separate digest when captured. The three mandated OMP rows retain their independently asserted exact ExecutionKeys, enabled Lead/XL envelope, heavy efficiency, standard data policy, and advisor/default/designer/plan/slow/task/vision roles; no field is inferred from ProfileId. Unreadable observations, invalid identities, or unknown/stale/exhausted state cannot yield eligibility. List/check are pure reads and malformed config or missing status fails closed.' \
+  'existing gate: bursar-trz; depends-on: bursar-roster-v2-migrate; required OMP snapshot rows use the exact normative matrix in the consolidation spec; ProfileId is opaque; closed bursar-roster-snapshot remains immutable v1 evidence'
 
 # ---------------------------------------------------------------------------
 # Hindsight: canonical observations plus rebuildable evidence index.

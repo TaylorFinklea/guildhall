@@ -112,6 +112,16 @@ Lead with confirmed vision adds `designer`. This is the complete initial
 taxonomy. Fallback order, weights, review constraints, and job policy do
 **not** belong in Bursar.
 
+The v2 migration **must** add these three enabled profiles with every field
+asserted independently. `ProfileId` remains opaque: neither Bursar nor its tests
+may parse a profile label to derive any execution coordinate or capability fact.
+
+| `profile_id` | `provider_id` | `model` | `harness` | `dispatch_id` | `reasoning_effort` | `tier` | `ceiling` | `efficiency` | `data_policy` | sorted required roles |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `openai-codex--omp--gpt-5.6-sol--xhigh` | `openai-codex` | `gpt-5.6-sol` | `omp` | `openai-codex/gpt-5.6-sol` | `xhigh` | `lead` | `XL` | `heavy` | `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+| `anthropic--omp--claude-opus-4-8--max` | `anthropic` | `claude-opus-4-8` | `omp` | `anthropic/claude-opus-4-8` | `max` | `lead` | `XL` | `heavy` | `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+| `opencode-go--omp--kimi-k3--max` | `opencode-go` | `kimi-k3` | `omp` | `opencode-go/kimi-k3` | `max` | `lead` | `XL` | `heavy` | `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+
 The executable Bursar v2 backlog is the new open chain
 `bursar-roster-v2-contract` → `bursar-roster-v2-migrate` →
 `bursar-roster-v2-snapshot`. The closed `bursar-roster-contract`,

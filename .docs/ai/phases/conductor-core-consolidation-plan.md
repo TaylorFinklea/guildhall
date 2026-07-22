@@ -84,6 +84,16 @@ that active-contract comparison.
 | `bursar-roster-v2-migrate` | Preserve the immutable v1 identity subset and add exact OMP role-capable profiles | senior / M | `bursar-roster-v2-contract`; closed `bursar-roster-migrate` is v1 history |
 | `bursar-roster-v2-snapshot` | Strict v2 list/check/snapshot with source, policy, and exact snapshot digests | senior / M | `bursar-roster-v2-migrate`, `bursar-trz`; closed `bursar-roster-snapshot` is v1 history |
 
+`bursar-roster-v2-migrate` must add the following enabled rows and assert each
+field directly; the opaque `profile_id` is never a source from which another
+field is inferred:
+
+| `profile_id` | exact `ExecutionKey` (`provider_id`, `model`, `harness`, `dispatch_id`, `reasoning_effort`) | tier / ceiling | efficiency / data policy | sorted required roles |
+|---|---|---|---|---|
+| `openai-codex--omp--gpt-5.6-sol--xhigh` | (`openai-codex`, `gpt-5.6-sol`, `omp`, `openai-codex/gpt-5.6-sol`, `xhigh`) | `lead` / `XL` | `heavy` / `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+| `anthropic--omp--claude-opus-4-8--max` | (`anthropic`, `claude-opus-4-8`, `omp`, `anthropic/claude-opus-4-8`, `max`) | `lead` / `XL` | `heavy` / `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+| `opencode-go--omp--kimi-k3--max` | (`opencode-go`, `kimi-k3`, `omp`, `opencode-go/kimi-k3`, `max`) | `lead` / `XL` | `heavy` / `standard` | `advisor`, `default`, `designer`, `plan`, `slow`, `task`, `vision` |
+
 ### Hindsight — eight Beads
 
 | ID | Purpose | tier_floor / complexity | Local blockers |

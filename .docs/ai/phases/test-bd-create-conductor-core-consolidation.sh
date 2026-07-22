@@ -66,22 +66,125 @@ done
 cat >"$FAKE_BIN/bd" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-[[ "$1" == "-C" && "$3" == "show" ]] || exit 2
-id="$4"
-case "$id" in
-  conductor-run-contract|conductor-bursar-roster|conductor-arena-loop|conductor-eval-fold|\
-  bursar-roster-contract|bursar-roster-migrate|bursar-roster-snapshot|\
-  hindsight-conductor-runs|conductor-run-v2)
-    printf '[{"id":"%s","status":"closed"}]\n' "$id"
+[[ "$1" == "-C" ]] || exit 2
+repo="$2"
+operation="$3"
+scenario="${FAKE_BD_SCENARIO:-empty}"
+
+case "$operation" in
+  show)
+    id="$4"
+    if [[ "$scenario" == "collision" ]]; then
+      case "$id" in
+        conductor-run-contract|conductor-bursar-roster|conductor-arena-loop|conductor-eval-fold|\
+        bursar-roster-contract|bursar-roster-migrate|bursar-roster-snapshot|\
+        hindsight-conductor-runs|conductor-run-v2)
+          printf '[{"id":"%s","status":"closed"}]\n' "$id"
+          exit 0
+          ;;
+      esac
+    fi
+    state="$repo/.beads/fake-$id.json"
+    if [[ -f "$state" ]]; then
+      cat "$state"
+      exit 0
+    fi
+    if [[ "$scenario" == "apply" ]]; then
+      case "$id" in
+        conductor-ldq|conductor-z90|conductor-ldz|conductor-0ma|conductor-1br|\
+        conductor-1i9|conductor-vnu|conductor-9uk|conductor-cwl|conductor-wxx|\
+        conductor-vly|conductor-j84|conductor-zg9|conductor-5tg|conductor-z8z|\
+        bursar-trz|hindsight-d96|hindsight-byi|hindsight-6h8|hindsight-976|\
+        hindsight-3kn|hindsight-vxd|hindsight-pov|hindsight-w5w|\
+        provenance-5fu|provenance-a2g|provenance-f7d|provenance-srt|\
+        gauntlet-lj5|gauntlet-289|gauntlet-be9|\
+        envoy-6p5|envoy-ct9|envoy-4yr|guildhall-y10|guildhall-6mc)
+          printf '[{"id":"%s","status":"open","dependencies":[]}]' "$id"
+          exit 0
+          ;;
+      esac
+    fi
+    exit 1
+    ;;
+  create)
+    shift 3
+    id=
+    dry_run=false
+    while (($#)); do
+      case "$1" in
+        --id)
+          id="$2"
+          shift 2
+          ;;
+        --dry-run)
+          dry_run=true
+          shift
+          ;;
+        *)
+          shift
+          ;;
+      esac
+    done
+    [[ -n "$id" ]] || exit 2
+    mode=apply
+    if [[ "$dry_run" == true ]]; then
+      mode=dry-run
+    else
+      printf '[{"id":"%s","status":"open","dependencies":[]}]' "$id" \
+        >"$repo/.beads/fake-$id.json"
+    fi
+    printf 'fake create: %s mode=%s\n' "$id" "$mode"
+    ;;
+  dep)
+    [[ "$4" == "add" ]]
+    printf 'fake dependency: %s blocked-by %s\n' "$5" "$6"
     ;;
   *)
-    exit 1
+    exit 2
     ;;
 esac
 EOF
 chmod +x "$FAKE_BIN/bd"
 
-if GUILDHALL_GIT_ROOT="$FAKE_ROOT" PATH="$FAKE_BIN:$PATH" \
+if ! GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=empty PATH="$FAKE_BIN:$PATH" \
+  "$HERE/bd-create-conductor-core-consolidation.sh" --dry-run \
+  >"$TMP/dry-run.out" 2>&1; then
+  cat "$TMP/dry-run.out" >&2
+  echo 'expected fresh-database --dry-run to render the complete plan' >&2
+  exit 1
+fi
+DRY_RUN_OUTPUT=$(<"$TMP/dry-run.out")
+DRY_RUN_CREATE_COUNT=$(grep -c '^fake create:' <<<"$DRY_RUN_OUTPUT")
+if [[ "$DRY_RUN_CREATE_COUNT" -ne 26 ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'fake create: conductor-run-v2 mode=dry-run'* ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'fake create: guildhall-retire mode=dry-run'* ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'dry-run dependency: conductor/conductor-loop-kernel blocked-by conductor-1i9'* ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'dry run complete: no Beads or dependencies were written'* ]]; then
+  cat "$TMP/dry-run.out" >&2
+  echo 'fresh-database --dry-run output did not contain the complete generated plan' >&2
+  exit 1
+fi
+
+if ! GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=apply PATH="$FAKE_BIN:$PATH" \
+  "$HERE/bd-create-conductor-core-consolidation.sh" --apply \
+  >"$TMP/apply.out" 2>&1; then
+  cat "$TMP/apply.out" >&2
+  echo 'expected --apply to reach and complete definition processing' >&2
+  exit 1
+fi
+APPLY_OUTPUT=$(<"$TMP/apply.out")
+APPLY_CREATE_COUNT=$(grep -c '^fake create:' <<<"$APPLY_OUTPUT")
+if [[ "$APPLY_CREATE_COUNT" -ne 26 ]] \
+  || [[ "$APPLY_OUTPUT" != *'fake create: conductor-run-v2 mode=apply'* ]] \
+  || [[ "$APPLY_OUTPUT" != *'fake create: guildhall-retire mode=apply'* ]] \
+  || [[ "$APPLY_OUTPUT" != *'fake dependency: conductor-loop-kernel blocked-by conductor-1i9'* ]] \
+  || [[ "$APPLY_OUTPUT" != *'Bead creation complete. Run bd lint and bd dep cycles in every affected repo before dispatch.'* ]]; then
+  cat "$TMP/apply.out" >&2
+  echo '--apply output did not contain the complete generated plan' >&2
+  exit 1
+fi
+
+if GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=collision PATH="$FAKE_BIN:$PATH" \
   "$HERE/bd-create-conductor-core-consolidation.sh" --resume \
   >"$TMP/non-open-current.out" 2>&1; then
   echo 'expected generator to reject an unlisted closed current definition' >&2
@@ -93,4 +196,4 @@ if [[ "$NON_OPEN_OUTPUT" != *'refusing non-open current definition: conductor/co
   exit 1
 fi
 
-echo 'reconciliation fixture: canonical match and stale contract/status rejection passed'
+echo 'generator modes: fresh dry-run, apply, and reconciliation rejection passed'
