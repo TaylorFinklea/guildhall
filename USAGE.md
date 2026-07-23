@@ -60,8 +60,6 @@ A real dry-run over your fleet today: **42 repos scanned · 190 ready items · 8
 159 proposed · 31 flagged UNTRIAGED** (missing `tier_floor`/`complexity` — mostly
 patchstand and simmersmith beads).
 
-⚠️ **`arena run` applies the winning patch to your repo by default.** Pass `--no-apply`.
-(Filed as a P2 bead — a fail-closed suite should not auto-apply.)
 
 ⚠️ **`cycle --dry-run` writes a report file** despite the name. That's arguably the point
 — the report *is* the dry-run's product — but it is not side-effect-free.
@@ -305,12 +303,11 @@ ralph -t opencode -n 5                                  # headless Plan-item loo
 |---|---|---|
 | 1 | **A `cargo test` (debug) does NOT update the `~/.local/bin` symlinks — they point at `target/release/`. Rebuild `--release` before trusting a PATH binary.** This bit three times in one session. | inherent |
 | 2 | `hindsight recap` writes a report dir on **every** run (`events` does not) | open (P2) |
-| 3 | `conductor arena run` **auto-applies** the winner — use `--no-apply` | open (P2) |
-| 4 | `provenance query` exits **0** whether it's clean *or blind*. Read the output. | open (P2) |
-| 5 | `gauntlet run` without `--dry-run` **spends real money** | by design |
-| 6 | Provenance can only see back to **2026-07-12** — hindsight's transcript retention. Older commits are honestly reported as uncorrelated, not as clean. | inherent |
-| 7 | **Don't run two agent sessions against the same repo.** Charter invariant 5. A concurrent session `git reset` away a commit during this work; it was only recovered from the reflog because an agent noticed. | **process** |
-| ~~8~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 + mutates~~ · ~~warden exits 0 on crash~~ · ~~`[[repo_policy]]` uncommitted~~ · ~~no `--help` anywhere~~ · ~~no `bursar` predicate~~ · ~~no event stream~~ · ~~gauntlet forked the parser~~ · ~~provenance blind~~ | **FIXED** |
+| 3 | `provenance query` exits **0** whether it's clean *or blind*. Read the output. | open (P2) |
+| 4 | `gauntlet run` without `--dry-run` **spends real money** | by design |
+| 5 | Provenance can only see back to **2026-07-12** — hindsight's transcript retention. Older commits are honestly reported as uncorrelated, not as clean. | inherent |
+| 6 | **Don't run two agent sessions against the same repo.** Charter invariant 5. A concurrent session `git reset` away a commit during this work; it was only recovered from the reflog because an agent noticed. | **process** |
+| ~~7~~ | ~~Nothing on PATH~~ · ~~budget gate fails open~~ · ~~`config check` skips bursar~~ · ~~`scan` exits 1 when healthy~~ · ~~`gauntlet lint` exits 128 + mutates~~ · ~~warden exits 0 on crash~~ · ~~`[[repo_policy]]` uncommitted~~ · ~~no `--help` anywhere~~ · ~~no `bursar` predicate~~ · ~~no event stream~~ · ~~gauntlet forked the parser~~ · ~~provenance blind~~ | **FIXED** |
 
 ## The suite, composed
 
