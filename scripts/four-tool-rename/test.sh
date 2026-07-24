@@ -62,7 +62,12 @@ jq -e '
     ["conductor", "docs/notes/orchestrator-recon.md"],
     ["conductor", "docs/superpowers/plans/2026-07-13-adversarial-design-review.md"],
     ["conductor", "docs/superpowers/plans/2026-07-13-bounded-dispatch-approval.md"],
-    ["conductor", "docs/superpowers/plans/2026-07-13-provider-trust-integration.md"]
+    ["conductor", "docs/superpowers/plans/2026-07-13-provider-trust-integration.md"],
+    ["warden", "adapters/claude_pretooluse/Cargo.toml"],
+    ["warden", "adapters/claude_pretooluse/src/lib.rs"],
+    ["warden", "adapters/claude_pretooluse/src/main.rs"],
+    ["warden", "adapters/claude_pretooluse/tests/adapter_claude.rs"],
+    ["warden", "docs/HANDOFF-install.md"]
   ] and
   all(.historical_allowlist[];
     (.path | type) == "string" and

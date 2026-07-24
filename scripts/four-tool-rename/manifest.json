@@ -173,6 +173,36 @@
       "path": "docs/superpowers/plans/2026-07-13-provider-trust-integration.md",
       "sha256": "82d38fc28319570920d9edc6eba0d56034f6a3f6bf05e227bf49f6e2829c996d",
       "reason": "Completed dated plan."
+    },
+    {
+      "repo": "warden",
+      "path": "adapters/claude_pretooluse/Cargo.toml",
+      "sha256": "35b06ee882f3886569624796aa7b505f67e217b1b73424c8745b58f27cd803af",
+      "reason": "Historical experimental Claude Code adapter package metadata; excluded from the operational workspace."
+    },
+    {
+      "repo": "warden",
+      "path": "adapters/claude_pretooluse/src/lib.rs",
+      "sha256": "4cc0f82f2a81daed011f94414dec698b8b73cd8ce52c5a12cd92fa35e514a1ca",
+      "reason": "Historical experimental Claude Code adapter library source; excluded from the operational workspace."
+    },
+    {
+      "repo": "warden",
+      "path": "adapters/claude_pretooluse/src/main.rs",
+      "sha256": "96cc83e8537af3398eae4b3aa06ba5e2d99f1a9b69e88e96ef8d014a4134406c",
+      "reason": "Historical experimental Claude Code adapter binary source; excluded from the operational workspace."
+    },
+    {
+      "repo": "warden",
+      "path": "adapters/claude_pretooluse/tests/adapter_claude.rs",
+      "sha256": "40212fb32ca2e340e46be4ccc3f183aaa9199eb9c0a08ba336ff57bc38281365",
+      "reason": "Historical experimental Claude Code adapter golden tests; excluded from the operational workspace."
+    },
+    {
+      "repo": "warden",
+      "path": "docs/HANDOFF-install.md",
+      "sha256": "6bee5a30cbe34297c947314f320763eb0c9095e5587ae9944c75633e2a7d3aa8",
+      "reason": "Historical experimental Claude Code adapter handoff; explicitly uninstalled and unsupported."
     }
   ]
 }
