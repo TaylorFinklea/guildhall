@@ -750,7 +750,7 @@
       "repo": "conductor",
       "path": "src/role_routing.rs",
       "literal": "conductor/role-lane@1",
-      "sha256": "d6e73ea5aa9b07b822bd47bb49a6813fc3880bf7a57c8d42db686809aaaccc6c",
+      "sha256": "dab5f36beae7dd8c1af527a800e66d1c256de8fe04512d5c464e2e5039039996",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
