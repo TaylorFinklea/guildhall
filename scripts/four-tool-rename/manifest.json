@@ -774,7 +774,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "Conductor",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -782,7 +782,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "bursar-api",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -790,7 +790,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "bursar/",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -798,7 +798,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "bursar_roster_artifact",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -806,7 +806,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "bursar_roster_source_artifact",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -814,7 +814,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "conductor-runtime",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -822,7 +822,7 @@
       "repo": "conductor",
       "path": "src/state.rs",
       "literal": "conductor/",
-      "sha256": "6acfaf7ff72caaa44da5d1bc414fe917f47091c80e566972ba7414aeb7ce4c63",
+      "sha256": "f0e08d064e32f0f3b07916285c500ef823297eb7cc1f2c67ff2b90f39b657373",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
