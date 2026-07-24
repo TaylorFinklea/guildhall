@@ -750,7 +750,23 @@
       "repo": "conductor",
       "path": "src/role_routing.rs",
       "literal": "conductor/role-lane@1",
-      "sha256": "dab5f36beae7dd8c1af527a800e66d1c256de8fe04512d5c464e2e5039039996",
+      "sha256": "ccc575965986aae78015a0a1127a5b0e537f069e56d9b80787e28e3eb37ac1c9",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/role_routing.rs",
+      "literal": "conductor/run@2",
+      "sha256": "ccc575965986aae78015a0a1127a5b0e537f069e56d9b80787e28e3eb37ac1c9",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/role_routing.rs",
+      "literal": "conductor/event@2",
+      "sha256": "ccc575965986aae78015a0a1127a5b0e537f069e56d9b80787e28e3eb37ac1c9",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
