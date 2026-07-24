@@ -137,19 +137,29 @@ for binary in conductor undertake; do
   fi
 done
 active_runs=0
+unreadable_runs=0
 for root in "$HOME_ROOT/.local/state/conductor" "$HOME_ROOT/.local/state/undertake"; do
   [ -d "$root" ] || continue
-  while IFS= read -r run_manifest; do
-    status=$(jq -r '.status // .outcome // "unknown"' "$run_manifest" 2>/dev/null || printf unknown)
-    case "$status" in
-      accepted|completed|blocked|rejected|failed|cancelled|canceled) ;;
-      *) active_runs=$((active_runs + 1)) ;;
+  for run_manifest in "$root"/runs/*/manifest.json "$root"/runs-v2/*/manifest.json; do
+    [ -f "$run_manifest" ] || continue
+    if ! lifecycle=$(jq -er '.lifecycle | select(type == "string")' "$run_manifest" 2>/dev/null); then
+      unreadable_runs=$((unreadable_runs + 1))
+      continue
+    fi
+    case "$lifecycle" in
+      finished) ;;
+      started|running) active_runs=$((active_runs + 1)) ;;
+      *) unreadable_runs=$((unreadable_runs + 1)) ;;
     esac
-  done < <(find "$root" -type f \( -name run.json -o -name manifest.json \) 2>/dev/null)
+  done
 done
 if [ "$active_processes" -ne 0 ] || [ "$active_runs" -ne 0 ]; then
   add_blocker active-runs-present 'Undertake/Conductor quiescence is not proven.' \
     "$(jq -cn --argjson processes "$active_processes" --argjson runs "$active_runs" '{processes:$processes,runs:$runs}')"
+fi
+if [ "$unreadable_runs" -ne 0 ]; then
+  add_blocker run-state-unreadable 'Undertake/Conductor run lifecycle is malformed or unknown.' \
+    "$(jq -cn --argjson count "$unreadable_runs" '{count:$count}')"
 fi
 
 BWS_STATUS=unavailable

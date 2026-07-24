@@ -91,6 +91,21 @@ mkdir -p "$TEST_HOME/.local/state" "$TEST_HOME/.local/share" "$TEST_HOME/.harnes
 printf '%s\n' 'state evidence' > "$TEST_HOME/.local/state/conductor-ledger"
 printf '%s\n' 'report evidence' > "$TEST_HOME/.harness/reports/conductor-report"
 
+for run in finished-verified finished-accepted; do
+  mkdir -p "$TEST_HOME/.local/state/conductor/runs/$run"
+done
+for run in finished-rejected finished-blocked running started malformed unknown; do
+  mkdir -p "$TEST_HOME/.local/state/conductor/runs-v2/$run"
+done
+printf '%s\n' '{"lifecycle":"finished","outcome":"verified"}' > "$TEST_HOME/.local/state/conductor/runs/finished-verified/manifest.json"
+printf '%s\n' '{"lifecycle":"finished","outcome":"accepted"}' > "$TEST_HOME/.local/state/conductor/runs/finished-accepted/manifest.json"
+printf '%s\n' '{"lifecycle":"finished","outcome":"rejected"}' > "$TEST_HOME/.local/state/conductor/runs-v2/finished-rejected/manifest.json"
+printf '%s\n' '{"lifecycle":"finished","outcome":"blocked"}' > "$TEST_HOME/.local/state/conductor/runs-v2/finished-blocked/manifest.json"
+printf '%s\n' '{"lifecycle":"running"}' > "$TEST_HOME/.local/state/conductor/runs-v2/running/manifest.json"
+printf '%s\n' '{"lifecycle":"started"}' > "$TEST_HOME/.local/state/conductor/runs-v2/started/manifest.json"
+printf '%s\n' '{"lifecycle":' > "$TEST_HOME/.local/state/conductor/runs-v2/malformed/manifest.json"
+printf '%s\n' '{"lifecycle":"paused"}' > "$TEST_HOME/.local/state/conductor/runs-v2/unknown/manifest.json"
+
 SECRET='SECRET_VALUE_MUST_NOT_LEAK'
 export GH_TOKEN="$SECRET" BWS_ACCESS_TOKEN="$SECRET" OPENAI_API_KEY="$SECRET"
 preflight_json="$TMP/preflight.json"
@@ -108,6 +123,8 @@ jq -e '
   (.inventory.active_roots | length) >= 8 and
   all(.inventory.active_roots[]; has("product") and has("kind") and has("path") and has("exists")) and
   any(.blockers[]; .type == "historical-classification-incomplete")
+  and ([.blockers[] | select(.type == "active-runs-present") | .context.runs] == [2])
+  and ([.blockers[] | select(.type == "run-state-unreadable") | .context.count] == [2])
 ' "$preflight_json" >/dev/null || fail "preflight did not emit typed blockers"
 if grep -F "$SECRET" "$preflight_json" >/dev/null; then
   fail "preflight leaked a secret value"
