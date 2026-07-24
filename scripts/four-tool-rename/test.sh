@@ -22,6 +22,11 @@ assert_file "$SNAPSHOT"
 assert_file "$ROLLBACK"
 command -v jq >/dev/null 2>&1 || fail "jq is required"
 
+resolve_worktree_repo() {
+  jq -r --arg repo "$1" \
+    '([.products[] | select(.old == $repo) | .new][0] // $repo)' "$MANIFEST"
+}
+
 jq -e '
   .schema == "four-tool-rename/manifest@1" and
   .owner == "TaylorFinklea" and
@@ -46,6 +51,8 @@ jq -e '
     .repository.new == ("TaylorFinklea/" + .new) and
     .backlog.repository_old == ("TaylorFinklea/" + .backlog.old) and
     .backlog.repository_new == ("TaylorFinklea/" + .backlog.new) and
+    .paths.checkout.old == ("/Users/tfinklea/git/" + .old) and
+    .paths.checkout.new == ("/Users/tfinklea/git/" + .new) and
     (.paths | has("checkout") and has("config") and has("state") and has("report"))
   )
 ' "$MANIFEST" >/dev/null || fail "canonical mapping inventory is invalid"
@@ -100,14 +107,14 @@ jq -e '
 REPO_ROOT=$(jq -r '.paths.repositories_root' "$MANIFEST")
 WORKTREE_ROOT=$(jq -r '.paths.worktrees_root' "$MANIFEST")
 while IFS=$'\t' read -r repo path expected; do
-  file="$WORKTREE_ROOT/$repo/$path"
+  file="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")/$path"
   [ -f "$file" ] || file="$REPO_ROOT/$repo/$path"
   [ -f "$file" ] || fail "allowlisted path is not a file: $repo/$path"
   actual=$(shasum -a 256 "$file" | awk '{print $1}')
   [ "$actual" = "$expected" ] || fail "allowlisted hash mismatch: $repo/$path"
 done < <(jq -r '.historical_allowlist[] | [.repo, .path, .sha256] | @tsv' "$MANIFEST")
 while IFS=$'\t' read -r repo path literal_b64 expected; do
-  file="$WORKTREE_ROOT/$repo/$path"
+  file="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")/$path"
   [ -f "$file" ] || file="$REPO_ROOT/$repo/$path"
   [ -f "$file" ] || fail "value exception path is not a file: $repo/$path"
   literal=$(printf '%s' "$literal_b64" | base64 --decode)

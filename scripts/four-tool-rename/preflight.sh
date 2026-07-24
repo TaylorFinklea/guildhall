@@ -40,6 +40,11 @@ add_candidate() {
 "
 }
 
+resolve_worktree_repo() {
+  jq -r --arg repo "$1" \
+    '([.products[] | select(.old == $repo) | .new][0] // $repo)' "$MANIFEST"
+}
+
 if ! jq -e '
   .schema == "four-tool-rename/manifest@1" and
   (.products | length) == 4 and
@@ -77,7 +82,7 @@ if ! jq -e '
 fi
 
 while IFS=$'\t' read -r repo path expected; do
-  file="$WORKTREE_ROOT/$repo/$path"
+  file="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")/$path"
   [ -f "$file" ] || file="$GIT_ROOT/$repo/$path"
   if [ ! -f "$file" ]; then
     add_blocker historical-path-mismatch 'An immutable-history allowlist file is missing.' \
@@ -92,7 +97,7 @@ while IFS=$'\t' read -r repo path expected; do
 done < <(jq -r '.historical_allowlist[] | [.repo,.path,.sha256] | @tsv' "$MANIFEST")
 
 while IFS=$'\t' read -r repo path literal_b64 expected; do
-  file="$WORKTREE_ROOT/$repo/$path"
+  file="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")/$path"
   [ -f "$file" ] || file="$GIT_ROOT/$repo/$path"
   if [ ! -f "$file" ]; then
     add_blocker historical-value-path-mismatch 'A historical value exception file is missing.' \
@@ -111,7 +116,7 @@ while IFS=$'\t' read -r repo path literal_b64 expected; do
 done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,(.literal | @base64),.sha256] | @tsv' "$MANIFEST")
 
 for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-personal; do
-  path="$WORKTREE_ROOT/$repo"
+  path="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")"
   if [ ! -d "$path" ] || ! git -C "$path" rev-parse --git-dir >/dev/null 2>&1; then
     add_blocker worktree-missing 'Required rename worktree is missing.' \
       "$(jq -cn --arg repo "$repo" '{repo:$repo}')"
@@ -129,41 +134,37 @@ for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-per
 
 done
 
-while IFS=$'\t' read -r old new source target origin backlog_source backlog_target; do
-  repo_path="$GIT_ROOT/$old"
-  [ -d "$repo_path/.git" ] || repo_path="$WORKTREE_ROOT/$old"
+while IFS=$'\t' read -r old new origin; do
+  repo_path="$GIT_ROOT/$new"
+  [ -d "$repo_path/.git" ] || repo_path="$WORKTREE_ROOT/$new"
   if [ ! -d "$repo_path" ]; then
-    add_blocker source-checkout-missing 'Source checkout is missing.' \
-      "$(jq -cn --arg product "$old" '{product:$product}')"
+    add_blocker checkout-missing 'Current checkout is missing.' \
+      "$(jq -cn --arg product "$new" '{product:$product}')"
   else
     actual_origin=$(git -C "$repo_path" remote get-url origin 2>/dev/null || true)
     if [ "$actual_origin" != "$origin" ]; then
-      add_blocker origin-mismatch 'Source checkout origin does not match the manifest.' \
-        "$(jq -cn --arg product "$old" '{product:$product}')"
+      add_blocker origin-mismatch 'Current checkout origin does not match the manifest.' \
+        "$(jq -cn --arg product "$new" '{product:$product}')"
     fi
   fi
 
-done < <(jq -r '.products[] | [.old,.new,.repository.old,.repository.new,.repository.origin_old,.backlog.repository_old,.backlog.repository_new] | @tsv' "$MANIFEST")
+done < <(jq -r '.products[] | [.old,.new,.repository.origin_new] | @tsv' "$MANIFEST")
 
 GH_AUTH=false
 if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
   GH_AUTH=true
-  while IFS=$'\t' read -r source target backlog_source backlog_target; do
-    gh repo view "$source" --json id,nameWithOwner >/dev/null 2>&1 || \
-      add_blocker source-repository-missing 'A source GitHub repository is unavailable.' \
-        "$(jq -cn --arg repository "$source" '{repository:$repository}')"
-    if gh repo view "$target" --json id,nameWithOwner >/dev/null 2>&1; then
-      add_blocker target-slug-unavailable 'A target GitHub repository slug already exists.' \
+  while IFS=$'\t' read -r target backlog_target; do
+    actual=$(gh repo view "$target" --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)
+    if [ "$actual" != "$target" ]; then
+      add_blocker current-repository-missing 'Current GitHub repository is unavailable.' \
         "$(jq -cn --arg repository "$target" '{repository:$repository}')"
     fi
-    gh repo view "$backlog_source" --json id,nameWithOwner >/dev/null 2>&1 || \
-      add_blocker source-backlog-missing 'A source backlog repository is unavailable.' \
-        "$(jq -cn --arg repository "$backlog_source" '{repository:$repository}')"
-    if gh repo view "$backlog_target" --json id,nameWithOwner >/dev/null 2>&1; then
-      add_blocker target-backlog-slug-unavailable 'A target backlog repository slug already exists.' \
+    actual=$(gh repo view "$backlog_target" --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)
+    if [ "$actual" != "$backlog_target" ]; then
+      add_blocker current-backlog-missing 'Current backlog repository is unavailable.' \
         "$(jq -cn --arg repository "$backlog_target" '{repository:$repository}')"
     fi
-  done < <(jq -r '.products[] | [.repository.old,.repository.new,.backlog.repository_old,.backlog.repository_new] | @tsv' "$MANIFEST")
+  done < <(jq -r '.products[] | [.repository.new,.backlog.repository_new] | @tsv' "$MANIFEST")
 else
   add_blocker gh-auth-unavailable 'GitHub CLI authentication is unavailable.'
 fi
@@ -221,7 +222,7 @@ else
 fi
 
 for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-personal; do
-  root="$WORKTREE_ROOT/$repo"
+  root="$WORKTREE_ROOT/$(resolve_worktree_repo "$repo")"
   [ -d "$root/.git" ] || [ -f "$root/.git" ] || continue
   while IFS= read -r rel; do
     [ -n "$rel" ] || continue
