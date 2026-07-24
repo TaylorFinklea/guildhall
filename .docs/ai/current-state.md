@@ -1,7 +1,7 @@
 # Current State
 
-Branch: `feat/omp-role-aware-routing` — local/unpushed.
-Spec: `phases/conductor-core-consolidation-spec.md`; strict v2 role-aware contract/backlog cutover complete.
+Branch: `feat/four-tool-clean-rename` — local/unpushed.
+Spec: `phases/four-tool-rename-spec.md`; Task 1 transaction harness is the active cutover gate.
 
 ## Plan
 
@@ -9,6 +9,11 @@ Spec: `phases/conductor-core-consolidation-spec.md`; strict v2 role-aware contra
 - [x] Created Conductor v2/role/plan Beads and open Bursar/Hindsight v2 chains; preserved closed v1 contracts and superseded comparison Beads.
 - [x] Strict generator resume reconciliation, routing metadata, targeted lint, dependency cycles, and preflight checklist verified.
 - [ ] Execute `bursar-roster-v2-contract` → v2 migrate/snapshot → Conductor run v2/role routing → native plan.
+
+- [x] Establish seven stacked clean rename worktrees from the reviewed role-routing/main heads.
+- [x] Add the canonical four-product/backlog manifest plus read-only typed preflight, snapshot, and rollback dry-run.
+- [ ] Classify every stale-name candidate into an exact hashed historical file or update it before any rename mutation.
+- [ ] Execute Tasks 2–12 in dependency order; no remote, HOME, state, install, or dispatch mutation before their gates.
 
 ## Blockers
 
