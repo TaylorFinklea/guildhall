@@ -3,8 +3,8 @@
 **Status**: operational handoff (Fable 5 → Opus, 2026-07-02). This is the
 distilled how-to from the first real orchestration session (32+ dispatches,
 22 beads verified-closed, zero failed verifies, 3 provider-limit events, 2
-worker-crash recoveries). Conductor will eventually automate this loop; until
-its M4 ships, the Lead session IS Conductor. Everything here is
+worker-crash recoveries). Undertake will eventually automate this loop; until
+its M4 ships, the Lead session IS Undertake. Everything here is
 execution-proven, not theoretical. *(The 2026-07-01 draft of this file was
 truncated mid-write by a session limit; completed 2026-07-02 from the same
 session's evidence.)*
@@ -20,7 +20,7 @@ session's evidence.)*
    Re-claim after a release needs `update <id> --assignee "<model>"` (claim
    errors if already claimed).
 3. **Dispatch**: build the worker prompt from
-   `~/git/conductor/templates/worker-prompt.md` — task data wrapped in
+   `~/git/undertake/templates/worker-prompt.md` — task data wrapped in
    delimiters as untrusted, rules AFTER the data, forbid push/bd/chezmoi/
    out-of-repo writes, require ONE commit + self-run verify. Backends:
    Claude-native work = in-session Sonnet subagent (Opus only for the hardest Lead work);
@@ -46,8 +46,8 @@ session's evidence.)*
    escalations/decisions as ask/approval blocks. Validate with `hdeck validate`
    before publish (write is atomic to `~/.harness/reports/<project>/<run>/`).
    Lead-tier cores additionally get an **independent adversarial review by a
-   different lead than the author** — it caught real bugs twice (conductor-rev1,
-   warden-rev's mandate).
+   different lead than the author** — it caught real bugs twice (undertake-rev1,
+   cautionlight-rev's mandate).
 
 ## Budget caps (user-approved 2026-07-02 — "Moderate")
 
@@ -72,12 +72,12 @@ than shifting the whole queue onto Anthropic.
 
 ## Human-verify tails (verify_cmd under-covers — flag, don't auto-close)
 
-- `conductor-m3b` — run the dry-run cycle live, spot-check the plan output.
-- `conductor-guildhall-dogfood` — dry-run over 3+ real fleet repos; check
+- `undertake-m3b` — run the dry-run cycle live, spot-check the plan output.
+- `undertake-guildhall-dogfood` — dry-run over 3+ real fleet repos; check
   triage routing + dashboard rendering.
-- `hindsight-m3-recap-report` — `harness-deck validate` the written report +
+- `afterfact-m3-recap-report` — `harness-deck validate` the written report +
   eyeball the dashboard.
-- `bursar-m4-cli` — run `bursar status --json` live; eyeball the anthropic
+- `musterroll-m4-cli` — run `musterroll status --json` live; eyeball the anthropic
   window against reality.
 - `provenance-m5` — dogfood run (`annotate` + `query unreviewed-junior` on
   provenance itself); check it renders cleanly.
@@ -88,13 +88,13 @@ than shifting the whole queue onto Anthropic.
 
 ## Sequencing gates now encoded in bd (2026-07-02 hardening)
 
-- `warden-m3` ← blocked on `warden-rev` (the M2 → LEAD review → M3 gate).
-- `conductor-guildhall-dogfood` ← blocked on `conductor-m3b`.
-- `hindsight-m5-hd-beads-sources` ← blocked on `hindsight-m3-recap-report`.
+- `cautionlight-m3` ← blocked on `cautionlight-rev` (the M2 → LEAD review → M3 gate).
+- `undertake-guildhall-dogfood` ← blocked on `undertake-m3b`.
+- `afterfact-m5-hd-beads-sources` ← blocked on `afterfact-m3-recap-report`.
 - `foreman-*` (all 6) — status **deferred**: built LAST; un-defer when the
   other six members ship v1.
-- `conductor-warden` — status **deferred** (v1.5).
-- `conductor-review` — **P1, gates v1** (user decision 2026-07-02; ADR in
+- `undertake-cautionlight` — status **deferred** (v1.5).
+- `undertake-review` — **P1, gates v1** (user decision 2026-07-02; ADR in
   decisions.md).
 
 Cross-REPO edges stay prose-only (bd has no cross-repo primitive) — the graph
@@ -103,6 +103,6 @@ lives in `guildhall-integration-v1-spec.md`; honor it manually.
 ## Crash/limit recovery (twice-proven)
 
 Current stashes: `provenance` stash@{0} (m2 store.rs partial — pop and build
-on it); `hindsight` stash@{0} (m2-pi partial — **orphan-file landmine**: the
+on it); `afterfact` stash@{0} (m2-pi partial — **orphan-file landmine**: the
 stash uses the spec's old `pi_session.rs` filename; fold into the committed
-`pi.rs`, see the bead comment + hindsight decisions.md ADR 2026-07-02).
+`pi.rs`, see the bead comment + afterfact decisions.md ADR 2026-07-02).

@@ -41,10 +41,22 @@
         "repository_new": "TaylorFinklea/backlog-musterroll"
       },
       "paths": {
-        "checkout": {"old": "/Users/tfinklea/git/bursar", "new": "/Users/tfinklea/git/musterroll"},
-        "config": {"old": "/Users/tfinklea/git/bursar/roster.toml", "new": "/Users/tfinklea/git/musterroll/roster.toml"},
-        "state": {"old": "~/.local/state/bursar", "new": "~/.local/state/musterroll"},
-        "report": {"old": null, "new": null}
+        "checkout": {
+          "old": "/Users/tfinklea/git/bursar",
+          "new": "/Users/tfinklea/git/musterroll"
+        },
+        "config": {
+          "old": "/Users/tfinklea/git/bursar/roster.toml",
+          "new": "/Users/tfinklea/git/musterroll/roster.toml"
+        },
+        "state": {
+          "old": "~/.local/state/bursar",
+          "new": "~/.local/state/musterroll"
+        },
+        "report": {
+          "old": null,
+          "new": null
+        }
       }
     },
     {
@@ -63,10 +75,22 @@
         "repository_new": "TaylorFinklea/backlog-undertake"
       },
       "paths": {
-        "checkout": {"old": "/Users/tfinklea/git/conductor", "new": "/Users/tfinklea/git/undertake"},
-        "config": {"old": "/Users/tfinklea/git/conductor/conductor.toml", "new": "/Users/tfinklea/git/undertake/undertake.toml"},
-        "state": {"old": "~/.local/state/conductor", "new": "~/.local/state/undertake"},
-        "report": {"old": "~/.harness/reports/conductor", "new": "~/.harness/reports/undertake"}
+        "checkout": {
+          "old": "/Users/tfinklea/git/conductor",
+          "new": "/Users/tfinklea/git/undertake"
+        },
+        "config": {
+          "old": "/Users/tfinklea/git/conductor/conductor.toml",
+          "new": "/Users/tfinklea/git/undertake/undertake.toml"
+        },
+        "state": {
+          "old": "~/.local/state/conductor",
+          "new": "~/.local/state/undertake"
+        },
+        "report": {
+          "old": "~/.harness/reports/conductor",
+          "new": "~/.harness/reports/undertake"
+        }
       }
     },
     {
@@ -85,10 +109,22 @@
         "repository_new": "TaylorFinklea/backlog-afterfact"
       },
       "paths": {
-        "checkout": {"old": "/Users/tfinklea/git/hindsight", "new": "/Users/tfinklea/git/afterfact"},
-        "config": {"old": null, "new": null},
-        "state": {"old": "~/.local/share/hindsight", "new": "~/.local/share/afterfact"},
-        "report": {"old": "~/.harness/reports/hindsight", "new": "~/.harness/reports/afterfact"}
+        "checkout": {
+          "old": "/Users/tfinklea/git/hindsight",
+          "new": "/Users/tfinklea/git/afterfact"
+        },
+        "config": {
+          "old": null,
+          "new": null
+        },
+        "state": {
+          "old": "~/.local/share/hindsight",
+          "new": "~/.local/share/afterfact"
+        },
+        "report": {
+          "old": "~/.harness/reports/hindsight",
+          "new": "~/.harness/reports/afterfact"
+        }
       }
     },
     {
@@ -107,17 +143,37 @@
         "repository_new": "TaylorFinklea/backlog-cautionlight"
       },
       "paths": {
-        "checkout": {"old": "/Users/tfinklea/git/warden", "new": "/Users/tfinklea/git/cautionlight"},
-        "config": {"old": null, "new": null},
-        "state": {"old": null, "new": null},
-        "report": {"old": null, "new": null}
+        "checkout": {
+          "old": "/Users/tfinklea/git/warden",
+          "new": "/Users/tfinklea/git/cautionlight"
+        },
+        "config": {
+          "old": null,
+          "new": null
+        },
+        "state": {
+          "old": null,
+          "new": null
+        },
+        "report": {
+          "old": null,
+          "new": null
+        }
       }
     }
   ],
   "historical_classification": {
     "complete": false,
     "blocker_type": "historical-classification-incomplete",
-    "policy": "Every stale-name candidate must be classified by an exact hashed file entry or removed from current operational content; wildcard and directory exemptions are forbidden."
+    "policy": "Every stale-name candidate must be classified by an exact hashed file entry or removed from current operational content; wildcard and directory exemptions are forbidden.",
+    "candidate_count": 88,
+    "residual_by_owner": {
+      "bursar": 15,
+      "chezmoi-personal": 52,
+      "conductor": 10,
+      "hindsight": 10,
+      "warden": 1
+    }
   },
   "historical_allowlist": [
     {
@@ -227,6 +283,1266 @@
       "path": ".docs/ai/phases/warden-v1-spec.md",
       "sha256": "760bd35edd3b9ed0ebec1d0ffdf8a65e55c8fcb2d99cebb6c74673dfc20b795b",
       "reason": "Approved dated v1 specification retained as immutable historical evidence."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "2df257b05aaf776617d1e1a1e3924f6cb1f40fda9453a8007b4dcb0a706fea55",
+      "reason": "Append-only Guildhall ADR ledger through the 2026-07-24 suite mapping decision."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/opus-handoff-prompt.md",
+      "sha256": "cb3cfef7ea8e3335eadc2eaec57d38addc4b0280913c6c8ced0c687d76405e3a",
+      "reason": "Completed 2026-07 autonomy-month handoff record."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/2026-07-autonomy-month-spec.md",
+      "sha256": "99521afe2eae746fa23f634ca0ff8106ac8e4c5d16f4503970ce138fdbc83011",
+      "reason": "Completed dated 2026-07 autonomy-month specification."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/envoy-envelope.md",
+      "sha256": "4b68ec8ffcc8367d28f9646f73b14ccd8da02f4ab411c212ad83432f2f62c61c",
+      "reason": "Superseded v1 envelope contract retained as migration evidence."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/gpt56-roster-rollout-report.md",
+      "sha256": "f4c049fb090834cd565bac26675776cb9a3b827f69faa89216326088dd0edaa6",
+      "reason": "Completed dated GPT-5.6 rollout evidence report."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/gpt56-roster-rollout-spec.md",
+      "sha256": "c63d5210fca334b33c1593b685afe0cb180ef0395e44b826ec9ffa578f430d4b",
+      "reason": "Completed dated GPT-5.6 rollout specification."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/ingestion-event-model.md",
+      "sha256": "61a2728ddec5d71975dabe616105e93791dcb9b84b31121f4e792103d3ab9f83",
+      "reason": "Superseded v1 ingestion contract retained as migration evidence."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/unix-composability-spec.md",
+      "sha256": "d5d23d280f4a1b6d783da23bf11550aa4adc18096bca627ea46322a52f58b9af",
+      "reason": "Completed dated Unix-composability specification."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/v1-finish-demo-plan.md",
+      "sha256": "34a0a4e345f3191e28ed0b5478c71351b961d8aaf243354143be537594d22479",
+      "reason": "Completed dated v1 demo implementation plan."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/v1-finish-demo-spec.md",
+      "sha256": "6b115cf7678ddf1fa3cbb18b29776d0735fdfb2decabf9d16bb4baf0047936b3",
+      "reason": "Completed dated v1 demo specification."
+    },
+    {
+      "repo": "guildhall",
+      "path": "openwiki/_plan.md",
+      "sha256": "55ce259b1977ef9b3c77bec33208d212d09f95510a7d66f4e7f814083c8e23c1",
+      "reason": "Generated OpenWiki pilot snapshot adopted 2026-07-09."
+    },
+    {
+      "repo": "guildhall",
+      "path": "openwiki/architecture.md",
+      "sha256": "d5b5cd0d20e487928049f7c836a8079b1c1114012ea586328265baa1545af664",
+      "reason": "Generated OpenWiki pilot snapshot adopted 2026-07-09."
+    },
+    {
+      "repo": "guildhall",
+      "path": "openwiki/operations.md",
+      "sha256": "547ed722ad4cdc126d2ac8fbd633e6e60c3a3649a11e3854def8bb38c92c5fa6",
+      "reason": "Generated OpenWiki pilot snapshot adopted 2026-07-09."
+    },
+    {
+      "repo": "guildhall",
+      "path": "openwiki/quickstart.md",
+      "sha256": "b0bad72fab639330e5425845ee1c3c14798ae20f6d81590b174eaedc69d92642",
+      "reason": "Generated OpenWiki pilot snapshot adopted 2026-07-09."
+    },
+    {
+      "repo": "guildhall",
+      "path": "openwiki/workflows.md",
+      "sha256": "47671b24acf162223b6ade9051e2fae9f6c520c0cc2552192896c053ffe9bad4",
+      "reason": "Generated OpenWiki pilot snapshot adopted 2026-07-09."
+    },
+    {
+      "repo": "bursar",
+      "path": ".docs/ai/phases/bursar-v1-spec.md",
+      "sha256": "0a82e8817d8b948b603ec06848bf7ec901267e09d7b42b3d76fec37a8ee699ae",
+      "reason": "Completed dated v1 specification retained as immutable history."
+    },
+    {
+      "repo": "bursar",
+      "path": ".docs/ai/phases/provider-availability-v2-spec.md",
+      "sha256": "b65a67685dc8bcf83c9edd095a8df34d0577d8987e6d649f1bc20be9b6f89e77",
+      "reason": "Completed dated provider-availability v2 specification."
+    },
+    {
+      "repo": "bursar",
+      "path": "docs/superpowers/plans/2026-07-13-provider-availability-v2.md",
+      "sha256": "d99ab2fda296510899ef860612bc1ad17343ddf92d36233250e3719c595802e8",
+      "reason": "Completed dated provider-availability implementation plan."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/adversarial-design-review-report.md",
+      "sha256": "6296655bdfff2b929f6de054404c7b6cfc8523d4916586fff07126d169df7140",
+      "reason": "Completed adversarial design-review report."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/bounded-dispatch-approval-report.md",
+      "sha256": "70853ef1895398d9cd906bea1d02cef04b795524a407e70ccb38e34952b5edfb",
+      "reason": "Completed bounded-dispatch approval report."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/conductor-v1-spec.md",
+      "sha256": "fa2b92defa94af55feba20415c187d596f9ac3a8468d5ed600cba297f1eb9a9f",
+      "reason": "Completed dated v1 specification retained as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/openwiki-pilot-spec.md",
+      "sha256": "c76bfbd000cb59f45e366bf28091462273407c83a353b107b63f0afae61c3ecb",
+      "reason": "Completed OpenWiki pilot specification."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/provider-trust-integration-report.md",
+      "sha256": "49cd8a6c4399814a0d05f304eed419d12689ff67ae093dd87c9cf2cdedf12101",
+      "reason": "Completed provider-trust integration report."
+    },
+    {
+      "repo": "hindsight",
+      "path": ".docs/ai/phases/hindsight-v1-spec.md",
+      "sha256": "c86dc2ed30d84660b1b46fa31728127242cf3acbdb2bb70bcb07613a934dafec",
+      "reason": "Completed dated v1 specification retained as immutable history."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/agy/cli-20260701_185852.log",
+      "sha256": "148e13d05efe5b3edcc6673acbd9cae06df295d4a497a6b9cdc43b721e8a81d6",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/agy/cli-20260701_190000.log",
+      "sha256": "02fcd17bfd3c6242932dc878a5c3a3fac58d0adbe4b375421337f681b2d9c7d4",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/beads/hindsight-fixture/.beads/interactions.jsonl",
+      "sha256": "ec8bed641cad0c3b9d472f7f1f11df9f35f15c86fd3f7f9c20aaf1e021b6aef6",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/claude-code/commit-message.txt",
+      "sha256": "299fbe7690dff0e59c6b52af0e351199cd65e48b8941701d21b70f13b33c5b40",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/claude-code/parent.jsonl",
+      "sha256": "e35ee6ebf0d5c1e7ddae9961203a421506c34e03fcea07820a3f3810f616a089",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/claude-code/subagents/agent-sanitized.jsonl",
+      "sha256": "570ee1431e4d8d927b42a78694a6f7fe7154cdfeac532660f5e045d0b59c044b",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/codex/commit-message.txt",
+      "sha256": "2266d08e310464e9510b376baab1263c958afa84dae48c0b4ded673ec1ce45f1",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/codex/session.jsonl",
+      "sha256": "25058a80a7ad2f33839c947eb189df00b803f386140c2f490401daf9c82e2b2a",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/codex/subagent-guardian.jsonl",
+      "sha256": "6aa6ef1d032281149bece37898b986994f15c9a4f3ee641e6e024e74c25f5190",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/harness-deck/hindsight-fixture/run-20260701/report.json",
+      "sha256": "2be263184371025aa2c8f29ba7091c622e99f62414cf53e917f68557131b55f4",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/pi-observability/guardian/long-target.jsonl",
+      "sha256": "be8c9bdd5e5b3e7f36e357d55fecf22ed2b980a15dd3a97809c36c07cd02af97",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/pi-observability/session.jsonl",
+      "sha256": "6bcf147e997a12c9ea0fc12f6cd267944f320a3aca56b5ee0c8703c5f8aca858",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/pi-session/commit-message.txt",
+      "sha256": "b36531fcf22bf1281b77eb297f063e7e4bb7ed90d56838b868b0fa4be2c9e603",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/fixtures/pi-session/session.jsonl",
+      "sha256": "cb4aab732e358cf5487724f5651567dff2cfb6cf06b78a65ae24342aef234177",
+      "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    }
+  ],
+  "historical_value_allowlist": [
+    {
+      "repo": "bursar",
+      "path": ".docs/ai/decisions.md",
+      "literal": "bursar-roster-migrate",
+      "sha256": "9d0835fa278b2fc1717655b7d6395b5d1f6f0142496605b45003d8e6f046015d",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "bursar",
+      "path": "src/observations.rs",
+      "literal": "Bursar",
+      "sha256": "8ed1acae501015efc7d08aeffd101ab01495ba12d328b94a45916b5a9185281e",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "bursar",
+      "path": "src/observations.rs",
+      "literal": "bursar/provider-observation@1",
+      "sha256": "8ed1acae501015efc7d08aeffd101ab01495ba12d328b94a45916b5a9185281e",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/roster_migration.rs",
+      "literal": "bursar/provider-observation@1",
+      "sha256": "594156fa1209c8a16502610ad07aacebf9651ccf4dadd97b9efd4f9f2a29b38a",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/roster_migration.rs",
+      "literal": "conductor/roster-snapshot@1",
+      "sha256": "594156fa1209c8a16502610ad07aacebf9651ccf4dadd97b9efd4f9f2a29b38a",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/roster_migration.rs",
+      "literal": "legacy-conductor.toml",
+      "sha256": "594156fa1209c8a16502610ad07aacebf9651ccf4dadd97b9efd4f9f2a29b38a",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/decisions.md",
+      "literal": "conductor-1i9",
+      "sha256": "ef79491152b94ebc5c0a2df8404035943352af99fe8ea83494b0b0331492b828",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "conductor-1i9",
+      "sha256": "ddee4ed72c38aae48f3ead22eae38f6b922daa15701c6c526f49edc254b13921",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/decisions.md",
+      "literal": "conductor-1i9",
+      "sha256": "58500c1f41d0164edf418b8325443efc864e8979ffa2fcdbd35f3ca1b760fcc8",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/cli.rs",
+      "literal": "/snapshot/conductor",
+      "sha256": "e66256435a39d59606b905ede8602fe8634c7d457018bff1897698a691aafd3f",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/loop.rs",
+      "literal": "conductor/loop@1",
+      "sha256": "51a4dfca81560bb81245230edeb783a3c77aa4fa6d3f73ed7b76535f3723a9dd",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/loop.rs",
+      "literal": "legacy_conductor_schema",
+      "sha256": "51a4dfca81560bb81245230edeb783a3c77aa4fa6d3f73ed7b76535f3723a9dd",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/musterroll.rs",
+      "literal": "bursar/roster@2",
+      "sha256": "cf12f7627cf8002aa8ddf9467f5a58391a01dc716c487b89d5f47d52aef5a320",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/musterroll.rs",
+      "literal": "legacy_bursar_schema",
+      "sha256": "cf12f7627cf8002aa8ddf9467f5a58391a01dc716c487b89d5f47d52aef5a320",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/role_routing.rs",
+      "literal": "conductor/role-lane@1",
+      "sha256": "f90d4dfa43f2d287786fb44c62ab28ea262ae1bb82017c40d8bf43b2c072b931",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/run.rs",
+      "literal": "conductor/event@2",
+      "sha256": "b65d77f61a23ed580ae82451bab87b10767a72f5c6f6d0813ff9da84afffcfa1",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/run.rs",
+      "literal": "conductor/run@2",
+      "sha256": "b65d77f61a23ed580ae82451bab87b10767a72f5c6f6d0813ff9da84afffcfa1",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "Conductor",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "bursar-api",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "bursar/",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "bursar_roster_artifact",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "bursar_roster_source_artifact",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "conductor-runtime",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/state.rs",
+      "literal": "conductor/",
+      "sha256": "241114cb26c83353b716f547cf4ae34d6687b8cf5ba4d1196fcadabb231dd5e0",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-contract",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-migrate",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-snapshot",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-trz",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-0ma",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-1br",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-1i9",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-5tg",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-7rs",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-9uk",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-arena-loop",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-bursar-roster",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-cwl",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-eval-fold",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-j84",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-ldq",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-ldz",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-pzo",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-run-contract",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-vly",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-vnu",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-wxx",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-z8z",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-z90",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-zg9",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-3kn",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-6h8",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-976",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-byi",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-conductor-runs",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-d96",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-event-v2",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-ingest",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-pov",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-store",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-vxd",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-w5w",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "warden-findings",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/bd-create-undertake-core-consolidation.sh",
+      "literal": "warden-readonly-cutover",
+      "sha256": "35a37364e0e34caad9370a3f1fb718899fa33dc778dd8f667a17f0d1a9042d22",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-contract",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-migrate",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-roster-snapshot",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "bursar-trz",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-0ma",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-1br",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-1i9",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-5tg",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-9uk",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-arena-loop",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-bursar-roster",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-cwl",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-eval-fold",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-j84",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-ldq",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-ldz",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-run-contract",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-vly",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-vnu",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-wxx",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-z8z",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-z90",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "conductor-zg9",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-3kn",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-6h8",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-976",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-byi",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-conductor-runs",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-d96",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-event-v2",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-ingest",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-pov",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-store",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-vxd",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "hindsight-w5w",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "warden-findings",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/test-bd-create-undertake-core-consolidation.sh",
+      "literal": "warden-readonly-cutover",
+      "sha256": "91766937693f5c6a5e491e3ae8ea58cf92a8a9b5b030630a3fbf0bbb7512ad8a",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "bursar-roster-contract",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "bursar-roster-migrate",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "bursar-roster-snapshot",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "conductor-arena-loop",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "conductor-bursar-roster",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "conductor-eval-fold",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "conductor-run-contract",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-plan.md",
+      "literal": "hindsight-conductor-runs",
+      "sha256": "b87e4b8f54bf11a50c95c48e53a00f828cff5bc0605cf6530da4e2c6d933702c",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-spec.md",
+      "literal": "bursar-roster-contract",
+      "sha256": "de67a1276847e423f45721fad4beb62dfc8f548123eabe287cdafc24f9ab6911",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-spec.md",
+      "literal": "bursar-roster-migrate",
+      "sha256": "de67a1276847e423f45721fad4beb62dfc8f548123eabe287cdafc24f9ab6911",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-spec.md",
+      "literal": "bursar-roster-snapshot",
+      "sha256": "de67a1276847e423f45721fad4beb62dfc8f548123eabe287cdafc24f9ab6911",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/undertake-core-consolidation-spec.md",
+      "literal": "hindsight-conductor-runs",
+      "sha256": "de67a1276847e423f45721fad4beb62dfc8f548123eabe287cdafc24f9ab6911",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/cli.rs",
+      "literal": "/tmp/hindsight.sqlite3",
+      "sha256": "2c09031810c7553bd26f49b24bf12d72e6f383774eda303615041d46dae02c16",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/cli.rs",
+      "literal": "Hindsight",
+      "sha256": "2c09031810c7553bd26f49b24bf12d72e6f383774eda303615041d46dae02c16",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/store.rs",
+      "literal": "0003_conductor_reviewer.sql",
+      "sha256": "4d79d9d5fa428b9a4ad9f1cae5eae065c381fd2a730637f96fe6016b492f844d",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/store.rs",
+      "literal": "HINDSIGHT",
+      "sha256": "4d79d9d5fa428b9a4ad9f1cae5eae065c381fd2a730637f96fe6016b492f844d",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/store.rs",
+      "literal": "Hindsight",
+      "sha256": "4d79d9d5fa428b9a4ad9f1cae5eae065c381fd2a730637f96fe6016b492f844d",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/store.rs",
+      "literal": "conductor",
+      "sha256": "4d79d9d5fa428b9a4ad9f1cae5eae065c381fd2a730637f96fe6016b492f844d",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/store.rs",
+      "literal": "hindsight.sqlite3",
+      "sha256": "4d79d9d5fa428b9a4ad9f1cae5eae065c381fd2a730637f96fe6016b492f844d",
+      "kind": "one-shot-migration",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "Hindsight",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "Warden",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "hindsight",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "hindsight/event@2",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "legacy_hindsight_schema",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "warden",
+      "path": "core/tests/findings.rs",
+      "literal": "warden",
+      "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    }
+  ],
+  "classification_control_paths": [
+    {
+      "repo": "guildhall",
+      "path": "scripts/four-tool-rename/manifest.json"
+    },
+    {
+      "repo": "guildhall",
+      "path": "scripts/four-tool-rename/preflight.sh"
+    },
+    {
+      "repo": "guildhall",
+      "path": "scripts/four-tool-rename/snapshot.sh"
+    },
+    {
+      "repo": "guildhall",
+      "path": "scripts/four-tool-rename/rollback.sh"
+    },
+    {
+      "repo": "guildhall",
+      "path": "scripts/four-tool-rename/test.sh"
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/four-tool-rename-spec.md"
+    },
+    {
+      "repo": "guildhall",
+      "path": ".docs/ai/phases/four-tool-rename-plan.md"
     }
   ]
 }

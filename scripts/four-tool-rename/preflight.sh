@@ -43,6 +43,30 @@ add_candidate() {
 if ! jq -e '
   .schema == "four-tool-rename/manifest@1" and
   (.products | length) == 4 and
+  (.historical_classification.complete | type) == "boolean" and
+  ((.historical_classification.candidate_count | type) == "number" or
+    .historical_classification.candidate_count == null) and
+  (.historical_value_allowlist | type) == "array" and
+  ([.historical_value_allowlist[] | [.repo,.path,.literal]] | unique | length) ==
+    (.historical_value_allowlist | length) and
+  all(.historical_value_allowlist[];
+    (.repo | type) == "string" and
+    (.path | type) == "string" and
+    (.path | startswith("/") | not) and
+    (.path | endswith("/") | not) and
+    (.path | test("[*?\\[]") | not) and
+    (.literal | type) == "string" and
+    (.literal | length) > 0 and
+    (.literal | test("[*?\\[]") | not) and
+    (.sha256 | test("^[0-9a-f]{64}$")) and
+    (.kind == "closed-bead-id" or .kind == "one-shot-migration" or .kind == "strict-legacy-assertion") and
+    (.reason | type) == "string" and (.reason | length) > 0) and
+  all(.classification_control_paths[];
+    (.repo | type) == "string" and
+    (.path | type) == "string" and
+    (.path | startswith("/") | not) and
+    (.path | endswith("/") | not) and
+    (.path | test("[*?\\[]") | not)) and
   all(.historical_allowlist[];
     (.path | startswith("/") | not) and
     (.path | endswith("/") | not) and
@@ -50,11 +74,6 @@ if ! jq -e '
     (.sha256 | test("^[0-9a-f]{64}$")))
 ' "$MANIFEST" >/dev/null 2>&1; then
   add_blocker manifest-invalid 'Canonical manifest failed structural validation.'
-fi
-
-if [ "$(jq -r '.historical_classification.complete' "$MANIFEST")" != true ]; then
-  add_blocker historical-classification-incomplete \
-    'Stale-name classification is incomplete; current candidates must be removed or added as exact hashed files.'
 fi
 
 while IFS=$'\t' read -r repo path expected; do
@@ -71,6 +90,24 @@ while IFS=$'\t' read -r repo path expected; do
       "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
   fi
 done < <(jq -r '.historical_allowlist[] | [.repo,.path,.sha256] | @tsv' "$MANIFEST")
+
+while IFS=$'\t' read -r repo path literal expected; do
+  file="$WORKTREE_ROOT/$repo/$path"
+  [ -f "$file" ] || file="$GIT_ROOT/$repo/$path"
+  if [ ! -f "$file" ]; then
+    add_blocker historical-value-path-mismatch 'A historical value exception file is missing.' \
+      "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
+    continue
+  fi
+  actual=$(shasum -a 256 "$file" | awk '{print $1}')
+  if [ "$actual" != "$expected" ]; then
+    add_blocker historical-value-hash-mismatch 'A historical value exception file changed.' \
+      "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
+  elif ! grep -F "$literal" "$file" >/dev/null 2>&1; then
+    add_blocker historical-value-missing 'A historical value exception literal is absent.' \
+      "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
+  fi
+done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,.literal,.sha256] | @tsv' "$MANIFEST")
 
 for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-personal; do
   path="$WORKTREE_ROOT/$repo"
@@ -181,15 +218,75 @@ for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-per
   [ -d "$root/.git" ] || [ -f "$root/.git" ] || continue
   while IFS= read -r rel; do
     [ -n "$rel" ] || continue
-    if ! jq -e --arg repo "$repo" --arg path "$rel" \
-      'any(.historical_allowlist[]; .repo == $repo and .path == $path)' "$MANIFEST" >/dev/null; then
-      add_candidate "$repo" "$rel"
-    fi
-  done < <(git -C "$root" grep -Il -E '(conductor|bursar|hindsight|warden)' -- . 2>/dev/null || true)
+    add_candidate "$repo" "$rel"
+  done < <(python3 - "$MANIFEST" "$repo" "$root" <<'PY'
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+manifest = json.loads(Path(sys.argv[1]).read_text())
+repo = sys.argv[2]
+root = Path(sys.argv[3])
+allowlisted = {
+    item["path"] for item in manifest["historical_allowlist"]
+    if item["repo"] == repo
+}
+controls = {
+    item["path"] for item in manifest["classification_control_paths"]
+    if item["repo"] == repo
+}
+values_by_path = {}
+for item in manifest["historical_value_allowlist"]:
+    if item["repo"] == repo:
+        values_by_path.setdefault(item["path"], []).append(item["literal"])
+tokens = re.compile(r"(conductor|bursar|hindsight|warden)", re.IGNORECASE)
+tracked = subprocess.check_output(
+    ["git", "-C", str(root), "ls-files", "-co", "--exclude-standard", "-z"]
+).split(b"\0")
+for raw_path in tracked:
+    if not raw_path:
+        continue
+    rel = raw_path.decode("utf-8", "surrogateescape")
+    if rel in allowlisted or rel in controls:
+        continue
+    path = root / rel
+    if not path.is_file():
+        continue
+    try:
+        data = path.read_bytes()
+    except OSError:
+        print(rel)
+        continue
+    if b"\0" in data:
+        continue
+    text = data.decode("utf-8", "replace")
+    scanned_rel = rel
+    for value in sorted(values_by_path.get(rel, []), key=len, reverse=True):
+        text = text.replace(value, "")
+        scanned_rel = scanned_rel.replace(value, "")
+    if tokens.search(scanned_rel) or tokens.search(text):
+        print(rel)
+PY
+  )
 done
 
-BLOCKERS_JSON=$(printf '%s' "$BLOCKERS" | jq -s '.')
 CANDIDATES_JSON=$(printf '%s' "$CANDIDATES" | jq -s 'unique_by(.repo,.path)')
+CANDIDATE_COUNT=$(printf '%s' "$CANDIDATES_JSON" | jq 'length')
+CANDIDATES_BY_OWNER=$(printf '%s' "$CANDIDATES_JSON" | jq 'group_by(.repo) | map({key:.[0].repo,value:length}) | from_entries')
+DECLARED_COUNT=$(jq -r '.historical_classification.candidate_count // -1' "$MANIFEST")
+DECLARED_COMPLETE=$(jq -r '.historical_classification.complete' "$MANIFEST")
+CLASSIFICATION_COMPLETE=false
+if [ "$CANDIDATE_COUNT" -eq 0 ] && [ "$DECLARED_COUNT" -eq 0 ] && [ "$DECLARED_COMPLETE" = true ]; then
+  CLASSIFICATION_COMPLETE=true
+else
+  add_blocker historical-classification-incomplete \
+    'Stale-name classification is incomplete; current candidates must be removed or added as exact hashed files.' \
+    "$(jq -cn --argjson count "$CANDIDATE_COUNT" '{candidate_count:$count}')"
+fi
+
+BLOCKERS_JSON=$(printf '%s' "$BLOCKERS" | jq -s '.')
 READY=false
 if [ "$(printf '%s' "$BLOCKERS_JSON" | jq 'length')" -eq 0 ]; then
   READY=true
@@ -242,6 +339,9 @@ jq -n \
   --argjson blockers "$BLOCKERS_JSON" \
   --argjson mappings "$(jq '[.products[] | {old,new,repository,backlog,paths}]' "$MANIFEST")" \
   --argjson candidates "$CANDIDATES_JSON" \
+  --argjson candidates_by_owner "$CANDIDATES_BY_OWNER" \
+  --argjson candidate_count "$CANDIDATE_COUNT" \
+  --argjson classification_complete "$CLASSIFICATION_COMPLETE" \
   --argjson gh_authenticated "$GH_AUTH" \
   --arg bws_status "$BWS_STATUS" \
   --argjson bws_projects "$BWS_PROJECT_NAMES" \
@@ -256,7 +356,7 @@ jq -n \
     ready:$ready,
     mappings:$mappings,
     blockers:$blockers,
-    candidate_report:{classification_complete:false,candidates:$candidates},
+    candidate_report:{classification_complete:$classification_complete,candidate_count:$candidate_count,by_owner:$candidates_by_owner,candidates:$candidates},
     inventory:{
       distribution:{kind:$distribution_kind},
       active_roots:$active_roots,

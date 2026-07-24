@@ -225,3 +225,22 @@ evaluation source for plan/review and does not become another runtime.
 policy are Conductor decisions. Durable deterministic rotation gives auditable
 proportional exposure without random streaks, while strict copied snapshots and
 structural v2 state preserve immutable approval and resume safety.
+
+## [2026-07-24] Rename the four operational tools as one suite transaction
+
+**Context**: The focused four-tool architecture is complete and the approved
+product names now need one unambiguous operational vocabulary without erasing
+the names recorded in completed evidence.
+
+**Decision**: Rename Conductor to Undertake, Bursar to Musterroll, Hindsight to
+Afterfact, and Warden to Cautionlight. Current repositories, binaries, commands,
+configuration, schemas, state, reports, demos, generators, and runbooks use only
+the replacement names. Historical Git records, dated completed documents,
+already-applied migrations, immutable fixtures, and closed Bead IDs retain
+their original values and are classified by exact SHA-256 file entries or the
+manifest's exact closed-Bead value allowlist. Wildcard and directory
+exemptions are forbidden.
+
+**Rationale**: A clean operational cutover prevents aliases and dual-read
+contracts from becoming permanent, while exact immutable classification keeps
+past evidence factual and makes every surviving old token reviewable.

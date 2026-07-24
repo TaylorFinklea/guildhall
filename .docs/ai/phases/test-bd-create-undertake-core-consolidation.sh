@@ -59,10 +59,10 @@ expect_mismatch 'stale metadata' "$TMP/stale-metadata.json"
 FAKE_ROOT="$TMP/root"
 FAKE_BIN="$TMP/bin"
 mkdir -p "$FAKE_BIN" "$FAKE_ROOT/guildhall/.docs/ai/phases"
-for repo in guildhall conductor bursar hindsight warden provenance gauntlet envoy foreman; do
+for repo in guildhall undertake musterroll afterfact cautionlight provenance gauntlet envoy foreman; do
   mkdir -p "$FAKE_ROOT/$repo/.beads"
 done
-: >"$FAKE_ROOT/guildhall/.docs/ai/phases/conductor-core-consolidation-spec.md"
+: >"$FAKE_ROOT/guildhall/.docs/ai/phases/undertake-core-consolidation-spec.md"
 cat >"$FAKE_BIN/bd" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
@@ -78,7 +78,8 @@ case "$operation" in
       case "$id" in
         conductor-run-contract|conductor-bursar-roster|conductor-arena-loop|conductor-eval-fold|\
         bursar-roster-contract|bursar-roster-migrate|bursar-roster-snapshot|\
-        hindsight-conductor-runs|conductor-run-v2)
+        hindsight-conductor-runs|hindsight-store|hindsight-ingest|hindsight-event-v2|\
+        warden-findings|warden-readonly-cutover|undertake-run-v2)
           printf '[{"id":"%s","status":"closed"}]\n' "$id"
           exit 0
           ;;
@@ -147,7 +148,7 @@ EOF
 chmod +x "$FAKE_BIN/bd"
 
 if ! GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=empty PATH="$FAKE_BIN:$PATH" \
-  "$HERE/bd-create-conductor-core-consolidation.sh" --dry-run \
+  "$HERE/bd-create-undertake-core-consolidation.sh" --dry-run \
   >"$TMP/dry-run.out" 2>&1; then
   cat "$TMP/dry-run.out" >&2
   echo 'expected fresh-database --dry-run to render the complete plan' >&2
@@ -156,9 +157,9 @@ fi
 DRY_RUN_OUTPUT=$(<"$TMP/dry-run.out")
 DRY_RUN_CREATE_COUNT=$(grep -c '^fake create:' <<<"$DRY_RUN_OUTPUT")
 if [[ "$DRY_RUN_CREATE_COUNT" -ne 26 ]] \
-  || [[ "$DRY_RUN_OUTPUT" != *'fake create: conductor-run-v2 mode=dry-run'* ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'fake create: undertake-run-v2 mode=dry-run'* ]] \
   || [[ "$DRY_RUN_OUTPUT" != *'fake create: guildhall-retire mode=dry-run'* ]] \
-  || [[ "$DRY_RUN_OUTPUT" != *'dry-run dependency: conductor/conductor-loop-kernel blocked-by conductor-1i9'* ]] \
+  || [[ "$DRY_RUN_OUTPUT" != *'dry-run dependency: undertake/undertake-loop-kernel blocked-by conductor-1i9'* ]] \
   || [[ "$DRY_RUN_OUTPUT" != *'dry run complete: no Beads or dependencies were written'* ]]; then
   cat "$TMP/dry-run.out" >&2
   echo 'fresh-database --dry-run output did not contain the complete generated plan' >&2
@@ -166,7 +167,7 @@ if [[ "$DRY_RUN_CREATE_COUNT" -ne 26 ]] \
 fi
 
 if ! GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=apply PATH="$FAKE_BIN:$PATH" \
-  "$HERE/bd-create-conductor-core-consolidation.sh" --apply \
+  "$HERE/bd-create-undertake-core-consolidation.sh" --apply \
   >"$TMP/apply.out" 2>&1; then
   cat "$TMP/apply.out" >&2
   echo 'expected --apply to reach and complete definition processing' >&2
@@ -175,9 +176,9 @@ fi
 APPLY_OUTPUT=$(<"$TMP/apply.out")
 APPLY_CREATE_COUNT=$(grep -c '^fake create:' <<<"$APPLY_OUTPUT")
 if [[ "$APPLY_CREATE_COUNT" -ne 26 ]] \
-  || [[ "$APPLY_OUTPUT" != *'fake create: conductor-run-v2 mode=apply'* ]] \
+  || [[ "$APPLY_OUTPUT" != *'fake create: undertake-run-v2 mode=apply'* ]] \
   || [[ "$APPLY_OUTPUT" != *'fake create: guildhall-retire mode=apply'* ]] \
-  || [[ "$APPLY_OUTPUT" != *'fake dependency: conductor-loop-kernel blocked-by conductor-1i9'* ]] \
+  || [[ "$APPLY_OUTPUT" != *'fake dependency: undertake-loop-kernel blocked-by conductor-1i9'* ]] \
   || [[ "$APPLY_OUTPUT" != *'Bead creation complete. Run bd lint and bd dep cycles in every affected repo before dispatch.'* ]]; then
   cat "$TMP/apply.out" >&2
   echo '--apply output did not contain the complete generated plan' >&2
@@ -185,15 +186,57 @@ if [[ "$APPLY_CREATE_COUNT" -ne 26 ]] \
 fi
 
 if GUILDHALL_GIT_ROOT="$FAKE_ROOT" FAKE_BD_SCENARIO=collision PATH="$FAKE_BIN:$PATH" \
-  "$HERE/bd-create-conductor-core-consolidation.sh" --resume \
+  "$HERE/bd-create-undertake-core-consolidation.sh" --resume \
   >"$TMP/non-open-current.out" 2>&1; then
   echo 'expected generator to reject an unlisted closed current definition' >&2
   exit 1
 fi
 NON_OPEN_OUTPUT=$(<"$TMP/non-open-current.out")
-if [[ "$NON_OPEN_OUTPUT" != *'refusing non-open current definition: conductor/conductor-run-v2'* ]]; then
+if [[ "$NON_OPEN_OUTPUT" != *'refusing non-open current definition: undertake/undertake-run-v2'* ]]; then
   echo 'generator did not distinguish listed history from a non-open current definition' >&2
   exit 1
 fi
+
+DEMO="$HERE/../../../demo/run.sh"
+DEMO_LOG="$TMP/demo.log"
+cat >"$FAKE_BIN/suite-tool" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+name=$(basename "$0")
+printf '%s %s\n' "$name" "$*" >>"$GUILDHALL_DEMO_LOG"
+case "$name" in
+  musterroll) printf '%s\n' '{"schema":"musterroll/status@2","providers":{}}' ;;
+  afterfact) printf '%s\n' '{"schema":"afterfact/event@2","event_id":"demo","event":{},"artifact":{"path":"/tmp/demo","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}}' ;;
+  cautionlight) cat >/dev/null ;;
+esac
+EOF
+chmod +x "$FAKE_BIN/suite-tool"
+for binary in undertake musterroll afterfact cautionlight; do
+  ln -s suite-tool "$FAKE_BIN/$binary"
+done
+
+help_output=$("$DEMO" --help)
+for binary in undertake musterroll afterfact cautionlight; do
+  [[ "$help_output" == *"$binary"* ]] || {
+    echo "demo help omitted $binary" >&2
+    exit 1
+  }
+done
+GUILDHALL_BIN_DIR="$FAKE_BIN" \
+GUILDHALL_GIT_ROOT="$FAKE_ROOT" \
+GUILDHALL_DEMO_LOG="$DEMO_LOG" \
+  "$DEMO" all >"$TMP/demo.out"
+for binary in undertake musterroll afterfact cautionlight; do
+  grep -q "^$binary " "$DEMO_LOG" || {
+    echo "demo smoke omitted $binary" >&2
+    exit 1
+  }
+done
+while IFS= read -r retired; do
+  ! grep -qi "$retired" "$DEMO_LOG" || {
+    echo "demo smoke invoked a retired binary" >&2
+    exit 1
+  }
+done < <(jq -r '.products[].old' "$HERE/../../../scripts/four-tool-rename/manifest.json")
 
 echo 'generator modes: fresh dry-run, apply, and reconciliation rejection passed'

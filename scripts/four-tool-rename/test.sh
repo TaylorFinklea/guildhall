@@ -52,8 +52,11 @@ jq -e '
 
 jq -e '
   .historical_classification.complete == false and
+  .historical_classification.candidate_count > 0 and
+  ([.historical_classification.residual_by_owner[]] | add) ==
+    .historical_classification.candidate_count and
   .historical_classification.blocker_type == "historical-classification-incomplete" and
-  [.historical_allowlist[] | [.repo, .path]] == [
+  ([
     ["bursar", "tests/fixtures/roster/legacy-conductor.toml"],
     ["bursar", ".docs/ai/phases/provider-availability-v2-report.md"],
     ["hindsight", "migrations/0003_conductor_reviewer.sql"],
@@ -72,7 +75,20 @@ jq -e '
     ["warden", "docs/notes/dispatch-surface-coverage.md"],
     ["warden", ".docs/ai/decisions.md"],
     ["warden", ".docs/ai/phases/warden-v1-spec.md"]
-  ] and
+  ] - [.historical_allowlist[] | [.repo, .path]] | length) == 0 and
+  (.historical_value_allowlist | type) == "array" and
+  (.historical_value_allowlist | length) > 0 and
+  ([.historical_value_allowlist[] | [.repo,.path,.literal]] | unique | length) ==
+    (.historical_value_allowlist | length) and
+  all(.historical_value_allowlist[];
+    (.path | startswith("/") | not) and
+    (.path | endswith("/") | not) and
+    (.path | test("[*?\\[]") | not) and
+    (.literal | length) > 0 and
+    (.literal | test("[*?\\[]") | not) and
+    (.sha256 | test("^[0-9a-f]{64}$")) and
+    (.kind == "closed-bead-id" or .kind == "one-shot-migration" or .kind == "strict-legacy-assertion")
+  ) and
   all(.historical_allowlist[];
     (.path | type) == "string" and
     (.path | startswith("/") | not) and
@@ -91,6 +107,14 @@ while IFS=$'\t' read -r repo path expected; do
   actual=$(shasum -a 256 "$file" | awk '{print $1}')
   [ "$actual" = "$expected" ] || fail "allowlisted hash mismatch: $repo/$path"
 done < <(jq -r '.historical_allowlist[] | [.repo, .path, .sha256] | @tsv' "$MANIFEST")
+while IFS=$'\t' read -r repo path literal expected; do
+  file="$WORKTREE_ROOT/$repo/$path"
+  [ -f "$file" ] || file="$REPO_ROOT/$repo/$path"
+  [ -f "$file" ] || fail "value exception path is not a file: $repo/$path"
+  actual=$(shasum -a 256 "$file" | awk '{print $1}')
+  [ "$actual" = "$expected" ] || fail "value exception hash mismatch: $repo/$path"
+  grep -F "$literal" "$file" >/dev/null || fail "value exception literal missing: $repo/$path"
+done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,.literal,.sha256] | @tsv' "$MANIFEST")
 
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/four-tool-rename-test.XXXXXX")
 trap 'rm -rf "$TMP"' EXIT
@@ -121,12 +145,16 @@ preflight_json="$TMP/preflight.json"
 FOUR_TOOL_RENAME_HOME="$TEST_HOME" \
 FOUR_TOOL_RENAME_GIT_ROOT="$TEST_GIT" \
   "$PREFLIGHT" --json > "$preflight_json"
-jq -e '
+jq -e --slurpfile manifest "$MANIFEST" '
   (.ready | type) == "boolean" and
   (.blockers | type) == "array" and
   all(.blockers[]; (.type | type) == "string" and (.message | type) == "string") and
   (.mappings | length) == 4 and
   (.candidate_report | type) == "object" and
+  .candidate_report.classification_complete == false and
+  .candidate_report.candidate_count == $manifest[0].historical_classification.candidate_count and
+  .candidate_report.by_owner == $manifest[0].historical_classification.residual_by_owner and
+  (.candidate_report.candidates | length) == .candidate_report.candidate_count and
   .inventory.distribution.kind == "local-release-copy" and
   (.inventory.active_roots | type) == "array" and
   (.inventory.active_roots | length) >= 8 and
