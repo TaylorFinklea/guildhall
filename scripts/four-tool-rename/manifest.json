@@ -166,10 +166,10 @@
     "complete": false,
     "blocker_type": "historical-classification-incomplete",
     "policy": "Every stale-name candidate must be classified by an exact hashed file entry or removed from current operational content; wildcard and directory exemptions are forbidden.",
-    "candidate_count": 88,
+    "candidate_count": 79,
     "residual_by_owner": {
       "bursar": 15,
-      "chezmoi-personal": 52,
+      "chezmoi-personal": 43,
       "conductor": 10,
       "hindsight": 10,
       "warden": 1
@@ -574,7 +574,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-1i9",
-      "sha256": "ddee4ed72c38aae48f3ead22eae38f6b922daa15701c6c526f49edc254b13921",
+      "sha256": "796428ae5631d6630516aebd224871f4b9d408af69c34b8e5648c2b7f8e5a8ce",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
