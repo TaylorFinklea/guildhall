@@ -122,6 +122,15 @@ trap 'rm -rf "$TMP"; rm -f "$BOUNDARY_FILE"' EXIT
 TEST_HOME="$TMP/home"
 TEST_GIT="$TMP/git"
 mkdir -p "$TEST_HOME/.local/state" "$TEST_HOME/.local/share" "$TEST_HOME/.harness/reports" "$TEST_GIT"
+TEST_BIN="$TMP/bin"
+mkdir -p "$TEST_BIN"
+cat > "$TEST_BIN/bws-project" <<'EOF'
+#!/bin/sh
+set -eu
+[ "${1:-}" = inventory ] || exit 2
+printf '%s\n' '{"schema":"bws-project/inventory@1","projects":[{"id":"project-id","name":"Finklea Dev","secret":"SECRET_VALUE_MUST_NOT_LEAK"}]}'
+EOF
+chmod +x "$TEST_BIN/bws-project"
 printf '%s\n' 'state evidence' > "$TEST_HOME/.local/state/conductor-ledger"
 printf '%s\n' 'report evidence' > "$TEST_HOME/.harness/reports/conductor-report"
 
@@ -144,6 +153,7 @@ SECRET='SECRET_VALUE_MUST_NOT_LEAK'
 export GH_TOKEN="$SECRET" BWS_ACCESS_TOKEN="$SECRET" OPENAI_API_KEY="$SECRET"
 printf '%s\n' 'Bitwarden is unrelated to the retired policy-tool identity.' > "$BOUNDARY_FILE"
 preflight_json="$TMP/preflight.json"
+PATH="$TEST_BIN:$PATH" \
 FOUR_TOOL_RENAME_HOME="$TEST_HOME" \
 FOUR_TOOL_RENAME_GIT_ROOT="$TEST_GIT" \
   "$PREFLIGHT" --json > "$preflight_json"
@@ -161,6 +171,9 @@ jq -e --slurpfile manifest "$MANIFEST" '
   (.inventory.active_roots | type) == "array" and
   (.inventory.active_roots | length) >= 8 and
   all(.inventory.active_roots[]; has("product") and has("kind") and has("path") and has("exists")) and
+  .inventory.bws.status == "available" and
+  .inventory.bws.project_names == ["Finklea Dev"] and
+  (any(.blockers[]; .type == "bws-inventory-unavailable") | not) and
   (any(.blockers[]; .type == "historical-classification-incomplete") | not)
   and ([.blockers[] | select(.type == "active-runs-present") | .context.runs] == [2])
   and ([.blockers[] | select(.type == "run-state-unreadable") | .context.count] == [2])

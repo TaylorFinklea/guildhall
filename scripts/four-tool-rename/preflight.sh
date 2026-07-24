@@ -202,16 +202,22 @@ fi
 
 BWS_STATUS=unavailable
 BWS_PROJECT_NAMES='[]'
-if command -v bws >/dev/null 2>&1; then
-  bws_raw=$(bws project list --output json 2>/dev/null || true)
-  if printf '%s' "$bws_raw" | jq -e 'type == "array"' >/dev/null 2>&1; then
+if command -v bws-project >/dev/null 2>&1; then
+  bws_raw=$(bws-project inventory 2>/dev/null || true)
+  if printf '%s' "$bws_raw" | jq -e '
+    .schema == "bws-project/inventory@1" and
+    (.projects | type) == "array" and
+    all(.projects[];
+      (.id | type) == "string" and (.id | length) > 0 and
+      (.name | type) == "string" and (.name | length) > 0)
+  ' >/dev/null 2>&1; then
     BWS_STATUS=available
-    BWS_PROJECT_NAMES=$(printf '%s' "$bws_raw" | jq '[.[] | .name]')
+    BWS_PROJECT_NAMES=$(printf '%s' "$bws_raw" | jq '[.projects[].name] | unique')
   else
-    add_blocker bws-inventory-unavailable 'BWS project registration names could not be inventoried.'
+    add_blocker bws-inventory-unavailable 'Managed BWS project registration names could not be inventoried.'
   fi
 else
-  add_blocker bws-inventory-unavailable 'BWS CLI is unavailable.'
+  add_blocker bws-inventory-unavailable 'Managed BWS project inventory CLI is unavailable.'
 fi
 
 for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-personal; do
