@@ -203,6 +203,30 @@
       "path": "docs/HANDOFF-install.md",
       "sha256": "6bee5a30cbe34297c947314f320763eb0c9095e5587ae9944c75633e2a7d3aa8",
       "reason": "Historical experimental Claude Code adapter handoff; explicitly uninstalled and unsupported."
+    },
+    {
+      "repo": "warden",
+      "path": "docs/notes/agy-interception.md",
+      "sha256": "8532cdeaea64bad8ba0cc134274426c9af79fbebdd2bb07713ee379a31ea835f",
+      "reason": "Completed dated agy interception reconnaissance."
+    },
+    {
+      "repo": "warden",
+      "path": "docs/notes/dispatch-surface-coverage.md",
+      "sha256": "ed8c43552525da91449e8dd2dc6251bf1acba984655778554083edecba5cd9ee",
+      "reason": "Completed dated dispatch-surface coverage evidence."
+    },
+    {
+      "repo": "warden",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "0672e06b694bee31bfa5ebef84d8030701c93e291dee90e34e8c99e32ecf165f",
+      "reason": "Dated architecture decision record preserving original product rationale."
+    },
+    {
+      "repo": "warden",
+      "path": ".docs/ai/phases/warden-v1-spec.md",
+      "sha256": "760bd35edd3b9ed0ebec1d0ffdf8a65e55c8fcb2d99cebb6c74673dfc20b795b",
+      "reason": "Approved dated v1 specification retained as immutable historical evidence."
     }
   ]
 }

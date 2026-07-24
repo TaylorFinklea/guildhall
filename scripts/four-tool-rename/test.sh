@@ -67,7 +67,11 @@ jq -e '
     ["warden", "adapters/claude_pretooluse/src/lib.rs"],
     ["warden", "adapters/claude_pretooluse/src/main.rs"],
     ["warden", "adapters/claude_pretooluse/tests/adapter_claude.rs"],
-    ["warden", "docs/HANDOFF-install.md"]
+    ["warden", "docs/HANDOFF-install.md"],
+    ["warden", "docs/notes/agy-interception.md"],
+    ["warden", "docs/notes/dispatch-surface-coverage.md"],
+    ["warden", ".docs/ai/decisions.md"],
+    ["warden", ".docs/ai/phases/warden-v1-spec.md"]
   ] and
   all(.historical_allowlist[];
     (.path | type) == "string" and
