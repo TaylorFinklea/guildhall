@@ -163,17 +163,11 @@
     }
   ],
   "historical_classification": {
-    "complete": false,
+    "complete": true,
     "blocker_type": "historical-classification-incomplete",
     "policy": "Every stale-name candidate must be classified by an exact hashed file entry or removed from current operational content; wildcard and directory exemptions are forbidden.",
-    "candidate_count": 79,
-    "residual_by_owner": {
-      "bursar": 15,
-      "chezmoi-personal": 43,
-      "conductor": 10,
-      "hindsight": 10,
-      "warden": 1
-    }
+    "candidate_count": 0,
+    "residual_by_owner": {}
   },
   "historical_allowlist": [
     {
@@ -511,22 +505,164 @@
       "path": "tests/fixtures/pi-session/session.jsonl",
       "sha256": "cb4aab732e358cf5487724f5651567dff2cfb6cf06b78a65ae24342aef234177",
       "reason": "Immutable sanitized parser fixture preserving historical source labels."
+    },
+    {
+      "repo": "bursar",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "9d0835fa278b2fc1717655b7d6395b5d1f6f0142496605b45003d8e6f046015d",
+      "reason": "Dated architecture decision ledger preserving pre-rename product rationale."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "58500c1f41d0164edf418b8325443efc864e8979ffa2fcdbd35f3ca1b760fcc8",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/adversarial-design-review-spec.md",
+      "sha256": "a310238afe049fc3d49436f8b7b6ea4d03a2a5ace9ba18e616d05d0a348cec9e",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/bounded-dispatch-approval-spec.md",
+      "sha256": "2dc870499791bf702e26f2489f790a0265784a4504d12902a8a3a1c5826a0bba",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/provider-trust-integration-spec.md",
+      "sha256": "d70c0ec87e2a374e4676e8d7b20f815310da134dc272bfd4132c217cbfc656ac",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/roster-router-refactor-spec.md",
+      "sha256": "dce8b337e3bd66de402b1236f55521c3b8c1d8aac898b80510bf9ff1ef99bcd0",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/roster-tui-phase1-plan.md",
+      "sha256": "0c67aee40b543bb88e10738ed73d39bbef372510bd1a3bf3680606f466b3613f",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "conductor",
+      "path": ".docs/ai/phases/roster-tui-spec.md",
+      "sha256": "6fdd2f4801a6d1e4447595a23fdf21dea472560d65943ab4afb2f86f7814a5b0",
+      "reason": "Completed dated architecture/specification record preserved as immutable history."
+    },
+    {
+      "repo": "hindsight",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "e184a8f5102bd8bbe27fd37666cbec747fa9df67a749d50a3a3965774c5afba1",
+      "reason": "Dated architecture decision ledger preserving pre-rename product rationale."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/decisions.md",
+      "sha256": "ef79491152b94ebc5c0a2df8404035943352af99fe8ea83494b0b0331492b828",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/adversarial-design-review-skill-spec.md",
+      "sha256": "a0b3e9703ac7121cfdd82e554a8511a8df37bc713c59ffbb86781df732db6396",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/chezmoi-personal-rebrand-spec.md",
+      "sha256": "99c23c5cac5ee124e3b5842092ed3517523ef422bc2973c14db26fd475e938bd",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/codex-tui-to-work-design-spec.md",
+      "sha256": "de9e691660fd5b62d2563ef341748ccab5025bc80ad2838e4acf182536499dd6",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/delegate-skill-spec.md",
+      "sha256": "b350628155277c33dcbefc75878587d2345fa2787cef8e0cbeaac57e0cd7d723",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/local-ollama-lane-spec.md",
+      "sha256": "7101fda05bf322a1bc76fd99e45ff9349557f6d389dd1f838db1a53242284487",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/product-test-readiness-orchestration-spec.md",
+      "sha256": "6deea0b1193eaa50c0b4727c2168b3f72e6e5d7d86073f7c2462de2ffaed25bc",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/roster-fallback-free-spec.md",
+      "sha256": "ed994e087ab5d68a0cedda4e7bcb4a4c941906a07b0742a86424d6ae8e2e05f8",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-06-ollama-cloud-provider-lane.md",
+      "sha256": "e9808e9ae1b4f62a380388f1fe01cd0363d49a020994e79d616cf15bbe13a59e",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-11-chezmoi-personal-rebrand-preparation.md",
+      "sha256": "40261ecd6703628bf80d3e452e1efe411ee05f19dc4442928851538bb7486e64",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-13-adversarial-design-review-skill.md",
+      "sha256": "ba5457257facb5037ca7b478f7b505838d67c168d12f87263979e8b9ff1ca3bf",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-13-local-ollama-lane.md",
+      "sha256": "65e60a69c02caad213d8cd78afd5bc2c20ff033b8f97178cae72175ea043e6d5",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-13-ready-for-product-test-skill.md",
+      "sha256": "0211524fa6446a3c2ba5f26af7ecdffb73ae66f11871ac7239f47e4471577197",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-18-forge.md",
+      "sha256": "de97cea4a8d0f5600026df34c19fde431e83d286772ca4e89e26ce5d14ca613b",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/plans/2026-07-21-delegate-skill.md",
+      "sha256": "bb8641c959ad521340f14381f22bc3bab6a6e57f1d076a912de9c8ffe85fde0f",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "docs/superpowers/specs/2026-07-15-pi-one-shot-liveness-design.md",
+      "sha256": "807ff89669a683fc6302e50aafaf27bb15c1d3b3de9d6538dbbd18fbaaf6c965",
+      "reason": "Completed dated decision/specification/plan record preserved as immutable history."
     }
   ],
   "historical_value_allowlist": [
     {
       "repo": "bursar",
-      "path": ".docs/ai/decisions.md",
-      "literal": "bursar-roster-migrate",
-      "sha256": "9d0835fa278b2fc1717655b7d6395b5d1f6f0142496605b45003d8e6f046015d",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "bursar",
       "path": "src/observations.rs",
       "literal": "Bursar",
-      "sha256": "8ed1acae501015efc7d08aeffd101ab01495ba12d328b94a45916b5a9185281e",
+      "sha256": "77ab163f03dd454799cbddf57c8c9b5bf3639f15a0e14aef28e63699cd581f95",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -534,7 +670,7 @@
       "repo": "bursar",
       "path": "src/observations.rs",
       "literal": "bursar/provider-observation@1",
-      "sha256": "8ed1acae501015efc7d08aeffd101ab01495ba12d328b94a45916b5a9185281e",
+      "sha256": "77ab163f03dd454799cbddf57c8c9b5bf3639f15a0e14aef28e63699cd581f95",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -564,25 +700,9 @@
     },
     {
       "repo": "chezmoi-personal",
-      "path": ".docs/ai/decisions.md",
-      "literal": "conductor-1i9",
-      "sha256": "ef79491152b94ebc5c0a2df8404035943352af99fe8ea83494b0b0331492b828",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-1i9",
-      "sha256": "796428ae5631d6630516aebd224871f4b9d408af69c34b8e5648c2b7f8e5a8ce",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "conductor",
-      "path": ".docs/ai/decisions.md",
-      "literal": "conductor-1i9",
-      "sha256": "58500c1f41d0164edf418b8325443efc864e8979ffa2fcdbd35f3ca1b760fcc8",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -590,7 +710,7 @@
       "repo": "conductor",
       "path": "src/cli.rs",
       "literal": "/snapshot/conductor",
-      "sha256": "e66256435a39d59606b905ede8602fe8634c7d457018bff1897698a691aafd3f",
+      "sha256": "4f9aab92fcbeea036c5d9ad7a2eafb148380f4cf327b34b483f9432cf1e1eeb0",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -1513,6 +1633,318 @@
       "sha256": "91a72c2973dc7723951eaefd6b8236ab3690f75e90d945274afb9e4190d95281",
       "kind": "strict-legacy-assertion",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/status_json.rs",
+      "literal": "contains(\"bursar\")",
+      "sha256": "7ca6549a55cbdb55483c41e90fb75c08a32f13e470892b4fcc719a3f466208f3",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/status_json.rs",
+      "literal": "BURSAR_STATE_DIR",
+      "sha256": "7ca6549a55cbdb55483c41e90fb75c08a32f13e470892b4fcc719a3f466208f3",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "bursar",
+      "path": "tests/status_json.rs",
+      "literal": ".local/state/bursar/provider-observations.jsonl",
+      "sha256": "7ca6549a55cbdb55483c41e90fb75c08a32f13e470892b4fcc719a3f466208f3",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/cli.rs",
+      "literal": "assert!(!USAGE.contains(\"conductor\"));",
+      "sha256": "4f9aab92fcbeea036c5d9ad7a2eafb148380f4cf327b34b483f9432cf1e1eeb0",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/agy.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "b5c1ff2976e71a7b7ff87ff1a799e45a08bd66235f7d1c4bce5f1c174c742917",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/beads.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "cbc3e2a328f650abc96673f74d0ab171949e15b01863b8351d52fd5902ff6069",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/claude_code.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "e3f630cbdbee8f95f621ca22ae8539c631304691cf424451257aeef5d94a0eec",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/claude_code.rs",
+      "literal": "hindsight-m1",
+      "sha256": "e3f630cbdbee8f95f621ca22ae8539c631304691cf424451257aeef5d94a0eec",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/codex.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "fc74a8b5be95e846f9bffed232704380ba6ab8ef2566999d2d18e954a25bf414",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/codex.rs",
+      "literal": "hindsight-m2-codex",
+      "sha256": "fc74a8b5be95e846f9bffed232704380ba6ab8ef2566999d2d18e954a25bf414",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/guardian.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "baf3e4ca7fea634c08a977c59f98ac22a40fde4714e9e9775b02d2240c5b6e46",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/harness_deck.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "58b9795a921c22e28d447f695b42a4e8fdc74b9e0f1eba2fbf471026e80cdc17",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/pi.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "a80c7246808093b229c3797b1e4acb48f2388339d7bd89064f8520b1f12b4e6b",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "hindsight",
+      "path": "src/sources/pi.rs",
+      "literal": "hindsight-m2-pi",
+      "sha256": "a80c7246808093b229c3797b1e4acb48f2388339d7bd89064f8520b1f12b4e6b",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "hindsight",
+      "path": "tests/recap_smoke.rs",
+      "literal": "hindsight-fixture",
+      "sha256": "9656ace8553c001f84b33626516dc5f67aca2ed79ca1fc7b184dc63247b0e95f",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact sanitized legacy fixture identity asserted by parser preservation coverage."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".chezmoiremove",
+      "literal": "conductor-arena",
+      "sha256": "71f31f55f492f3f39eb79d49a58b3d7a59c5315063e3c6d8479e2ef693a40c83",
+      "kind": "one-shot-migration",
+      "reason": "Exact retired identity required by a bounded one-shot migration/removal path."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".chezmoiremove",
+      "literal": "# Conductor Arena is retired; remove every managed live skill copy.",
+      "sha256": "71f31f55f492f3f39eb79d49a58b3d7a59c5315063e3c6d8479e2ef693a40c83",
+      "kind": "one-shot-migration",
+      "reason": "Exact retired identity required by a bounded one-shot migration/removal path."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "bursar-63k",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "bursar-97a",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "conductor-5p8",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "conductor-8ky",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "conductor-ao8",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "conductor-tdj",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "hindsight-fxm",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "hindsight-m6w",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "hindsight-scorecard-publish",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/roadmap.md",
+      "literal": "hindsight-scorecards",
+      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_agents/skills/delegate/references/panels.md",
+      "literal": "bursar-97a",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_agents/skills/delegate/references/panels.md",
+      "literal": "hindsight-fxm",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_claude/skills/delegate/references/panels.md",
+      "literal": "bursar-97a",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_claude/skills/delegate/references/panels.md",
+      "literal": "hindsight-fxm",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_codex/skills/delegate/references/panels.md",
+      "literal": "bursar-97a",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_codex/skills/delegate/references/panels.md",
+      "literal": "hindsight-fxm",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_copilot/skills/delegate/references/panels.md",
+      "literal": "bursar-97a",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "dot_copilot/skills/delegate/references/panels.md",
+      "literal": "hindsight-fxm",
+      "sha256": "f182bb66c7f0753ca6a08d432f7934d527154104a3a7399c4dce6d20cdb6abdb",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "private_dot_local/lib/scorecard/gen-scorecard-digest.test.mjs",
+      "literal": "Conductor|Bursar|Hindsight|Warden",
+      "sha256": "aee2052ef33eba8f9e280b9347841d75cc09f74ee728144a602a00beac2a0ceb",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "scripts/tests/test_skill_sister_parity.sh",
+      "literal": "for old_name in (\"Conductor\", \"conductor\", \"Bursar\", \"bursar\", \"Hindsight\", \"hindsight\", \"Warden\", \"warden\"):",
+      "sha256": "cca4c7488bea9db2a69ce691494065de9c40e10444d60a09fd4223f731576e1f",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "scripts/tests/test_skill_sister_parity.sh",
+      "literal": "bursar-97a",
+      "sha256": "cca4c7488bea9db2a69ce691494065de9c40e10444d60a09fd4223f731576e1f",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": "scripts/tests/test_skill_sister_parity.sh",
+      "literal": "hindsight-fxm",
+      "sha256": "cca4c7488bea9db2a69ce691494065de9c40e10444d60a09fd4223f731576e1f",
+      "kind": "closed-bead-id",
+      "reason": "Exact closed Bead ID retained as immutable queue history."
     }
   ],
   "classification_control_paths": [

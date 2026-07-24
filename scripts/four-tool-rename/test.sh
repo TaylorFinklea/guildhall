@@ -51,10 +51,9 @@ jq -e '
 ' "$MANIFEST" >/dev/null || fail "canonical mapping inventory is invalid"
 
 jq -e '
-  .historical_classification.complete == false and
-  .historical_classification.candidate_count > 0 and
-  ([.historical_classification.residual_by_owner[]] | add) ==
-    .historical_classification.candidate_count and
+  .historical_classification.complete == true and
+  .historical_classification.candidate_count == 0 and
+  .historical_classification.residual_by_owner == {} and
   .historical_classification.blocker_type == "historical-classification-incomplete" and
   ([
     ["bursar", "tests/fixtures/roster/legacy-conductor.toml"],
@@ -107,17 +106,19 @@ while IFS=$'\t' read -r repo path expected; do
   actual=$(shasum -a 256 "$file" | awk '{print $1}')
   [ "$actual" = "$expected" ] || fail "allowlisted hash mismatch: $repo/$path"
 done < <(jq -r '.historical_allowlist[] | [.repo, .path, .sha256] | @tsv' "$MANIFEST")
-while IFS=$'\t' read -r repo path literal expected; do
+while IFS=$'\t' read -r repo path literal_b64 expected; do
   file="$WORKTREE_ROOT/$repo/$path"
   [ -f "$file" ] || file="$REPO_ROOT/$repo/$path"
   [ -f "$file" ] || fail "value exception path is not a file: $repo/$path"
+  literal=$(printf '%s' "$literal_b64" | base64 --decode)
   actual=$(shasum -a 256 "$file" | awk '{print $1}')
   [ "$actual" = "$expected" ] || fail "value exception hash mismatch: $repo/$path"
-  grep -F "$literal" "$file" >/dev/null || fail "value exception literal missing: $repo/$path"
-done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,.literal,.sha256] | @tsv' "$MANIFEST")
+  grep -F -- "$literal" "$file" >/dev/null || fail "value exception literal missing: $repo/$path"
+done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,(.literal | @base64),.sha256] | @tsv' "$MANIFEST")
 
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/four-tool-rename-test.XXXXXX")
-trap 'rm -rf "$TMP"' EXIT
+BOUNDARY_FILE="$WORKTREE_ROOT/chezmoi-personal/.four-tool-bitwarden-boundary-test"
+trap 'rm -rf "$TMP"; rm -f "$BOUNDARY_FILE"' EXIT
 TEST_HOME="$TMP/home"
 TEST_GIT="$TMP/git"
 mkdir -p "$TEST_HOME/.local/state" "$TEST_HOME/.local/share" "$TEST_HOME/.harness/reports" "$TEST_GIT"
@@ -141,6 +142,7 @@ printf '%s\n' '{"lifecycle":"paused"}' > "$TEST_HOME/.local/state/conductor/runs
 
 SECRET='SECRET_VALUE_MUST_NOT_LEAK'
 export GH_TOKEN="$SECRET" BWS_ACCESS_TOKEN="$SECRET" OPENAI_API_KEY="$SECRET"
+printf '%s\n' 'Bitwarden is unrelated to the retired policy-tool identity.' > "$BOUNDARY_FILE"
 preflight_json="$TMP/preflight.json"
 FOUR_TOOL_RENAME_HOME="$TEST_HOME" \
 FOUR_TOOL_RENAME_GIT_ROOT="$TEST_GIT" \
@@ -151,15 +153,15 @@ jq -e --slurpfile manifest "$MANIFEST" '
   all(.blockers[]; (.type | type) == "string" and (.message | type) == "string") and
   (.mappings | length) == 4 and
   (.candidate_report | type) == "object" and
-  .candidate_report.classification_complete == false and
-  .candidate_report.candidate_count == $manifest[0].historical_classification.candidate_count and
-  .candidate_report.by_owner == $manifest[0].historical_classification.residual_by_owner and
-  (.candidate_report.candidates | length) == .candidate_report.candidate_count and
+  .candidate_report.classification_complete == true and
+  .candidate_report.candidate_count == 0 and
+  .candidate_report.by_owner == {} and
+  .candidate_report.candidates == [] and
   .inventory.distribution.kind == "local-release-copy" and
   (.inventory.active_roots | type) == "array" and
   (.inventory.active_roots | length) >= 8 and
   all(.inventory.active_roots[]; has("product") and has("kind") and has("path") and has("exists")) and
-  any(.blockers[]; .type == "historical-classification-incomplete")
+  (any(.blockers[]; .type == "historical-classification-incomplete") | not)
   and ([.blockers[] | select(.type == "active-runs-present") | .context.runs] == [2])
   and ([.blockers[] | select(.type == "run-state-unreadable") | .context.count] == [2])
 ' "$preflight_json" >/dev/null || fail "preflight did not emit typed blockers"

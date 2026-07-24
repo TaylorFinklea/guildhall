@@ -91,7 +91,7 @@ while IFS=$'\t' read -r repo path expected; do
   fi
 done < <(jq -r '.historical_allowlist[] | [.repo,.path,.sha256] | @tsv' "$MANIFEST")
 
-while IFS=$'\t' read -r repo path literal expected; do
+while IFS=$'\t' read -r repo path literal_b64 expected; do
   file="$WORKTREE_ROOT/$repo/$path"
   [ -f "$file" ] || file="$GIT_ROOT/$repo/$path"
   if [ ! -f "$file" ]; then
@@ -99,15 +99,16 @@ while IFS=$'\t' read -r repo path literal expected; do
       "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
     continue
   fi
+  literal=$(printf '%s' "$literal_b64" | base64 --decode)
   actual=$(shasum -a 256 "$file" | awk '{print $1}')
   if [ "$actual" != "$expected" ]; then
     add_blocker historical-value-hash-mismatch 'A historical value exception file changed.' \
       "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
-  elif ! grep -F "$literal" "$file" >/dev/null 2>&1; then
+  elif ! grep -F -- "$literal" "$file" >/dev/null 2>&1; then
     add_blocker historical-value-missing 'A historical value exception literal is absent.' \
       "$(jq -cn --arg repo "$repo" --arg path "$path" '{repo:$repo,path:$path}')"
   fi
-done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,.literal,.sha256] | @tsv' "$MANIFEST")
+done < <(jq -r '.historical_value_allowlist[] | [.repo,.path,(.literal | @base64),.sha256] | @tsv' "$MANIFEST")
 
 for repo in guildhall bursar conductor hindsight warden chezmoi-base chezmoi-personal; do
   path="$WORKTREE_ROOT/$repo"
@@ -241,7 +242,10 @@ values_by_path = {}
 for item in manifest["historical_value_allowlist"]:
     if item["repo"] == repo:
         values_by_path.setdefault(item["path"], []).append(item["literal"])
-tokens = re.compile(r"(conductor|bursar|hindsight|warden)", re.IGNORECASE)
+tokens = re.compile(
+    r"(?<![A-Za-z0-9_])(?:conductor|bursar|hindsight|warden)(?![A-Za-z0-9_])",
+    re.IGNORECASE,
+)
 tracked = subprocess.check_output(
     ["git", "-C", str(root), "ls-files", "-co", "--exclude-standard", "-z"]
 ).split(b"\0")
