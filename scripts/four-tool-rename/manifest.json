@@ -722,7 +722,7 @@
       "repo": "conductor",
       "path": "src/cli.rs",
       "literal": "/snapshot/conductor",
-      "sha256": "4f9aab92fcbeea036c5d9ad7a2eafb148380f4cf327b34b483f9432cf1e1eeb0",
+      "sha256": "b14343da2f4a7a1aa0e3f03c9c6db804dc44fbdf5a7ace5dab3741e59ebed765",
       "kind": "one-shot-migration",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -1690,7 +1690,7 @@
       "repo": "conductor",
       "path": "src/cli.rs",
       "literal": "assert!(!USAGE.contains(\"conductor\"));",
-      "sha256": "4f9aab92fcbeea036c5d9ad7a2eafb148380f4cf327b34b483f9432cf1e1eeb0",
+      "sha256": "b14343da2f4a7a1aa0e3f03c9c6db804dc44fbdf5a7ace5dab3741e59ebed765",
       "kind": "strict-legacy-assertion",
       "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
     },
@@ -1906,7 +1906,7 @@
       "repo": "conductor",
       "path": "src/dispatch_cycle.rs",
       "literal": "conductor-0kc-auth-loss.json",
-      "sha256": "7ce100178e2f53f2a38fe7076262dbd24257aff84a419b46de7ba6df44e2460e",
+      "sha256": "4e75c68f0f267950036b54d98a15552d92a909a9e262ca76fb7c9d91371d6447",
       "kind": "strict-legacy-assertion",
       "reason": "Exact immutable fixture name required by negative authentication regression coverage."
     },
@@ -1914,7 +1914,7 @@
       "repo": "conductor",
       "path": "src/dispatch_cycle.rs",
       "literal": "conductor-0kc",
-      "sha256": "7ce100178e2f53f2a38fe7076262dbd24257aff84a419b46de7ba6df44e2460e",
+      "sha256": "4e75c68f0f267950036b54d98a15552d92a909a9e262ca76fb7c9d91371d6447",
       "kind": "closed-bead-id",
       "reason": "Exact historical incident identifier required by negative authentication regression coverage."
     }
