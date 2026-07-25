@@ -18,7 +18,7 @@ Spec: `phases/four-tool-rename-spec.md`; live cutover evidence is pinned under t
 
 ## Blockers
 
-- None for the rename. Anthropic availability is currently unknown after HTTP 429 and remains fail-closed.
+- None for the rename. Final different-family review accepted (`anthropic--omp--claude-opus-4-8--max` plan `plan-20260725T011401598940000-p72391-000000`, approved 2026-07-25T01:29:34Z, cross-provider peer_review + second_opinion, verdict `accepted`): SPEC=yes, QUALITY=yes, zero confidence≥80 blockers. Cross-repo gate `conductor-043` fixed at undertake `c9d3ab6` (verify_cmd EXIT_CODE=0, 584 tests + clippy) and closed 2026-07-25; `guildhall-722` rename epic closed same day.
 - Historical Afterfact coverage gaps and unrelated personal primary work remain preserved, not suppressed.
 
 ## Open questions

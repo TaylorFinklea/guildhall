@@ -244,3 +244,46 @@ exemptions are forbidden.
 **Rationale**: A clean operational cutover prevents aliases and dual-read
 contracts from becoming permanent, while exact immutable classification keeps
 past evidence factual and makes every surviving old token reviewable.
+
+## [2026-07-25] Four-tool rename cutover complete; suite quiescence lifted
+
+**Context**: The 2026-07-24 rename ADR authorized Conductor→Undertake,
+Bursar→Musterroll, Hindsight→Afterfact, Warden→Cautionlight as one clean
+suite transaction (`phases/four-tool-rename-{spec,plan}.md`). Source cutover,
+remote/checkout rename, live-state migration, and managed HOME publication
+(Tasks 1–11) landed and were recorded (`current-state.md`, guildhall
+`1de2581`); Task 12's final gate was pending an accepted live run, a
+different-family qualitative pass, and closure of the cross-repo recovery
+gate `conductor-043` that had blocked rename-adjacent work since 2026-07-21.
+**Decision**: Task 12 is complete. `conductor-043` (undertake) shipped at
+`c9d3ab6` — parses `bd` 1.1.0's owner-omitted Issue JSON as unassigned —
+closed 2026-07-25 with the exact `metadata.verify_cmd` independently
+reproduced at EXIT_CODE=0 (all 6 named recovery-gate tests individually
+`ok`, full suite 584 passed/0 failed/8 ignored, `cargo clippy --all-targets
+-D warnings` clean). The accepted plan run
+`plan-20260725T011401598940000-p72391-000000` (planner
+`anthropic--omp--claude-opus-4-8--max`, cross-provider `peer_review` +
+`second_opinion`, approved 2026-07-25T01:29:34Z, terminal verdict
+`accepted`) stands as the required different-family review: SPEC=yes,
+QUALITY=yes, zero confidence≥80 blockers. Afterfact correlates Undertake
+execution identity at `24e9cbe` (3 typed providers, 0 coverage gaps).
+Guildhall's stale-name scanner (`scripts/four-tool-rename/preflight.sh
+--json`) reports `ready:true`, all 4 mappings present, zero unexplained
+stale-name residual outside the reviewed historical allowlist (hash refresh
+at guildhall `805402b`). All five suite remotes (guildhall, undertake,
+musterroll, afterfact, cautionlight) are renamed on GitHub and every local
+checkout is clean and in sync with `origin/main`. Epic `guildhall-722` is
+closed with this evidence chain; `guildhall-retire`, `guildhall-y10`, and
+`guildhall-6mc` remain open as separate, unrelated post-rename hardening
+items (pipe envelope, definition-of-done gate, Guildhall archive prep) and
+are explicitly out of this ADR's scope.
+**Rationale**: The rename's own source/remote/state work was done; the only
+remaining gate was proving the suite could resume normal Undertake dispatch
+without a forged or unverifiable "clean session" signal, which required
+`conductor-043`'s fix and a real, independently reproducible passing
+verify_cmd rather than a narrative claim. Closing on reproduced exit codes
+(not on report text) keeps the evidence bar the suite already holds itself
+to for every other Bead.
+**Supersedes**: nothing architectural; resumes normal `undertake dispatch`
+operation, ending the quiescence the [2026-07-24] rename decision implied
+while source cutover was in flight.
