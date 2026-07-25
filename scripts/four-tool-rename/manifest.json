@@ -563,7 +563,7 @@
     {
       "repo": "chezmoi-personal",
       "path": ".docs/ai/decisions.md",
-      "sha256": "ef79491152b94ebc5c0a2df8404035943352af99fe8ea83494b0b0331492b828",
+      "sha256": "0a5869c52309366516dbf47fbd9ffd55bc7f9e2570a4bafbfabe0bf63e29c9ba",
       "reason": "Completed dated decision/specification/plan record preserved as immutable history."
     },
     {
@@ -655,6 +655,18 @@
       "path": "docs/superpowers/specs/2026-07-15-pi-one-shot-liveness-design.md",
       "sha256": "807ff89669a683fc6302e50aafaf27bb15c1d3b3de9d6538dbbd18fbaaf6c965",
       "reason": "Completed dated decision/specification/plan record preserved as immutable history."
+    },
+    {
+      "repo": "chezmoi-personal",
+      "path": ".docs/ai/phases/skill-ownership-context-reduction-spec.md",
+      "sha256": "8b67bf6229d16a0446ba452d9a81fc1b2b7c350938c5fe5d6ace702cdb5240c9",
+      "reason": "Completed dated skill-ownership migration specification retained as exact history."
+    },
+    {
+      "repo": "conductor",
+      "path": "tests/fixtures/conductor-0kc-auth-loss.json",
+      "sha256": "dbded6de8e9b0ccf54e81b3d98ec11d30f3565c7658f0cfb6e5c54cad19c46cf",
+      "reason": "Immutable authentication-loss incident fixture preserving its original schema identity."
     }
   ],
   "historical_value_allowlist": [
@@ -702,7 +714,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-1i9",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -718,7 +730,7 @@
       "repo": "conductor",
       "path": "src/loop.rs",
       "literal": "conductor/loop@1",
-      "sha256": "51a4dfca81560bb81245230edeb783a3c77aa4fa6d3f73ed7b76535f3723a9dd",
+      "sha256": "113c005bc5df45603d5bd556325e1214b7945e9bbfcfa5034e90403fa426b7d0",
       "kind": "strict-legacy-assertion",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -726,7 +738,7 @@
       "repo": "conductor",
       "path": "src/loop.rs",
       "literal": "legacy_conductor_schema",
-      "sha256": "51a4dfca81560bb81245230edeb783a3c77aa4fa6d3f73ed7b76535f3723a9dd",
+      "sha256": "113c005bc5df45603d5bd556325e1214b7945e9bbfcfa5034e90403fa426b7d0",
       "kind": "strict-legacy-assertion",
       "reason": "Exact legacy literal required by explicit migration or fail-closed rejection coverage."
     },
@@ -1774,7 +1786,7 @@
       "repo": "chezmoi-personal",
       "path": ".chezmoiremove",
       "literal": "conductor-arena",
-      "sha256": "71f31f55f492f3f39eb79d49a58b3d7a59c5315063e3c6d8479e2ef693a40c83",
+      "sha256": "fca74acb8991cb68ce78e6f76ce34758e06d987f57bdf6c65436f1dc6e962763",
       "kind": "one-shot-migration",
       "reason": "Exact retired identity required by a bounded one-shot migration/removal path."
     },
@@ -1782,7 +1794,7 @@
       "repo": "chezmoi-personal",
       "path": ".chezmoiremove",
       "literal": "# Conductor Arena is retired; remove every managed live skill copy.",
-      "sha256": "71f31f55f492f3f39eb79d49a58b3d7a59c5315063e3c6d8479e2ef693a40c83",
+      "sha256": "fca74acb8991cb68ce78e6f76ce34758e06d987f57bdf6c65436f1dc6e962763",
       "kind": "one-shot-migration",
       "reason": "Exact retired identity required by a bounded one-shot migration/removal path."
     },
@@ -1790,7 +1802,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "bursar-63k",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1798,7 +1810,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "bursar-97a",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1806,7 +1818,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-5p8",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1814,7 +1826,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-8ky",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1822,7 +1834,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-ao8",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1830,7 +1842,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "conductor-tdj",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1838,7 +1850,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "hindsight-fxm",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1846,7 +1858,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "hindsight-m6w",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1854,7 +1866,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "hindsight-scorecard-publish",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1862,71 +1874,7 @@
       "repo": "chezmoi-personal",
       "path": ".docs/ai/roadmap.md",
       "literal": "hindsight-scorecards",
-      "sha256": "366ee0acc90be5979daa61871a76689a5800a462ac79685bdbab7cd382120e13",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_agents/skills/delegate/references/panels.md",
-      "literal": "bursar-97a",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_agents/skills/delegate/references/panels.md",
-      "literal": "hindsight-fxm",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_claude/skills/delegate/references/panels.md",
-      "literal": "bursar-97a",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_claude/skills/delegate/references/panels.md",
-      "literal": "hindsight-fxm",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_codex/skills/delegate/references/panels.md",
-      "literal": "bursar-97a",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_codex/skills/delegate/references/panels.md",
-      "literal": "hindsight-fxm",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_copilot/skills/delegate/references/panels.md",
-      "literal": "bursar-97a",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
-      "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "dot_copilot/skills/delegate/references/panels.md",
-      "literal": "hindsight-fxm",
-      "sha256": "2c34966abe22d6d2e40ed67d93ec4182e06bd23891312aa0c4183c10cb7e177a",
+      "sha256": "1db4c5bccda91e5ad601e18396f95b92be5b9c6c7acca650c767ecd8d2c1c742",
       "kind": "closed-bead-id",
       "reason": "Exact closed Bead ID retained as immutable queue history."
     },
@@ -1939,28 +1887,36 @@
       "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
     },
     {
-      "repo": "chezmoi-personal",
-      "path": "scripts/tests/test_skill_sister_parity.sh",
-      "literal": "for old_name in (\"Conductor\", \"conductor\", \"Bursar\", \"bursar\", \"Hindsight\", \"hindsight\", \"Warden\", \"warden\"):",
-      "sha256": "a773e4cc7f2c1b106fe1118100d7a35847be010f7cf30180dada5983b841c9ed",
-      "kind": "strict-legacy-assertion",
-      "reason": "Exact retired identity retained only to prove the active surface rejects or ignores it."
-    },
-    {
-      "repo": "chezmoi-personal",
-      "path": "scripts/tests/test_skill_sister_parity.sh",
+      "repo": "chezmoi-base",
+      "path": ".skills-src/skills/delegate/references/panels.md",
       "literal": "bursar-97a",
-      "sha256": "a773e4cc7f2c1b106fe1118100d7a35847be010f7cf30180dada5983b841c9ed",
+      "sha256": "a0faa8fed8e1958c959395b78313094734ff4b810c9d27ab413e7743a0aaf26d",
       "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
+      "reason": "Exact closed predecessor Bead ID retained in dated sunset guidance."
     },
     {
-      "repo": "chezmoi-personal",
-      "path": "scripts/tests/test_skill_sister_parity.sh",
+      "repo": "chezmoi-base",
+      "path": ".skills-src/skills/delegate/references/panels.md",
       "literal": "hindsight-fxm",
-      "sha256": "a773e4cc7f2c1b106fe1118100d7a35847be010f7cf30180dada5983b841c9ed",
+      "sha256": "a0faa8fed8e1958c959395b78313094734ff4b810c9d27ab413e7743a0aaf26d",
       "kind": "closed-bead-id",
-      "reason": "Exact closed Bead ID retained as immutable queue history."
+      "reason": "Exact closed predecessor Bead ID retained in dated sunset guidance."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/dispatch_cycle.rs",
+      "literal": "conductor-0kc-auth-loss.json",
+      "sha256": "7ce100178e2f53f2a38fe7076262dbd24257aff84a419b46de7ba6df44e2460e",
+      "kind": "strict-legacy-assertion",
+      "reason": "Exact immutable fixture name required by negative authentication regression coverage."
+    },
+    {
+      "repo": "conductor",
+      "path": "src/dispatch_cycle.rs",
+      "literal": "conductor-0kc",
+      "sha256": "7ce100178e2f53f2a38fe7076262dbd24257aff84a419b46de7ba6df44e2460e",
+      "kind": "closed-bead-id",
+      "reason": "Exact historical incident identifier required by negative authentication regression coverage."
     }
   ],
   "classification_control_paths": [

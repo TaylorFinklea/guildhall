@@ -615,11 +615,11 @@ Repeat for all four. Expected: no path under an old primary checkout; feature co
 - Consumes: snapshot, new checkouts, release binaries, green chezmoi diff.
 - Produces: installed new suite and archived old state; no old live executable/config reader.
 
-- [ ] **Step 1: Run one-shot state migrations against copies**
+- [x] **Step 1: Run one-shot state migrations against copies**
 
 Migrate Musterroll observations, Undertake scheduler/current policy, Afterfact DB, and Cautionlight current cursor/config. Validate counts, hashes, schemas, and new owners before switching paths. Keep old roots read-only under the snapshot/archive location.
 
-- [ ] **Step 2: Install the four local release artifacts**
+- [x] **Step 2: Install the four local release artifacts**
 
 Task 1 must encode `distribution.kind = "local-release-copy"` and fail closed if preflight discovers a conflicting registry/tap owner, which requires revising this plan before mutation. Install exact verified release binaries:
 
@@ -632,7 +632,7 @@ install -m 0755 /Users/tfinklea/git/cautionlight/target/release/cautionlight \"$
 
 Record source SHA-256 and installed SHA-256 equality in the snapshot. Old binaries remain in the rollback snapshot until the final gate, then are removed from live PATH without deletion.
 
-- [ ] **Step 3: Apply managed HOME once through composition**
+- [x] **Step 3: Apply managed HOME once through composition**
 
 ```bash
 cd /Users/tfinklea/git/chezmoi-base
@@ -643,7 +643,7 @@ scripts/chezmoi-compose sync personal
 
 Use the wrapper’s reviewed targeted apply path; never bare `chezmoi apply`.
 
-- [ ] **Step 4: Verify PATH and absence of old live names**
+- [x] **Step 4: Verify PATH and absence of old live names**
 
 ```bash
 command -v undertake
@@ -666,7 +666,7 @@ Expected: each resolves to the approved installed artifact. `command -v conducto
 - Consumes: fully cut-over installed suite.
 - Produces: accepted new-namespace evidence, final report, closed rename backlog items.
 
-- [ ] **Step 1: Run final preflight and prepare an immutable disposable target**
+- [x] **Step 1: Run final preflight and prepare an immutable disposable target**
 
 ```bash
 undertake config check --config /Users/tfinklea/git/undertake/undertake.toml
@@ -676,11 +676,11 @@ musterroll roster snapshot --config /Users/tfinklea/git/musterroll/roster.toml -
 
 Expected: valid role-policy contingencies and writable new state; no old path in evidence.
 
-- [ ] **Step 2: Obtain exact run approval and dispatch provider-distinct `plan` stages**
+- [x] **Step 2: Obtain exact run approval and dispatch provider-distinct `plan` stages**
 
 Require author, peer, and second opinion from three distinct Musterroll ProviderIds. The immutable request must be grounded in the disposable target and have no open product questions.
 
-- [ ] **Step 3: Verify Afterfact and Cautionlight correlation**
+- [x] **Step 3: Verify Afterfact and Cautionlight correlation**
 
 ```bash
 afterfact db ingest
@@ -689,10 +689,10 @@ afterfact events --since 24h | cautionlight inspect --stdin
 
 Expected: every Undertake invocation correlates; Afterfact/Cautionlight schemas only; advisory processing is read-only.
 
-- [ ] **Step 4: Verify immutable target and namespace purge**
+- [x] **Step 4: Verify immutable target and namespace purge**
 
 Confirm terminal accepted outcome, unchanged target commit, empty target status, and final smoke tests. Run the scoped stale-name scanner; old names may appear only in path-level immutable-history allowlist entries and archived snapshot content.
 
-- [ ] **Step 5: Run final different-family review and complete records**
+- [x] **Step 5: Run final different-family review and complete records**
 
 Require SPEC yes, QUALITY yes, and zero confidence ≥80 blockers across all source repos, remote/checkouts, state/distribution, and managed HOME. Update current roadmaps/handoffs, close Beads, publish a harness-deck completion report, and resume Undertake dispatch. Preserve rollback snapshots; do not delete historical evidence.

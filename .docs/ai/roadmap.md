@@ -34,7 +34,7 @@ The runtime product is now four Unix-style tools: Undertake runs explicit verifi
       consult/plan/review evaluation folds.
 - [ ] Wave 4 human-controlled tails: chezmoi Ralph/skills/LaunchAgent cutover and private
       scorecard-state migration. Never version the Afterfact SQLite database.
-- [ ] Final no-spend four-tool vertical slice; archive Guildhall only after all eleven spec gates pass.
+- [x] Final no-spend four-tool vertical slice and live cutover; all eleven spec gates passed with preserved rollback evidence.
 
 ### Now — Phase A: close v1 (~week 1)
 - [x] **GPT-5.6 roster rollout** — Sol/Architect=`max`, Terra/Lead=`xhigh`, Luna=`medium` Junior / `high` Senior; direct Codex backend, per-row effort, then-current comparison/Ralph propagation, and scorecard drift/digest alignment. Landed in Undertake `e4aeda9` + chezmoi scorecard `68d76d3`; 236+1 tests, clippy, installed `undertake` config/drift, Ralph isolated preflights, digest + harness-deck validation, and the read-only Guildhall demo passed. Spec/report: `phases/gpt56-roster-rollout-{spec,report}.md`.
